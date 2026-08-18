@@ -8,9 +8,9 @@
 
 ## The Purpose
 
-In competitive aptitude exams like CAT (Common Admission Test), knowing concepts, formulas, and problem-solving shortcuts is essential—but none of it matters if you cannot accurately and rapidly arrive at the final numerical answer.
+In competitive aptitude exams like CAT (Common Admission Test), knowing concepts, formulas, and problem-solving shortcuts is essential - but none of it matters if you cannot accurately and rapidly arrive at the final numerical answer.
 
-When intermediate calculations (such as $37.5\% \text{ of } 240$, $19 \times 7$, or $28^2 - 22^2$) take 15–20 seconds on rough sheets, valuable time slips away and careless arithmetic errors cost marks.
+When intermediate calculations (such as $37.5\% \text{ of } 240$, $19 \times 7$, or $28^2 - 22^2$) take 15-20 seconds on rough sheets, valuable time slips away and careless arithmetic errors cost marks.
 
 Calculation Rush conditions your mental arithmetic into pure subconscious reflex through rapid, gamified, multi-topic hybrid sprints. It bridges the gap between knowing the concept and executing the final calculation with speed and accuracy under clock pressure.
 
@@ -110,7 +110,7 @@ Open `http://localhost:5173` in your browser.
 
 1. **Daily Anchor:** Do exactly one 15-Minute Sprint every morning before starting your regular CAT prep.
 2. **First 14 Days (Adaptation):** Allow yourself to jot down only 1 intermediate anchor number on paper (e.g. holding `72` while computing `90`).
-3. **Days 15–100 (Automaticity):** Drop pen and paper completely. Force mental left-to-right decomposition.
+3. **Days 15-100 (Automaticity):** Drop pen and paper completely. Force mental left-to-right decomposition.
 4. **Always Close the Loop:** Use the Retry Mistakes untimed mode after every session to eliminate misretrievals before logging off.
 
 ---
