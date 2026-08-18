@@ -2763,34 +2763,30 @@
     {
       targetId: 'tour-hero-title',
       title: 'Welcome to Calculation Rush',
-      desc: 'The goal is to solve as many speed calculation questions as you can before the clock runs out. Multi-topic mental arithmetic with +3 for correct and -1 for incorrect.',
-      placement: 'bottom'
+      desc: 'The goal is to solve as many speed calculation questions as you can before the clock runs out. Multi-topic mental arithmetic with +3 for correct and -1 for incorrect.'
     },
     {
-      targetId: 'tour-drill-settings',
+      targetId: 'tour-config-card',
       title: 'Configure Your Sprint',
-      desc: 'Select your preferred time duration (5m, 10m, 15m), difficulty level (Easy, Normal, Hard), and question input mode (MCQ vs Type-In).',
-      placement: 'bottom'
+      desc: 'Select your preferred time duration (5m, 10m, 15m), difficulty level (Easy, Normal, Hard), and question input mode (MCQ vs Type-In).'
     },
     {
       targetId: 'tour-topics-group',
       title: 'Target Specific Topics',
-      desc: 'Drill all categories by default, or switch to Custom Selection to practice specific areas like Powers, Fractions & %, Factorials, Tables, or Roots.',
-      placement: 'top'
+      desc: 'Drill all categories by default, or switch to Custom Selection to practice specific areas like Powers, Fractions & %, Factorials, Tables, or Roots.'
     },
     {
       targetId: 'tour-top-bar',
       title: 'History and Reference Dashboard',
-      desc: 'At the top bar, you can review your past sprint scores, accuracy, and pacing in History, and look up all fraction, power, and table formulas in Reference.',
-      placement: 'bottom'
+      desc: 'At the top bar, you can review your past sprint scores, accuracy, and pacing in History, and look up all fraction, power, and table formulas in Reference.'
     }
   ];
 
   function startTour() {
     currentTourStep = 0;
+    // Always start at absolute top (0,0)
+    window.scrollTo(0, 0);
     document.getElementById('app-tour').classList.remove('hidden');
-    window.addEventListener('scroll', updateTourPlacement, { passive: true });
-    window.addEventListener('resize', updateTourPlacement, { passive: true });
     renderTourStep();
   }
 
@@ -2806,62 +2802,15 @@
 
   function endTour() {
     document.getElementById('app-tour').classList.add('hidden');
-    window.removeEventListener('scroll', updateTourPlacement);
-    window.removeEventListener('resize', updateTourPlacement);
     try {
       localStorage.setItem('rush_tour_seen', 'true');
     } catch(e) {}
   }
 
-  function updateTourPlacement() {
-    if (document.getElementById('app-tour').classList.contains('hidden')) return;
-    const step = TOUR_STEPS[currentTourStep];
-    if (!step) return;
-    const target = document.getElementById(step.targetId);
-    if (!target) return;
-
-    const rect = target.getBoundingClientRect();
-    const padding = 6;
-    const spot = document.getElementById('tour-spotlight');
-    
-    const spotTop = Math.max(0, rect.top - padding);
-    const spotLeft = Math.max(0, rect.left - padding);
-    const spotWidth = Math.min(window.innerWidth, rect.width + (padding * 2));
-    const spotHeight = rect.height + (padding * 2);
-
-    spot.style.width = `${spotWidth}px`;
-    spot.style.height = `${spotHeight}px`;
-    spot.style.top = `${spotTop}px`;
-    spot.style.left = `${spotLeft}px`;
-
-    const tip = document.getElementById('tour-tooltip');
-    const tipWidth = Math.min(300, window.innerWidth - 24);
-    const tipHeight = tip.offsetHeight || 190;
-    let tipTop, tipLeft;
-
-    if (step.targetId === 'tour-top-bar') {
-      tipTop = rect.bottom + 12;
-    } else {
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-
-      if (spaceBelow >= tipHeight + 14) {
-        tipTop = rect.bottom + 10;
-      } else if (spaceAbove >= tipHeight + 14) {
-        tipTop = rect.top - tipHeight - 10;
-      } else {
-        tipTop = Math.max(10, (window.innerHeight - tipHeight) / 2);
-      }
-    }
-
-    tipLeft = rect.left + (rect.width / 2) - (tipWidth / 2);
-    tipLeft = Math.max(12, Math.min(window.innerWidth - tipWidth - 12, tipLeft));
-
-    tip.style.top = `${tipTop}px`;
-    tip.style.left = `${tipLeft}px`;
-  }
-
   function renderTourStep() {
+    // Keep viewport anchored to 0,0 at all times exactly like Step 1
+    window.scrollTo(0, 0);
+
     const step = TOUR_STEPS[currentTourStep];
     const target = document.getElementById(step.targetId);
     if (!target) return;
@@ -2876,15 +2825,10 @@
     const padding = 6;
     const spot = document.getElementById('tour-spotlight');
     
-    const spotTop = Math.max(2, rect.top - padding);
-    const spotLeft = Math.max(2, rect.left - padding);
-    const spotWidth = Math.min(window.innerWidth - 4, rect.width + (padding * 2));
-    const spotHeight = rect.height + (padding * 2);
-
-    spot.style.width = `${spotWidth}px`;
-    spot.style.height = `${spotHeight}px`;
-    spot.style.top = `${spotTop}px`;
-    spot.style.left = `${spotLeft}px`;
+    spot.style.width = `${rect.width + (padding * 2)}px`;
+    spot.style.height = `${rect.height + (padding * 2)}px`;
+    spot.style.top = `${rect.top - padding}px`;
+    spot.style.left = `${rect.left - padding}px`;
 
     const tip = document.getElementById('tour-tooltip');
     const tipWidth = Math.min(300, window.innerWidth - 24);
@@ -2892,17 +2836,18 @@
     let tipTop, tipLeft;
 
     if (step.targetId === 'tour-top-bar') {
+      // Step 4: Top bar -> tooltip directly below
       tipTop = rect.bottom + 12;
-    } else if (step.targetId === 'tour-topics-group' || step.targetId === 'tour-drill-settings') {
-      // Place tooltip with strict viewport clearance inside locked single frame
-      const spaceBelow = window.innerHeight - rect.bottom;
-      if (spaceBelow >= tipHeight + 12) {
-        tipTop = rect.bottom + 8;
-      } else {
-        tipTop = Math.max(8, rect.top - tipHeight - 8);
-      }
+    } else if (step.targetId === 'tour-hero-title') {
+      // Step 1: Title -> tooltip directly below
+      tipTop = rect.bottom + 14;
     } else {
-      tipTop = rect.bottom + 10;
+      // Step 2 & 3: Place tooltip neatly inside screen frame without overlapping
+      if (rect.top > tipHeight + 20) {
+        tipTop = rect.top - tipHeight - 10;
+      } else {
+        tipTop = rect.bottom + 10;
+      }
     }
 
     tipLeft = rect.left + (rect.width / 2) - (tipWidth / 2);
