@@ -1405,11 +1405,7 @@
       }
     });
 
-    // Difficulty modifier
-    if (configDifficulty === 'easy') sec *= 1.05;
-    else if (configDifficulty === 'hard') sec *= 1.2;
-    else sec *= 1.1;
-
+    // Pure mathematical component benchmark without artificial difficulty scaling
     return Math.round(sec * 2) / 2; // Round to nearest 0.5s
   }
 
