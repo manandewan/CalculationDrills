@@ -1112,6 +1112,7 @@
     </div>
     <div class="nav-actions">
       <button class="btn btn-ghost" id="sound-btn" onclick="toggleSound()">Sound: ON</button>
+      <button class="btn btn-ghost" onclick="openTutorial()">Guide</button>
       <button class="btn btn-ghost" onclick="openModal()">Reference</button>
       <button class="btn btn-primary" id="header-launch-btn" onclick="startRush()">Start</button>
     </div>
@@ -1332,8 +1333,54 @@
 
 </div>
 
-<!-- Reference Modal Dashboard -->
-<div id="ref-modal" class="modal-backdrop hidden" onclick="closeModal(event)">
+<!-- Tutorial / Quick Start Modal -->
+<div id="tutorial-modal" class="modal-backdrop hidden" onclick="closeTutorial(event)">
+  <div class="modal-content" style="max-width: 540px;" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #fff;">Quick Start Guide</h3>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">How to train for rapid calculation speed</p>
+      </div>
+      <button class="btn btn-ghost" style="padding: 0.35rem 0.7rem; font-size: 0.9rem;" onclick="closeTutorial()">✕</button>
+    </div>
+
+    <div class="modal-body" style="gap: 1.25rem; font-size: 0.88rem; line-height: 1.6; color: var(--text-main);">
+      
+      <div>
+        <div style="font-weight: 700; color: #a5b4fc; margin-bottom: 0.25rem;">1. Hybrid Calculation Format</div>
+        <div style="color: var(--text-muted); font-size: 0.82rem;">
+          Questions combine 2 to 3 topics at once (e.g. Factorials + Percentages, Powers + Multiplication Tables). Calculate intermediate terms mentally to train instant pattern retrieval.
+        </div>
+      </div>
+
+      <div>
+        <div style="font-weight: 700; color: #a5b4fc; margin-bottom: 0.25rem;">2. Scoring and Pacing</div>
+        <div style="color: var(--text-muted); font-size: 0.82rem;">
+          Each sprint rewards <b style="color: var(--success);">+3</b> for correct answers and penalizes <b style="color: var(--danger);">-1</b> for incorrect attempts. Every question features a dynamically calculated <b>Ideal Time</b> benchmark.
+        </div>
+      </div>
+
+      <div>
+        <div style="font-weight: 700; color: #a5b4fc; margin-bottom: 0.25rem;">3. Controls and Shortcuts</div>
+        <div style="color: var(--text-muted); font-size: 0.82rem;">
+          In TITA mode, type your number and hit <kbd style="background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px;">Enter</kbd>. In MCQ mode, click options or press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px;">A</kbd>, <kbd style="background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px;">B</kbd>, <kbd style="background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px;">C</kbd>, <kbd style="background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px;">D</kbd>. Press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px;">Space</kbd> anytime to pause.
+        </div>
+      </div>
+
+      <div>
+        <div style="font-weight: 700; color: #a5b4fc; margin-bottom: 0.25rem;">4. Reference Dashboard</div>
+        <div style="color: var(--text-muted); font-size: 0.82rem;">
+          Need to memorize fractions, squares, cubes, factorials, or higher powers? Open the Reference dashboard at any time.
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+        <button class="btn btn-primary" style="width: 100%; padding: 0.75rem;" onclick="closeTutorial()">Got It, Let's Start</button>
+      </div>
+
+    </div>
+  </div>
+</div>
   <div class="modal-content" onclick="event.stopPropagation()">
     <div class="modal-header">
       <div>
@@ -2533,9 +2580,31 @@
     }
   });
 
+  function openTutorial() {
+    document.getElementById('tutorial-modal').classList.remove('hidden');
+  }
+
+  function closeTutorial(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById('tutorial-modal').classList.add('hidden');
+    try {
+      localStorage.setItem('rush_tutorial_seen', 'true');
+    } catch(e) {}
+  }
+
+  function checkFirstTimeTutorial() {
+    try {
+      const seen = localStorage.getItem('rush_tutorial_seen');
+      if (!seen) {
+        openTutorial();
+      }
+    } catch(e) {}
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
     initReferenceData();
     renderSparkline();
+    checkFirstTimeTutorial();
     navigateTo('home');
   });
 </script>
