@@ -2754,6 +2754,8 @@
   function startTour() {
     currentTourStep = 0;
     document.getElementById('app-tour').classList.remove('hidden');
+    window.addEventListener('scroll', updateTourPlacement, { passive: true });
+    window.addEventListener('resize', updateTourPlacement, { passive: true });
     renderTourStep();
   }
 
@@ -2769,9 +2771,59 @@
 
   function endTour() {
     document.getElementById('app-tour').classList.add('hidden');
+    window.removeEventListener('scroll', updateTourPlacement);
+    window.removeEventListener('resize', updateTourPlacement);
     try {
       localStorage.setItem('rush_tour_seen', 'true');
     } catch(e) {}
+  }
+
+  function updateTourPlacement() {
+    if (document.getElementById('app-tour').classList.contains('hidden')) return;
+    const step = TOUR_STEPS[currentTourStep];
+    if (!step) return;
+    const target = document.getElementById(step.targetId);
+    if (!target) return;
+
+    const rect = target.getBoundingClientRect();
+    const padding = 6;
+    const spot = document.getElementById('tour-spotlight');
+    
+    const spotTop = Math.max(0, rect.top - padding);
+    const spotLeft = Math.max(0, rect.left - padding);
+    const spotWidth = Math.min(window.innerWidth, rect.width + (padding * 2));
+    const spotHeight = rect.height + (padding * 2);
+
+    spot.style.width = `${spotWidth}px`;
+    spot.style.height = `${spotHeight}px`;
+    spot.style.top = `${spotTop}px`;
+    spot.style.left = `${spotLeft}px`;
+
+    const tip = document.getElementById('tour-tooltip');
+    const tipWidth = Math.min(300, window.innerWidth - 24);
+    const tipHeight = tip.offsetHeight || 190;
+    let tipTop, tipLeft;
+
+    if (step.targetId === 'tour-top-bar') {
+      tipTop = rect.bottom + 12;
+    } else {
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      if (spaceBelow >= tipHeight + 14) {
+        tipTop = rect.bottom + 10;
+      } else if (spaceAbove >= tipHeight + 14) {
+        tipTop = rect.top - tipHeight - 10;
+      } else {
+        tipTop = Math.max(10, (window.innerHeight - tipHeight) / 2);
+      }
+    }
+
+    tipLeft = rect.left + (rect.width / 2) - (tipWidth / 2);
+    tipLeft = Math.max(12, Math.min(window.innerWidth - tipWidth - 12, tipLeft));
+
+    tip.style.top = `${tipTop}px`;
+    tip.style.left = `${tipLeft}px`;
   }
 
   function renderTourStep() {
@@ -2785,70 +2837,18 @@
     document.getElementById('tour-prev-btn').style.visibility = currentTourStep === 0 ? 'hidden' : 'visible';
     document.getElementById('tour-next-btn').textContent = currentTourStep === TOUR_STEPS.length - 1 ? 'Start Drilling' : 'Next';
 
-    // Step-specific optimal scroll coordinates
+    // Scroll target to top of viewport with offset
     if (step.targetId === 'tour-top-bar' || step.targetId === 'tour-hero-title') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else if (step.targetId === 'tour-drill-settings') {
-      const topOffset = target.getBoundingClientRect().top + window.scrollY - 70;
-      window.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
-    } else if (step.targetId === 'tour-topics-group') {
-      const topOffset = target.getBoundingClientRect().top + window.scrollY - 60;
-      window.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'instant' });
     } else {
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const targetTop = target.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: Math.max(0, targetTop - 70), behavior: 'instant' });
     }
 
-    setTimeout(() => {
-      const rect = target.getBoundingClientRect();
-      const padding = 8;
-      const spot = document.getElementById('tour-spotlight');
-      
-      // Ensure spotlight stays strictly inside screen bounds
-      const spotTop = Math.max(4, rect.top - padding);
-      const spotLeft = Math.max(4, rect.left - padding);
-      const spotWidth = Math.min(window.innerWidth - 8, rect.width + (padding * 2));
-      const spotHeight = Math.min(window.innerHeight - 8, rect.height + (padding * 2));
-
-      spot.style.width = `${spotWidth}px`;
-      spot.style.height = `${spotHeight}px`;
-      spot.style.top = `${spotTop}px`;
-      spot.style.left = `${spotLeft}px`;
-
-      // Position tooltip with generous clearance
-      const tip = document.getElementById('tour-tooltip');
-      const tipWidth = Math.min(300, window.innerWidth - 24);
-      const tipHeight = tip.offsetHeight || 190;
-      let tipTop, tipLeft;
-
-      if (step.targetId === 'tour-top-bar') {
-        tipTop = rect.bottom + 16;
-      } else if (step.targetId === 'tour-topics-group') {
-        // Place below topics or above if tight
-        const spaceBelow = window.innerHeight - rect.bottom;
-        if (spaceBelow > tipHeight + 16) {
-          tipTop = rect.bottom + 14;
-        } else {
-          tipTop = Math.max(10, rect.top - tipHeight - 14);
-        }
-      } else {
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const spaceAbove = rect.top;
-
-        if (spaceBelow > tipHeight + 16) {
-          tipTop = rect.bottom + 14;
-        } else if (spaceAbove > tipHeight + 16) {
-          tipTop = rect.top - tipHeight - 14;
-        } else {
-          tipTop = Math.max(10, (window.innerHeight / 2) - (tipHeight / 2));
-        }
-      }
-
-      tipLeft = rect.left + (rect.width / 2) - (tipWidth / 2);
-      tipLeft = Math.max(12, Math.min(window.innerWidth - tipWidth - 12, tipLeft));
-
-      tip.style.top = `${tipTop}px`;
-      tip.style.left = `${tipLeft}px`;
-    }, 220);
+    // Immediate placement
+    updateTourPlacement();
+    // Second pass for layout stability
+    requestAnimationFrame(updateTourPlacement);
   }
 
   function checkFirstTimeTour() {
