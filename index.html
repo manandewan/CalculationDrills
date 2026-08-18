@@ -1234,7 +1234,7 @@
     <div class="nav-actions">
       <button class="btn btn-ghost" style="padding: 0.35rem 0.65rem; font-weight: 800; border-radius: 50%; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;" title="Quick Tour / Guide" onclick="startTour()">?</button>
       <button class="btn btn-ghost" onclick="openHistoryModal()">History</button>
-      <button class="btn btn-ghost" onclick="openModal()">Reference</button>
+      <button class="btn btn-ghost" onclick="openModal('fractions')">Formulas</button>
     </div>
   </header>
 
@@ -1246,6 +1246,15 @@
         Solve as many speed calculation questions as you can before the clock runs out.<br>
         <span style="color: var(--success); font-weight:700;">+3</span> for correct, <span style="color: var(--danger); font-weight:700;">-1</span> for incorrect.
       </p>
+
+      <!-- Quick Formula Deck Bar -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.85rem;">
+        <span style="font-size: 0.72rem; font-weight: 700; color: #a5b4fc; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.2rem;">Quick Formulas:</span>
+        <button class="btn btn-ghost" style="padding: 3px 8px; font-size: 0.72rem; border-radius: 6px; background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.25); color: #c7d2fe;" onclick="openModal('fractions')">Fractions</button>
+        <button class="btn btn-ghost" style="padding: 3px 8px; font-size: 0.72rem; border-radius: 6px; background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.25); color: #c7d2fe;" onclick="openModal('powers')">Powers</button>
+        <button class="btn btn-ghost" style="padding: 3px 8px; font-size: 0.72rem; border-radius: 6px; background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.25); color: #c7d2fe;" onclick="openModal('tables')">Tables</button>
+        <button class="btn btn-ghost" style="padding: 3px 8px; font-size: 0.72rem; border-radius: 6px; background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.25); color: #c7d2fe;" onclick="openModal('roots')">Roots</button>
+      </div>
 
       <!-- Drill Configuration Options -->
       <div class="config-card" id="tour-config-card">
@@ -2580,8 +2589,8 @@
     }
   }
 
-  function openModal() {
-    filterModalTab('fractions');
+  function openModal(tab = 'fractions') {
+    filterModalTab(tab);
     document.getElementById('ref-modal').classList.remove('hidden');
   }
 
