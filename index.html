@@ -1305,16 +1305,28 @@
     const useAnchor = Math.random() < 0.45;
     let q;
 
-    // 1. Squares & Cubes
+    // 1. Squares & Cubes (Featured across all levels)
     if (roll < 0.28) {
       if (configDifficulty === 'easy') {
-        const sq = randInt(11, 20);
-        const other = randInt(5, 15);
-        q = { id, expr: `${sq}² + ${other}²`, ans: (sq*sq) + (other*other), shortcut: `${sq}² (${sq*sq}) + ${other}² (${other*other}) = ${(sq*sq)+(other*other)}` };
+        // Easy: Single high cube or square with direct small round subtraction/addition
+        const isCube = Math.random() < 0.25; // 25% cube frequency
+        if (isCube) {
+          const cb = randInt(11, 16);
+          const roundOffset = randInt(1, 5) * 100;
+          const isPlus = Math.random() > 0.5;
+          const ans = isPlus ? (cb*cb*cb) + roundOffset : (cb*cb*cb) - roundOffset;
+          q = { id, expr: `${cb}³ ${isPlus ? '+' : '-'} ${roundOffset}`, ans, shortcut: `${cb}³ = ${cb*cb*cb} ➔ ${cb*cb*cb} ${isPlus ? '+' : '-'} ${roundOffset} = ${ans}` };
+        } else {
+          const sq = randInt(14, 25);
+          const add = randInt(10, 50);
+          q = { id, expr: `${sq}² + ${add}`, ans: (sq*sq) + add, shortcut: `${sq}² = ${sq*sq} ➔ ${sq*sq} + ${add} = ${(sq*sq)+add}` };
+        }
       } else if (configDifficulty === 'hard') {
-        if (Math.random() < 0.5) {
+        // Hard: High-range Cubes combined with Squares, or high difference of squares
+        const isCube = Math.random() < 0.45; // 45% cube frequency
+        if (isCube) {
           const cb = randInt(12, 19);
-          const sq = randInt(18, 29);
+          const sq = randInt(16, 29);
           q = { id, expr: `${cb}³ - ${sq}²`, ans: (cb*cb*cb) - (sq*sq), shortcut: `${cb}³ (${cb*cb*cb}) - ${sq}² (${sq*sq}) = ${(cb*cb*cb)-(sq*sq)}` };
         } else {
           const a = randInt(21, 30);
@@ -1322,36 +1334,55 @@
           q = { id, expr: `${a}² - ${b}²`, ans: (a*a) - (b*b), shortcut: `(a-b)(a+b) = (${a}-${b})(${a}+${b}) = ${a-b} × ${a+b} = ${(a-b)*(a+b)}` };
         }
       } else {
-        // Normal
+        // Normal (CAT Baseline): Balanced cubes & squares with Anchors
         if (useAnchor && anchorSquareOrCube.type === 'sq') {
           const sq = anchorSquareOrCube.val;
           const other = randInt(12, 22);
           q = { id, expr: `${sq}² + ${other}²`, ans: (sq*sq) + (other*other), shortcut: `${sq}² (${sq*sq}) + ${other}² (${other*other}) = ${(sq*sq)+(other*other)}` };
+        } else if (useAnchor && anchorSquareOrCube.type === 'cb') {
+          const cb = anchorSquareOrCube.val;
+          const sub = randInt(10, 40) * 100;
+          q = { id, expr: `${cb}³ - ${sub}`, ans: (cb*cb*cb) - sub, shortcut: `${cb}³ (${cb*cb*cb}) - ${sub} = ${(cb*cb*cb)-sub}` };
         } else {
-          const a = randInt(16, 29);
-          const b = randInt(12, 22);
-          q = { id, expr: `${a}² - ${b}²`, ans: (a*a) - (b*b), shortcut: `(a+b)(a-b) = (${a}+${b})(${a}-${b}) = ${(a+b)*(a-b)}` };
+          const isCube = Math.random() < 0.35;
+          if (isCube) {
+            const cb = randInt(11, 17);
+            const sub = randInt(5, 30) * 50;
+            q = { id, expr: `${cb}³ - ${sub}`, ans: (cb*cb*cb) - sub, shortcut: `${cb}³ (${cb*cb*cb}) - ${sub} = ${(cb*cb*cb)-sub}` };
+          } else {
+            const a = randInt(16, 29);
+            const b = randInt(12, 22);
+            q = { id, expr: `${a}² - ${b}²`, ans: (a*a) - (b*b), shortcut: `(a+b)(a-b) = (${a}+${b})(${a}-${b}) = ${(a+b)*(a-b)}` };
+          }
         }
       }
     }
 
-    // 2. Percentages & Fractions
+    // 2. Percentages & Fractions (Scaling difficulty & family complexity)
     else if (roll < 0.52) {
       if (configDifficulty === 'easy') {
-        const easyFracs = BASE_UNIT_FRACTIONS.filter(f => [2, 4, 5, 10].includes(f.denom));
-        const f = pickRandom(easyFracs);
-        const base = f.denom * randInt(12, 40) * 10;
-        const add = randInt(20, 90);
-        const part = Math.round(base / f.denom);
-        q = { id, expr: `${f.p} of ${base} + ${add}`, ans: part + add, shortcut: `(${f.label} of ${base}) + ${add} = ${part} + ${add} = ${part + add}` };
+        // Easy: Single fraction (including higher denominator multiples) paired with a clean round term
+        const f = pickRandom(ALL_FRAC_DATA);
+        const base = f.denom * randInt(4, 15) * 10;
+        const part = Math.round((base / f.denom) * f.mult);
+        const add = randInt(2, 8) * 10;
+        const isPlus = Math.random() > 0.4;
+        const ans = isPlus ? part + add : part - add;
+        q = { id, expr: `${f.p} of ${base} ${isPlus ? '+' : '-'} ${add}`, ans, shortcut: `(${f.label} × ${base}) ${isPlus ? '+' : '-'} ${add} = ${part} ${isPlus ? '+' : '-'} ${add} = ${ans}` };
       } else if (configDifficulty === 'hard') {
+        // Hard: Dual complex fractions with varied denominators
         const f1 = pickRandom(ALL_FRAC_DATA);
         const f2 = pickRandom(ALL_FRAC_DATA);
         const val1 = f1.denom * randInt(3, 8) * 10;
         const val2 = f2.denom * randInt(3, 8) * 10;
         const part1 = Math.round((val1 / f1.denom) * f1.mult);
         const part2 = Math.round((val2 / f2.denom) * f2.mult);
-        q = { id, expr: `${f1.p} of ${val1} + ${f2.p} of ${val2}`, ans: part1 + part2, shortcut: `(${f1.label} × ${val1}) + (${f2.label} × ${val2}) = ${part1} + ${part2} = ${part1 + part2}` };
+        const isPlus = Math.random() > 0.4;
+        const ans = isPlus ? part1 + part2 : Math.abs(part1 - part2);
+        const higher = Math.max(part1, part2);
+        const lower = Math.min(part1, part2);
+        const expr = isPlus ? `${f1.p} of ${val1} + ${f2.p} of ${val2}` : `${higher === part1 ? f1.p+' of '+val1 : f2.p+' of '+val2} - ${higher === part1 ? f2.p+' of '+val2 : f1.p+' of '+val1}`;
+        q = { id, expr, ans, shortcut: `(${f1.label} × ${val1}) ${isPlus ? '+' : '-'} (${f2.label} × ${val2}) = ${ans}` };
       } else {
         // Normal
         const f1 = useAnchor ? anchorFrac : pickRandom(ALL_FRAC_DATA);
@@ -1364,15 +1395,16 @@
       }
     }
 
-    // 3. Table Operations
+    // 3. Multiplication Tables (Includes tables up to 30 on all levels)
     else if (roll < 0.74) {
       if (configDifficulty === 'easy') {
-        const t1 = randInt(6, 15);
-        const m1 = randInt(4, 9);
-        const t2 = randInt(4, 12);
-        const m2 = randInt(2, 6);
-        q = { id, expr: `${t1} × ${m1} + ${t2} × ${m2}`, ans: (t1*m1) + (t2*m2), shortcut: `${t1*m1} + ${t2*m2} = ${(t1*m1)+(t2*m2)}` };
+        // Easy: High table with simple multiplier + round number (e.g. 27 x 4 + 30)
+        const t = randInt(14, 29);
+        const m = randInt(2, 6);
+        const offset = randInt(2, 9) * 10;
+        q = { id, expr: `${t} × ${m} + ${offset}`, ans: (t*m) + offset, shortcut: `${t} × ${m} = ${t*m} ➔ ${t*m} + ${offset} = ${(t*m)+offset}` };
       } else if (configDifficulty === 'hard') {
+        // Hard: Two heavy tables with high multipliers (e.g. 28 x 8 - 23 x 7)
         const t1 = randInt(17, 29);
         const m1 = randInt(6, 9);
         const t2 = randInt(16, 29);
@@ -1392,12 +1424,12 @@
       }
     }
 
-    // 4. Chained Mental Arithmetic
+    // 4. Chained Arithmetic
     else if (roll < 0.88) {
       if (configDifficulty === 'easy') {
-        const a = randInt(20, 70);
-        const b = randInt(20, 80);
-        const c = randInt(10, 50);
+        const a = randInt(35, 120);
+        const b = randInt(25, 90);
+        const c = randInt(20, 60);
         q = { id, expr: `${a} + ${b} - ${c}`, ans: a + b - c, shortcut: `(${a} + ${b}) - ${c} = ${a+b-c}` };
       } else if (configDifficulty === 'hard') {
         const a = randInt(120, 480);
@@ -1417,9 +1449,10 @@
     // 5. Mental Multiplication
     else {
       if (configDifficulty === 'easy') {
-        const a = randInt(12, 45);
-        const b = randInt(3, 9);
-        q = { id, expr: `${a} × ${b}`, ans: a * b, shortcut: `${a} × ${b} = ${a*b}` };
+        // Easy: 2-digit by 1-digit or simple 2x2 with round multiplier
+        const a = randInt(21, 89);
+        const b = randInt(4, 9);
+        q = { id, expr: `${a} × ${b}`, ans: a * b, shortcut: `Split: (${Math.floor(a/10)*10} × ${b}) + (${a%10} × ${b}) = ${a*b}` };
       } else if (configDifficulty === 'hard') {
         const a = randInt(35, 98);
         const b = randInt(23, 89);
