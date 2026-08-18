@@ -1761,10 +1761,39 @@
       });
     }
 
-    // 2. Fractions & Percentages Generator
+    // 2. Fractions & Percentages Generator (Includes CAT 5/18 & 18/5 Factor Hybrids)
     if (enabledTopics.has('fractions')) {
       activeGenerators.push(() => {
         const category = 'Fractions & %';
+        const isConversionFactor = Math.random() < 0.35; // 35% chance for high-yield 5/18 or 18/5 arithmetic
+
+        if (isConversionFactor) {
+          const isFiveEighteenth = Math.random() > 0.5;
+          if (isFiveEighteenth) {
+            // (5/18 of 18*k) + or - offset (e.g. 5/18 of 72 = 20)
+            const k = randInt(2, configDifficulty === 'hard' ? 15 : 9);
+            const base = 18 * k;
+            const term = 5 * k;
+            const offset = randInt(15, 85);
+            const isPlus = Math.random() > 0.45;
+            const ans = isPlus ? term + offset : Math.abs(term - offset);
+            const expr = isPlus ? `(5/18 of ${base}) + ${offset}` : (term >= offset ? `(5/18 of ${base}) - ${offset}` : `${offset} - (5/18 of ${base})`);
+            const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: 18, mult: 5 }, { type: 'add_sub', terms: 2 }]);
+            return { signature: `c518_${base}_${isPlus}_${offset}`, id, category, expr, ans, targetSec, shortcut: `5/18 × ${base} = 5 × ${k} = ${term} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+          } else {
+            // (18/5 of 5*k) + or - offset (e.g. 18/5 of 45 = 162)
+            const k = randInt(3, configDifficulty === 'hard' ? 12 : 7);
+            const base = 5 * k;
+            const term = 18 * k;
+            const offset = randInt(20, 95);
+            const isPlus = Math.random() > 0.45;
+            const ans = isPlus ? term + offset : Math.abs(term - offset);
+            const expr = isPlus ? `(18/5 of ${base}) + ${offset}` : (term >= offset ? `(18/5 of ${base}) - ${offset}` : `${offset} - (18/5 of ${base})`);
+            const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: 5, mult: 18 }, { type: 'add_sub', terms: 2 }]);
+            return { signature: `c185_${base}_${isPlus}_${offset}`, id, category, expr, ans, targetSec, shortcut: `18/5 × ${base} = 18 × ${k} = ${term} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+          }
+        }
+
         const f = pickRandom(ALL_FRAC_DATA);
         const multipliers = [2, 3, 4, 5, 6, 7, 8, 9, 12, 14, 15, 16, 18, 20, 25];
         const multChoice = pickRandom(multipliers);
