@@ -807,6 +807,166 @@
     .hidden {
       display: none !important;
     }
+
+    /* Mobile Responsive Optimizations */
+    @media (max-width: 640px) {
+      body {
+        padding: 0.75rem 0.5rem 2rem;
+        justify-content: flex-start;
+      }
+
+      .container {
+        gap: 0.85rem;
+      }
+
+      header {
+        padding: 0.75rem 0.9rem;
+        border-radius: 12px;
+      }
+
+      .brand-title {
+        font-size: 0.95rem;
+      }
+
+      .nav-actions .btn {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.75rem;
+      }
+
+      /* Home Card */
+      .home-hero {
+        padding: 1.75rem 1rem;
+        border-radius: 16px;
+      }
+
+      .hero-title {
+        font-size: 1.45rem;
+      }
+
+      .hero-subtitle {
+        font-size: 0.82rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .config-card {
+        padding: 1rem 0.85rem;
+      }
+
+      .config-options {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .config-opt-btn {
+        padding: 0.5rem 0.3rem;
+        font-size: 0.75rem;
+      }
+
+      /* Rush Arena */
+      .rush-hud {
+        padding: 0.65rem 0.9rem;
+      }
+
+      .hud-value {
+        font-size: 1.15rem;
+      }
+
+      .timer-val {
+        font-size: 1.35rem;
+      }
+
+      .arena-card {
+        padding: 2.25rem 1rem 1.75rem;
+        min-height: 320px;
+        border-radius: 16px;
+      }
+
+      .q-badge {
+        top: 1rem;
+        left: 1rem;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .q-meta-tag {
+        top: 1rem;
+        right: 1rem;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .expression {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .rush-input {
+        font-size: 1.5rem;
+        padding: 0.6rem 0.75rem;
+      }
+
+      .mcq-container {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+      }
+
+      .mcq-btn {
+        padding: 0.75rem 0.9rem;
+        font-size: 1.1rem;
+        min-height: 48px; /* Great touch target */
+      }
+
+      /* Results */
+      .score-banner {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+
+      .score-card-val {
+        font-size: 1.2rem;
+      }
+
+      /* Modal */
+      .modal-backdrop {
+        padding: 0.5rem;
+      }
+
+      .modal-content {
+        max-height: 94vh;
+        border-radius: 16px;
+      }
+
+      .modal-header {
+        padding: 1rem;
+      }
+
+      .modal-nav {
+        padding: 0.5rem 0.75rem;
+        gap: 0.35rem;
+        overflow-x: auto;
+      }
+
+      .modal-nav-btn {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.65rem;
+        white-space: nowrap;
+      }
+
+      .modal-body {
+        padding: 1rem;
+      }
+
+      .grid-table {
+        grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      }
+
+      .multiples-family-container {
+        grid-template-columns: 1fr;
+      }
+
+      .tables-matrix {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      }
+    }
   </style>
 </head>
 <body>
@@ -905,7 +1065,7 @@
 
       <!-- Option A: TITA Input -->
       <div class="input-wrapper" id="arena-tita-wrapper">
-        <input type="number" step="any" class="rush-input" id="rush-input" 
+        <input type="number" inputmode="decimal" step="any" class="rush-input" id="rush-input" 
                placeholder="Answer" autocomplete="off" autofocus>
         <div class="input-hint">Type answer and press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Enter</kbd></div>
       </div>
