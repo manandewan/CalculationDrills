@@ -2,7 +2,7 @@
 
 > High-intensity, arcade-paced mental arithmetic conditioning engine designed for competitive management entrance examinations (CAT / XAT / GMAT / GRE).
 
-**Live Application:** https://manandewan.github.io/CalculationDrills
+**Live Application:** https://manandewan.github.io/calculationrush
 
 ---
 
@@ -78,7 +78,7 @@ The generator tests the following high-frequency patterns:
 * **Instant Deployment:** Hosted directly on GitHub Pages.
 
 ```text
-CalculationDrills/
+calculationrush/
 └── index.html      # Complete standalone web application (UI, CSS styles, & JS engine)
 └── README.md       # Comprehensive documentation
 ```
@@ -88,7 +88,7 @@ CalculationDrills/
 ## Getting Started
 
 ### Option 1: Live Web App
-Open **https://manandewan.github.io/CalculationDrills** directly on any desktop or mobile browser.
+Open **https://manandewan.github.io/calculationrush** directly on any desktop or mobile browser.
 
 ### Option 2: Mobile App Experience (PWA / Add to Home Screen)
 1. Open the app link on iOS Safari or Android Chrome.
@@ -98,8 +98,8 @@ Open **https://manandewan.github.io/CalculationDrills** directly on any desktop 
 ### Option 3: Local Development
 Clone and run with any static HTTP server:
 ```bash
-git clone https://github.com/manandewan/CalculationDrills.git
-cd CalculationDrills
+git clone https://github.com/manandewan/calculationrush.git
+cd calculationrush
 python3 -m http.server 5173
 ```
 Open `http://localhost:5173` in your browser.
