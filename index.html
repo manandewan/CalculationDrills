@@ -152,29 +152,29 @@
     }
 
     .tour-spotlight {
-      position: absolute;
+      position: fixed;
       border-radius: 14px;
-      box-shadow: 0 0 0 9999px rgba(9, 10, 15, 0.85);
+      box-shadow: 0 0 0 9999px rgba(9, 10, 15, 0.88);
       border: 2px solid #818cf8;
       pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.25s ease-out;
       z-index: 1000;
     }
 
     .tour-tooltip {
-      position: absolute;
+      position: fixed;
       background: #111422;
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 14px;
-      padding: 1.25rem 1.4rem;
-      width: 320px;
-      max-width: calc(100vw - 32px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      padding: 1.15rem 1.25rem;
+      width: 300px;
+      max-width: calc(100vw - 28px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
       z-index: 1001;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      gap: 0.65rem;
+      transition: all 0.25s ease-out;
     }
 
     .tour-step-counter {
@@ -2715,45 +2715,43 @@
     document.getElementById('tour-prev-btn').style.visibility = currentTourStep === 0 ? 'hidden' : 'visible';
     document.getElementById('tour-next-btn').textContent = currentTourStep === TOUR_STEPS.length - 1 ? 'Start Drilling' : 'Next';
 
-    // Position spotlight cutout around the target element
-    const rect = target.getBoundingClientRect();
-    const padding = 10;
-    const spot = document.getElementById('tour-spotlight');
-    spot.style.width = `${rect.width + (padding * 2)}px`;
-    spot.style.height = `${rect.height + (padding * 2)}px`;
-    spot.style.top = `${rect.top + window.scrollY - padding}px`;
-    spot.style.left = `${rect.left + window.scrollX - padding}px`;
-
-    // Position tooltip with generous clearance so it never covers the spotlighted box
-    const tip = document.getElementById('tour-tooltip');
-    const tipWidth = 320;
-    const tipHeight = tip.offsetHeight || 210;
-    let tipTop, tipLeft;
-
-    if (step.placement === 'top') {
-      // Place strictly above the element with 18px gap
-      tipTop = rect.top + window.scrollY - tipHeight - 18;
-    } else {
-      // Place strictly below the element with 18px gap
-      tipTop = rect.bottom + window.scrollY + 18;
-    }
-
-    // Horizontal centering relative to target
-    tipLeft = rect.left + window.scrollX + (rect.width / 2) - (tipWidth / 2);
-
-    // Keep tooltip within viewport bounds
-    tipLeft = Math.max(16, Math.min(window.innerWidth - tipWidth - 16, tipLeft));
-    
-    // Safety check: if placing above would push off the screen, place below
-    if (tipTop < 10) {
-      tipTop = rect.bottom + window.scrollY + 18;
-    }
-
-    tip.style.top = `${tipTop}px`;
-    tip.style.left = `${tipLeft}px`;
-
-    // Smooth scroll into view
+    // Smooth scroll target into center first, then calculate fixed position
     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    setTimeout(() => {
+      const rect = target.getBoundingClientRect();
+      const padding = 8;
+      const spot = document.getElementById('tour-spotlight');
+      spot.style.width = `${rect.width + (padding * 2)}px`;
+      spot.style.height = `${rect.height + (padding * 2)}px`;
+      spot.style.top = `${rect.top - padding}px`;
+      spot.style.left = `${rect.left - padding}px`;
+
+      // Position tooltip with clearance above or below target in viewport
+      const tip = document.getElementById('tour-tooltip');
+      const tipWidth = Math.min(300, window.innerWidth - 28);
+      const tipHeight = tip.offsetHeight || 200;
+      let tipTop, tipLeft;
+
+      // Decide placement based on available space in viewport
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      if (spaceBelow > tipHeight + 20) {
+        tipTop = rect.bottom + 14;
+      } else if (spaceAbove > tipHeight + 20) {
+        tipTop = rect.top - tipHeight - 14;
+      } else {
+        // Fallback centered
+        tipTop = Math.max(14, (window.innerHeight / 2) - (tipHeight / 2));
+      }
+
+      tipLeft = rect.left + (rect.width / 2) - (tipWidth / 2);
+      tipLeft = Math.max(14, Math.min(window.innerWidth - tipWidth - 14, tipLeft));
+
+      tip.style.top = `${tipTop}px`;
+      tip.style.left = `${tipLeft}px`;
+    }, 120);
   }
 
   function checkFirstTimeTour() {
