@@ -1123,7 +1123,6 @@
       CALCULATION RUSH
     </div>
     <div class="nav-actions">
-      <button class="btn btn-ghost" id="sound-btn" onclick="toggleSound()">Sound</button>
       <button class="btn btn-ghost" onclick="openHistoryModal()">History</button>
       <button class="btn btn-ghost" onclick="openModal()">Reference</button>
     </div>
@@ -1426,8 +1425,6 @@
   let configDifficulty = 'normal';
   let configQType = 'tita';
   let enabledTopics = new Set(['powers', 'fractions', 'factorials', 'tables', 'add_sub', 'roots_decimals']);
-  let soundEnabled = true;
-
   let timerInterval = null;
   let timeRemaining = 15 * 60;
   let isRunning = false;
@@ -1437,42 +1434,6 @@
   let currentQuestion = null;
   let answers = [];
   let questionStartTime = 0;
-
-  // Custom Audio Synthesizer (Zero asset dependencies)
-  const audioCtx = (window.AudioContext || window.webkitAudioContext) ? new (window.AudioContext || window.webkitAudioContext)() : null;
-
-  function playTone(freq, type, duration) {
-    if (!soundEnabled || !audioCtx) return;
-    try {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    } catch(e) {}
-  }
-
-  function playSuccessSound() {
-    playTone(523.25, 'sine', 0.1); // C5
-    setTimeout(() => playTone(659.25, 'sine', 0.15), 60); // E5
-  }
-
-  function playWrongSound() {
-    playTone(220, 'sawtooth', 0.2); // A3
-  }
-
-  function toggleSound() {
-    soundEnabled = !soundEnabled;
-    const btn = document.getElementById('sound-btn');
-    btn.textContent = soundEnabled ? 'Sound' : 'Muted';
-    btn.style.opacity = soundEnabled ? '1' : '0.6';
-  }
 
   // Base Data Reference
   const BASE_UNIT_FRACTIONS = [
@@ -2080,10 +2041,8 @@
 
     if (isCorrect) {
       currentStreak++;
-      playSuccessSound();
     } else {
       currentStreak = 0;
-      playWrongSound();
     }
 
     answers.push({
