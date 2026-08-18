@@ -1323,16 +1323,20 @@
         <div class="multiples-family-container" id="modal-multiples-container"></div>
       </section>
 
-      <!-- POWERS SECTION (Squares, Cubes, Powers of 2 & 3) -->
+      <!-- POWERS SECTION (Restructured: Part 1 Squares & Cubes, Part 2 Powers Families) -->
       <section id="sec-powers">
-        <div class="section-title">⚡ Powers of 2 (2¹ to 2¹²) & Powers of 3 (3¹ to 3⁶)</div>
-        <div class="grid-table" id="modal-pow23-grid" style="margin-bottom: 1.25rem;"></div>
-
-        <div class="section-title">⚡ Squares (1² to 30²)</div>
+        <div class="section-title">⚡ Squares & Cubes (1 to 30)</div>
+        
+        <!-- Part 1: Squares & Cubes -->
+        <div class="frac-sub-header">🔹 Part 1: Squares (1² to 30²)</div>
         <div class="grid-table" id="modal-squares-grid" style="margin-bottom: 1.25rem;"></div>
 
-        <div class="section-title">🧊 Cubes (1³ to 20³)</div>
-        <div class="grid-table" id="modal-cubes-grid"></div>
+        <div class="frac-sub-header">🔹 Part 1: Cubes (1³ to 20³)</div>
+        <div class="grid-table" id="modal-cubes-grid" style="margin-bottom: 1.5rem;"></div>
+
+        <!-- Part 2: Higher Powers by Base Family -->
+        <div class="frac-sub-header" style="color: #a5b4fc;">🔹 Part 2: Common Higher Powers (Grouped by Base)</div>
+        <div class="multiples-family-container" id="modal-powers-family-container"></div>
       </section>
 
       <!-- FACTORIALS SECTION -->
@@ -2261,27 +2265,92 @@
     });
     document.getElementById('modal-multiples-container').innerHTML = familyHtml;
 
-    // 2. Powers of 2 & 3
-    let p23Html = '';
-    const pow2 = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096];
-    pow2.forEach((v, idx) => {
-      p23Html += `<div class="math-cell"><span class="math-cell-base">2^${idx+1}</span><span class="math-cell-val">${v}</span></div>`;
-    });
-    const pow3 = [3, 9, 27, 81, 243, 729];
-    pow3.forEach((v, idx) => {
-      p23Html += `<div class="math-cell"><span class="math-cell-base">3^${idx+1}</span><span class="math-cell-val">${v}</span></div>`;
-    });
-    document.getElementById('modal-pow23-grid').innerHTML = p23Html;
-
-    // Squares
+    // 2. Squares & Cubes
     let sqHtml = '';
     for(let i = 1; i <= 30; i++) sqHtml += `<div class="math-cell"><span class="math-cell-base">${i}²</span><span class="math-cell-val">${i * i}</span></div>`;
     document.getElementById('modal-squares-grid').innerHTML = sqHtml;
 
-    // Cubes
     let cbHtml = '';
     for(let i = 1; i <= 20; i++) cbHtml += `<div class="math-cell"><span class="math-cell-base">${i}³</span><span class="math-cell-val">${i * i * i}</span></div>`;
     document.getElementById('modal-cubes-grid').innerHTML = cbHtml;
+
+    // 3. Higher Powers Grouped by Base Family (2, 3, 4, 5, 6, 7)
+    const POWERS_FAMILIES = [
+      {
+        base: 2,
+        name: 'Base 2 Powers (2¹ to 2¹²)',
+        items: [
+          { label: '2¹', val: '2' }, { label: '2²', val: '4' }, { label: '2³', val: '8' },
+          { label: '2⁴', val: '16' }, { label: '2⁵', val: '32' }, { label: '2⁶', val: '64' },
+          { label: '2⁷', val: '128' }, { label: '2⁸', val: '256' }, { label: '2⁹', val: '512' },
+          { label: '2¹⁰', val: '1024' }, { label: '2¹¹', val: '2048' }, { label: '2¹²', val: '4096' }
+        ]
+      },
+      {
+        base: 3,
+        name: 'Base 3 Powers (3¹ to 3⁷)',
+        items: [
+          { label: '3¹', val: '3' }, { label: '3²', val: '9' }, { label: '3³', val: '27' },
+          { label: '3⁴', val: '81' }, { label: '3⁵', val: '243' }, { label: '3⁶', val: '729' },
+          { label: '3⁷', val: '2187' }
+        ]
+      },
+      {
+        base: 4,
+        name: 'Base 4 Powers (4¹ to 4⁶)',
+        items: [
+          { label: '4¹', val: '4' }, { label: '4²', val: '16' }, { label: '4³', val: '64' },
+          { label: '4⁴', val: '256' }, { label: '4⁵', val: '1024' }, { label: '4⁶', val: '4096' }
+        ]
+      },
+      {
+        base: 5,
+        name: 'Base 5 Powers (5¹ to 5⁶)',
+        items: [
+          { label: '5¹', val: '5' }, { label: '5²', val: '25' }, { label: '5³', val: '125' },
+          { label: '5⁴', val: '625' }, { label: '5⁵', val: '3125' }, { label: '5⁶', val: '15625' }
+        ]
+      },
+      {
+        base: 6,
+        name: 'Base 6 Powers (6¹ to 6⁵)',
+        items: [
+          { label: '6¹', val: '6' }, { label: '6²', val: '36' }, { label: '6³', val: '216' },
+          { label: '6⁴', val: '1296' }, { label: '6⁵', val: '7776' }
+        ]
+      },
+      {
+        base: 7,
+        name: 'Base 7 Powers (7¹ to 7⁴)',
+        items: [
+          { label: '7¹', val: '7' }, { label: '7²', val: '49' }, { label: '7³', val: '343' },
+          { label: '7⁴', val: '2401' }
+        ]
+      }
+    ];
+
+    let powersFamilyHtml = '';
+    POWERS_FAMILIES.forEach(fam => {
+      let itemsHtml = '';
+      fam.items.forEach(item => {
+        itemsHtml += `
+          <div class="frac-chip">
+            <span class="frac-chip-num">${item.label}</span>
+            <span class="frac-chip-pct" style="color: #38bdf8;">${item.val}</span>
+          </div>
+        `;
+      });
+      powersFamilyHtml += `
+        <div class="family-card">
+          <div class="family-title">
+            <span>${fam.name}</span>
+            <span style="font-size: 0.68rem; color: var(--text-muted);">${fam.items.length} Powers</span>
+          </div>
+          <div class="family-items">${itemsHtml}</div>
+        </div>
+      `;
+    });
+    document.getElementById('modal-powers-family-container').innerHTML = powersFamilyHtml;
 
     // Factorials
     const factVals = { 0: 1, 1: 1, 2: 2, 3: 6, 4: 24, 5: 120, 6: 720, 7: 5040, 8: 40320, 9: 362880, 10: 3628800 };
