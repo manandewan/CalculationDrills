@@ -1,10 +1,6 @@
 # ⚡ Calculation Rush
 
-> High-intensity, arcade-paced mental arithmetic conditioning engine designed for competitive management entrance examinations (**CAT / XAT / GMAT / GRE**).
-
-[![Live Demo](https://img.shields.io/badge/Live_App-Calculation_Rush-6366f1?style=for-the-badge&logo=githubpages)](https://manandewan.github.io/CalculationDrills)
-[![No Dependencies](https://img.shields.io/badge/Dependencies-Zero_Vanilla_JS-success?style=for-the-badge)](https://github.com/manandewan/CalculationDrills)
-[![Mobile Ready](https://img.shields.io/badge/Mobile-100%25_PWA_Ready-blue?style=for-the-badge)](https://github.com/manandewan/CalculationDrills)
+High-intensity, arcade-paced mental arithmetic conditioning engine designed for competitive management entrance examinations (**CAT / XAT / GMAT / GRE**).
 
 ---
 
@@ -90,10 +86,10 @@ CalculationDrills/
 ## 🚀 Getting Started
 
 ### Option 1: Live Web App
-Open **[https://manandewan.github.io/CalculationDrills](https://manandewan.github.io/CalculationDrills)** directly on any desktop or mobile browser.
+Open the deployed GitHub Pages URL directly on any desktop or mobile browser.
 
 ### Option 2: Mobile App Experience (PWA / Add to Home Screen)
-1. Open the live link on iOS Safari or Android Chrome.
+1. Open the app link on iOS Safari or Android Chrome.
 2. Tap **Share** $\rightarrow$ **"Add to Home Screen"**.
 3. Launch directly from your home screen as a full-screen, distraction-free app.
 
