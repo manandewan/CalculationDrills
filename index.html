@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CAT Sprint Rush</title>
+  <title>CAT Sprint Rush - Mental Math</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #090a0f;
-      --card-bg: rgba(18, 22, 34, 0.92);
-      --border: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(18, 22, 34, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
       --border-focus: #6366f1;
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
@@ -21,6 +21,7 @@
       --success-glow: rgba(16, 185, 129, 0.35);
       --danger: #ef4444;
       --danger-glow: rgba(239, 68, 68, 0.35);
+      --cyan: #38bdf8;
       --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
@@ -44,36 +45,36 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 1rem;
+      padding: 1.25rem 1rem 3rem;
       background-image: 
         radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 102, 241, 0.15), transparent),
-        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.05), transparent);
-      overflow-x: hidden;
+        radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.06), transparent),
+        radial-gradient(circle at 10% 90%, rgba(16, 185, 129, 0.05), transparent);
     }
 
     .container {
       width: 100%;
-      max-width: 680px;
+      max-width: 860px;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.5rem;
     }
 
-    /* Header Bar */
+    /* Top Navigation Header */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.85rem 1.25rem;
+      padding: 0.9rem 1.5rem;
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
       backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     }
 
     .brand-title {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 800;
       background: linear-gradient(135deg, #fff 40%, #a5b4fc);
       -webkit-background-clip: text;
@@ -81,29 +82,332 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      cursor: pointer;
     }
 
-    .stats-summary {
+    .nav-actions {
       display: flex;
-      gap: 1rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
+      gap: 0.6rem;
       align-items: center;
     }
 
-    .stats-badge {
-      font-family: var(--font-mono);
-      font-weight: 700;
-      color: var(--text-main);
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-    /* HUD */
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+    }
+    .btn-ghost:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Home Page Hero */
+    .home-hero {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 2.25rem 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-title {
+      font-size: 2.15rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff 30%, #c7d2fe 70%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 540px;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .stats-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 1.75rem;
+    }
+
+    .stat-pill {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+    }
+
+    .stat-pill-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-pill-val {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    /* Home Reference Tables Container */
+    .dashboard-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .dash-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #818cf8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: none;
+    }
+
+    /* Grid Cells */
+    .grid-table {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .math-cell {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.6rem 0.4rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      transition: all 0.15s;
+    }
+
+    .math-cell:hover {
+      border-color: var(--border-focus);
+      background: rgba(99, 102, 241, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .math-cell-base {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .math-cell-val {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    /* Fractions Sub-Sections & Visual Organization */
+    .frac-sub-header {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #38bdf8;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .frac-base-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .multiples-family-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .family-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .family-title {
+      font-family: var(--font-sans);
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: #a5b4fc;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .family-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 0.4rem;
+    }
+
+    .frac-chip {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s;
+    }
+
+    .frac-chip:hover {
+      border-color: #818cf8;
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .frac-chip-num {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #818cf8;
+    }
+
+    .frac-chip-pct {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #f3f4f6;
+    }
+
+    /* Multiplication Tables Grid */
+    .tables-matrix {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .table-col-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem;
+    }
+
+    .table-col-header {
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a5b4fc;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .table-col-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .table-col-row b {
+      color: #f3f4f6;
+    }
+
+    /* Sprint Rush Arena */
     .rush-hud {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
       background: var(--card-bg);
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
       border-radius: 14px;
       padding: 0.75rem 1.25rem;
     }
@@ -151,11 +455,10 @@
       50% { opacity: 0.5; }
     }
 
-    /* Arena Box */
     .arena-card {
       position: relative;
       background: var(--card-bg);
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
       border-radius: 20px;
       padding: 2.75rem 2rem;
       min-height: 380px;
@@ -265,85 +568,6 @@
       transform: translateY(-45px);
     }
 
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      font-family: var(--font-sans);
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.7rem 1.4rem;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 0 16px var(--accent-glow);
-    }
-    .btn-primary:hover {
-      background: #4f46e5;
-      transform: translateY(-2px);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-main);
-    }
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-    }
-    .btn-ghost:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    /* Cover Screen */
-    .cover-view {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .cover-title {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .rules-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      text-align: left;
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      max-width: 440px;
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-    }
-
-    .rules-list li {
-      list-style-type: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
     /* Results Screen */
     .results-view {
       display: flex;
@@ -362,11 +586,12 @@
       grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
       gap: 0.75rem;
       text-align: center;
+      width: 100%;
     }
 
     .score-card {
       background: var(--card-bg);
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
       border-radius: 14px;
       padding: 0.9rem 0.5rem;
     }
@@ -389,7 +614,7 @@
 
     .review-item {
       background: var(--card-bg);
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 0.85rem 1rem;
       font-size: 0.85rem;
@@ -410,256 +635,6 @@
       border-radius: 6px;
     }
 
-    /* Modal - Redesigned Reference Dashboard */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      padding: 1.25rem;
-    }
-
-    .modal-content {
-      background: #0d101a;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 20px;
-      max-width: 980px;
-      width: 100%;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.25rem 1.75rem;
-      border-bottom: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .modal-nav {
-      display: flex;
-      gap: 0.5rem;
-      padding: 0.75rem 1.75rem;
-      background: rgba(0, 0, 0, 0.3);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .modal-nav-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 0.4rem 0.85rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .modal-nav-btn:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .modal-nav-btn.active {
-      color: #fff;
-      background: var(--accent);
-    }
-
-    .modal-body {
-      padding: 1.5rem 1.75rem;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      display: flex;
-      flex-direction: column;
-      gap: 1.75rem;
-    }
-
-    /* Structured Visual Tables */
-    .grid-table {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 0.5rem;
-    }
-
-    .math-cell {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.6rem 0.4rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-      transition: all 0.15s;
-    }
-
-    .math-cell:hover {
-      border-color: var(--border-focus);
-      background: rgba(99, 102, 241, 0.1);
-      transform: translateY(-1px);
-    }
-
-    .math-cell-base {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .math-cell-val {
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      font-weight: 700;
-      color: #38bdf8;
-    }
-
-    /* Fractions Sub-Sections & Visual Organization */
-    .frac-sub-header {
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #38bdf8;
-      margin-bottom: 0.6rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .frac-base-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-
-    /* Multiples Group Container */
-    .multiples-family-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 0.75rem;
-    }
-
-    .family-card {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.75rem 0.85rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .family-title {
-      font-family: var(--font-sans);
-      font-size: 0.74rem;
-      font-weight: 800;
-      color: #a5b4fc;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      padding-bottom: 0.35rem;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .family-items {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
-      gap: 0.4rem;
-    }
-
-    .frac-chip {
-      background: rgba(255, 255, 255, 0.035);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 8px;
-      padding: 0.45rem 0.6rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.15s;
-    }
-
-    .frac-chip:hover {
-      border-color: #818cf8;
-      background: rgba(99, 102, 241, 0.1);
-    }
-
-    .frac-chip-num {
-      font-family: var(--font-mono);
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: #818cf8;
-    }
-
-    .frac-chip-pct {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #f3f4f6;
-    }
-
-    /* Multiplication Tables Grid */
-    .tables-matrix {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-      gap: 0.75rem;
-    }
-
-    .table-col-card {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.75rem;
-    }
-
-    .table-col-header {
-      font-family: var(--font-sans);
-      font-size: 0.78rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #a5b4fc;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 0.4rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .table-col-row {
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 0.76rem;
-      line-height: 1.6;
-      color: var(--text-muted);
-    }
-
-    .table-col-row b {
-      color: #f3f4f6;
-    }
-
-    .section-title {
-      font-size: 0.88rem;
-      font-weight: 800;
-      color: #818cf8;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
     .hidden {
       display: none !important;
     }
@@ -671,32 +646,95 @@
 
   <!-- Header Bar -->
   <header>
-    <div class="brand-title">
+    <div class="brand-title" onclick="navigateTo('home')">
       CAT SPRINT RUSH
     </div>
-    <div class="stats-summary">
-      <div>Previous Net: <span class="stats-badge" id="hist-score">--</span></div>
-      <div>Accuracy: <span class="stats-badge" id="hist-acc">--</span></div>
-      <button class="btn btn-ghost" style="padding: 0.25rem 0.65rem; font-size: 0.75rem;" onclick="openModal()">📚 Reference Tables</button>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" id="nav-home-btn" onclick="navigateTo('home')">🏠 Dashboard</button>
+      <button class="btn btn-primary" id="nav-rush-btn" onclick="startRush()">⚡ Start 15-Min Sprint</button>
     </div>
   </header>
 
-  <!-- Cover Screen -->
-  <div id="cover-view" class="arena-card cover-view">
-    <div class="cover-title">Mental Math Rush</div>
-    <div class="rules-list">
-      <li>⚡ <b>Endless Mode:</b> No question cap. Solve as many as you can in 15 mins.</li>
-      <li>⚡ <b>Scoring (+3 / -1):</b> +3 for correct, -1 for wrong.</li>
-      <li>⚡ <b>Zero Scratchpad:</b> Strictly mental calculation.</li>
-      <li>⚡ <b>Instant Flow:</b> Type answer & hit Enter to immediately trigger the next problem.</li>
-    </div>
-    <button class="btn btn-primary" style="font-size: 1.1rem; padding: 0.9rem 2.2rem;" onclick="startRush()">
-      🚀 Start Rush
-    </button>
-  </div>
+  <!-- VIEW 1: HOME PAGE DASHBOARD -->
+  <main id="home-view" class="dashboard-container">
+    
+    <!-- Hero / Sprint Launchpad -->
+    <section class="home-hero">
+      <h1 class="hero-title">Cognitive Conditioning Sprint</h1>
+      <p class="hero-subtitle">
+        Daily 15-minute high-intensity mental calculation drills. No pen, paper, or calculator.
+      </p>
 
-  <!-- Active Rush Arena -->
-  <div id="rush-view" class="hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+      <!-- Historical Performance Tracking -->
+      <div class="stats-overview">
+        <div class="stat-pill">
+          <div class="stat-pill-label">Previous Net</div>
+          <div class="stat-pill-val" id="hist-score" style="color: #818cf8;">--</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-pill-label">Accuracy</div>
+          <div class="stat-pill-val" id="hist-acc" style="color: var(--success);">--</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-pill-label">Total Drills</div>
+          <div class="stat-pill-val" id="hist-drills" style="color: var(--cyan);">0</div>
+        </div>
+      </div>
+
+      <div class="hero-cta">
+        <button class="btn btn-primary" style="font-size: 1.05rem; padding: 0.85rem 2rem;" onclick="startRush()">
+          🚀 Launch 15-Min Rush
+        </button>
+      </div>
+    </section>
+
+    <!-- Section 1: Fractions & Percentages Reference -->
+    <section class="dash-section">
+      <div class="section-title">
+        <span>📊 Core Fraction to Percentage Equivalents</span>
+        <span class="section-subtitle">Unit Fractions & Common Multiples</span>
+      </div>
+
+      <!-- Part 1: Unit Fractions -->
+      <div class="frac-sub-header">🔹 Part 1: Unit Fractions (Numerator = 1, 1/2 to 1/20)</div>
+      <div class="frac-base-grid" id="home-base-fractions"></div>
+
+      <!-- Part 2: Multiples -->
+      <div class="frac-sub-header" style="color: #a5b4fc; margin-top: 0.75rem;">🔹 Part 2: Common Multiples (Grouped by Denominator)</div>
+      <div class="multiples-family-container" id="home-multiples-fractions"></div>
+    </section>
+
+    <!-- Section 2: Squares (1 to 30) -->
+    <section class="dash-section">
+      <div class="section-title">
+        <span>⚡ Squares (1² to 30²)</span>
+        <span class="section-subtitle">Rapid Base Recall</span>
+      </div>
+      <div class="grid-table" id="home-squares-grid"></div>
+    </section>
+
+    <!-- Section 3: Cubes (1 to 20) -->
+    <section class="dash-section">
+      <div class="section-title">
+        <span>🧊 Cubes (1³ to 20³)</span>
+        <span class="section-subtitle">High-Range Volume Recall</span>
+      </div>
+      <div class="grid-table" id="home-cubes-grid"></div>
+    </section>
+
+    <!-- Section 4: Multiplication Tables (1 to 30) -->
+    <section class="dash-section">
+      <div class="section-title">
+        <span>🔢 Multiplication Tables (1 through 30)</span>
+        <span class="section-subtitle">Full 1–30 Multiples</span>
+      </div>
+      <div class="tables-matrix" id="home-tables-matrix"></div>
+    </section>
+
+  </main>
+
+  <!-- VIEW 2: ACTIVE SPRINT RUSH ARENA -->
+  <section id="rush-view" class="hidden" style="display: flex; flex-direction: column; gap: 1rem;">
     <!-- HUD -->
     <div class="rush-hud">
       <div class="hud-stat">
@@ -732,14 +770,14 @@
       <button class="btn btn-ghost" onclick="skipQuestion()">Skip (0 pts) ➔</button>
       <button class="btn btn-secondary" onclick="finishSprint()">End Sprint</button>
     </div>
-  </div>
+  </section>
 
-  <!-- Results Screen -->
-  <div id="results-view" class="results-view hidden">
+  <!-- VIEW 3: RESULTS SCREEN -->
+  <section id="results-view" class="results-view hidden">
     <div class="arena-card" style="min-height: auto; padding: 2rem;">
       <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Sprint Complete! 🏁</h2>
 
-      <div class="score-banner" style="width: 100%;">
+      <div class="score-banner">
         <div class="score-card">
           <div class="hud-label">Net Score</div>
           <div class="score-card-val" id="res-net" style="color: #818cf8;">0</div>
@@ -766,9 +804,10 @@
         </div>
       </div>
 
-      <button class="btn btn-primary" style="margin-top: 1.5rem; font-size: 1rem;" onclick="resetRush()">
-        🔄 Play Again
-      </button>
+      <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+        <button class="btn btn-primary" onclick="startRush()">🔄 Play Again</button>
+        <button class="btn btn-secondary" onclick="navigateTo('home')">🏠 Back to Dashboard</button>
+      </div>
     </div>
 
     <!-- Review Breakdown -->
@@ -778,64 +817,8 @@
       </h3>
       <div class="review-list" id="review-container"></div>
     </div>
-  </div>
+  </section>
 
-</div>
-
-<!-- Clean, Redesigned Reference Dashboard Modal -->
-<div id="ref-modal" class="modal-backdrop hidden" onclick="closeModal(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <div>
-        <h3 style="font-size: 1.15rem; font-weight: 800; color: #fff;">Reference Dashboard (1 through 30)</h3>
-        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Key foundational calculations for rapid mental retrieval</p>
-      </div>
-      <button class="btn btn-ghost" style="padding: 0.35rem 0.7rem; font-size: 0.9rem;" onclick="closeModal()">✕</button>
-    </div>
-
-    <!-- Quick Tab Navigator inside Modal -->
-    <div class="modal-nav">
-      <button class="modal-nav-btn active" id="mnav-all" onclick="filterModalTab('all')">All References</button>
-      <button class="modal-nav-btn" id="mnav-fractions" onclick="filterModalTab('fractions')">Fractions & %</button>
-      <button class="modal-nav-btn" id="mnav-powers" onclick="filterModalTab('powers')">Squares & Cubes</button>
-      <button class="modal-nav-btn" id="mnav-tables" onclick="filterModalTab('tables')">Tables (1–30)</button>
-    </div>
-
-    <div class="modal-body" id="modal-body-content">
-      
-      <!-- FRACTIONS SECTION -->
-      <section id="sec-fractions">
-        <div class="section-title">📊 Fraction to Percentage Equivalents</div>
-        
-        <!-- Part 1: Numerator 1 Base Fractions -->
-        <div class="frac-sub-header">🔹 Part 1: Unit Fractions (Numerator = 1, 1/2 to 1/20)</div>
-        <div class="frac-base-grid" id="modal-base-fractions-grid"></div>
-
-        <!-- Part 2: Common Multiples Grouped by Denominator -->
-        <div class="frac-sub-header" style="color: #a5b4fc; margin-top: 0.5rem;">🔹 Part 2: Common Multiples (Grouped by Denominator)</div>
-        <div class="multiples-family-container" id="modal-multiples-container"></div>
-      </section>
-
-      <!-- SQUARES SECTION -->
-      <section id="sec-squares">
-        <div class="section-title">⚡ Squares (1² to 30²)</div>
-        <div class="grid-table" id="modal-squares-grid"></div>
-      </section>
-
-      <!-- CUBES SECTION -->
-      <section id="sec-cubes">
-        <div class="section-title">🧊 Cubes (1³ to 20³)</div>
-        <div class="grid-table" id="modal-cubes-grid"></div>
-      </section>
-
-      <!-- MULTIPLICATION TABLES SECTION -->
-      <section id="sec-tables">
-        <div class="section-title">🔢 Multiplication Tables (1 through 30)</div>
-        <div class="tables-matrix" id="modal-tables-matrix"></div>
-      </section>
-
-    </div>
-  </div>
 </div>
 
 <script>
@@ -1367,6 +1350,14 @@
     }
   }
 
+  // Navigation Logic
+  function navigateTo(view) {
+    document.getElementById('home-view').classList.toggle('hidden', view !== 'home');
+    document.getElementById('rush-view').classList.toggle('hidden', view !== 'rush');
+    document.getElementById('results-view').classList.toggle('hidden', view !== 'results');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   // Rush Gameplay Flow
   function startRush() {
     resetAnchors();
@@ -1375,10 +1366,7 @@
     timeRemaining = 15 * 60;
     isRunning = true;
 
-    document.getElementById('cover-view').classList.add('hidden');
-    document.getElementById('results-view').classList.add('hidden');
-    document.getElementById('rush-view').classList.remove('hidden');
-
+    navigateTo('rush');
     spawnNextQuestion();
 
     clearInterval(timerInterval);
@@ -1475,8 +1463,7 @@
     clearInterval(timerInterval);
     isRunning = false;
 
-    document.getElementById('rush-view').classList.add('hidden');
-    document.getElementById('results-view').classList.remove('hidden');
+    navigateTo('results');
 
     let correct = 0;
     let wrong = 0;
@@ -1493,10 +1480,14 @@
     const timeSpentMin = Math.max(0.1, timeSpentSeconds / 60);
     const speed = (attempted / timeSpentMin).toFixed(1);
 
+    // Save Historical
+    const totalDrills = parseInt(localStorage.getItem('cat_math_drills_count') || '0', 10) + 1;
+    localStorage.setItem('cat_math_drills_count', totalDrills);
     localStorage.setItem('cat_math_hist_score', netScore);
     localStorage.setItem('cat_math_hist_acc', `${accuracy}%`);
     loadHistoricalData();
 
+    // Render stats
     document.getElementById('res-net').textContent = netScore;
     document.getElementById('res-solved').textContent = correct;
     document.getElementById('res-correct').textContent = correct;
@@ -1504,6 +1495,7 @@
     document.getElementById('res-acc').textContent = `${accuracy}%`;
     document.getElementById('res-speed').textContent = `${speed} Q/m`;
 
+    // Render review
     const revContainer = document.getElementById('review-container');
     revContainer.innerHTML = '';
 
@@ -1531,11 +1523,6 @@
     });
   }
 
-  function resetRush() {
-    document.getElementById('results-view').classList.add('hidden');
-    document.getElementById('cover-view').classList.remove('hidden');
-  }
-
   function updateTimerDisplay() {
     const m = Math.floor(timeRemaining / 60);
     const s = timeRemaining % 60;
@@ -1547,33 +1534,14 @@
   function loadHistoricalData() {
     const score = localStorage.getItem('cat_math_hist_score');
     const acc = localStorage.getItem('cat_math_hist_acc');
+    const drills = localStorage.getItem('cat_math_drills_count') || '0';
+
     if (score !== null) document.getElementById('hist-score').textContent = score;
     if (acc !== null) document.getElementById('hist-acc').textContent = acc;
+    document.getElementById('hist-drills').textContent = drills;
   }
 
-  // Modal Handlers & Filter Navigation
-  function openModal() {
-    document.getElementById('ref-modal').classList.remove('hidden');
-  }
-
-  function closeModal(e) {
-    if (e && e.target !== e.currentTarget) return;
-    document.getElementById('ref-modal').classList.add('hidden');
-  }
-
-  function filterModalTab(tab) {
-    const buttons = ['all', 'fractions', 'powers', 'tables'];
-    buttons.forEach(b => {
-      document.getElementById(`mnav-${b}`).classList.toggle('active', b === tab);
-    });
-
-    document.getElementById('sec-fractions').classList.toggle('hidden', tab !== 'all' && tab !== 'fractions');
-    document.getElementById('sec-squares').classList.toggle('hidden', tab !== 'all' && tab !== 'powers');
-    document.getElementById('sec-cubes').classList.toggle('hidden', tab !== 'all' && tab !== 'powers');
-    document.getElementById('sec-tables').classList.toggle('hidden', tab !== 'all' && tab !== 'tables');
-  }
-
-  function initReferenceData() {
+  function renderHomeDashboard() {
     // 1. Fractions Part 1: Base Unit Fractions (1/2 to 1/20)
     let baseFrHtml = '';
     BASE_UNIT_FRACTIONS.forEach(f => {
@@ -1584,7 +1552,7 @@
         </div>
       `;
     });
-    document.getElementById('modal-base-fractions-grid').innerHTML = baseFrHtml;
+    document.getElementById('home-base-fractions').innerHTML = baseFrHtml;
 
     // 2. Fractions Part 2: Multiples Grouped By Denominator Families
     let familyHtml = '';
@@ -1609,7 +1577,7 @@
         </div>
       `;
     });
-    document.getElementById('modal-multiples-container').innerHTML = familyHtml;
+    document.getElementById('home-multiples-fractions').innerHTML = familyHtml;
 
     // 3. Squares Grid (1 to 30)
     let sqHtml = '';
@@ -1621,7 +1589,7 @@
         </div>
       `;
     }
-    document.getElementById('modal-squares-grid').innerHTML = sqHtml;
+    document.getElementById('home-squares-grid').innerHTML = sqHtml;
 
     // 4. Cubes Grid (1 to 20)
     let cbHtml = '';
@@ -1633,7 +1601,7 @@
         </div>
       `;
     }
-    document.getElementById('modal-cubes-grid').innerHTML = cbHtml;
+    document.getElementById('home-cubes-grid').innerHTML = cbHtml;
 
     // 5. Multiplication Tables (1 to 30)
     let tbHtml = '';
@@ -1654,7 +1622,7 @@
         </div>
       `;
     }
-    document.getElementById('modal-tables-matrix').innerHTML = tbHtml;
+    document.getElementById('home-tables-matrix').innerHTML = tbHtml;
   }
 
   document.addEventListener('keydown', (e) => {
@@ -1664,8 +1632,9 @@
   });
 
   window.addEventListener('DOMContentLoaded', () => {
-    initReferenceData();
+    renderHomeDashboard();
     loadHistoricalData();
+    navigateTo('home');
   });
 </script>
 </body>
