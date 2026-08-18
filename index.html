@@ -1374,7 +1374,7 @@
 
   function generateSingleQuestion(id) {
     const factVals = { 0: 1, 1: 1, 2: 2, 3: 6, 4: 24, 5: 120, 6: 720, 7: 5040, 8: 40320, 9: 362880, 10: 3628800 };
-    const archetype = randInt(1, 6);
+    const archetype = randInt(1, 7);
     let q;
 
     // -------------------------------------------------------------
@@ -1579,7 +1579,7 @@
     // -------------------------------------------------------------
     // HYBRID 6: Factorials + Tables + Chained Mental Products
     // -------------------------------------------------------------
-    else {
+    else if (archetype === 6) {
       const category = 'Factorials + Tables';
       if (configDifficulty === 'easy') {
         const n = randInt(3, 4);
@@ -1609,10 +1609,40 @@
         const factTerm = factVals[n] * mult;
         const t = randInt(14, 28);
         const m = randInt(4, 8);
+        const tableTerm = t * m;
         const isPlus = Math.random() > 0.5;
         const ans = isPlus ? tableTerm + factTerm : Math.abs(tableTerm - factTerm);
         const expr = isPlus ? `(${t} × ${m}) + (${n}! × ${mult})` : (tableTerm >= factTerm ? `(${t} × ${m}) - (${n}! × ${mult})` : `(${n}! × ${mult}) - (${t} × ${m})`);
         q = { id, category, expr, ans, shortcut: `Table (${tableTerm}) ${isPlus ? '+' : '-'} Factorial (${factTerm}) = ${ans}` };
+      }
+    }
+
+    // -------------------------------------------------------------
+    // ARCHETYPE 7: Pure Addition & Subtraction (In Isolation)
+    // -------------------------------------------------------------
+    else {
+      const category = 'Addition & Subtraction';
+      if (configDifficulty === 'easy') {
+        const a = randInt(45, 120);
+        const b = randInt(35, 95);
+        const c = randInt(20, 60);
+        const ans = a + b - c;
+        q = { id, category, expr: `${a} + ${b} - ${c}`, ans, shortcut: `(${a} + ${b}) - ${c} = ${a+b} - ${c} = ${ans}` };
+      } else if (configDifficulty === 'hard') {
+        const a = randInt(140, 480);
+        const b = randInt(160, 520);
+        const c = randInt(120, 390);
+        const d = randInt(90, 260);
+        const ans = a + b + c - d;
+        q = { id, category, expr: `${a} + ${b} + ${c} - ${d}`, ans, shortcut: `Group hundreds & tens: ${ans}` };
+      } else {
+        // Normal
+        const a = randInt(65, 220);
+        const b = randInt(75, 260);
+        const c = randInt(50, 180);
+        const d = randInt(40, 140);
+        const ans = a + b + c - d;
+        q = { id, category, expr: `${a} + ${b} + ${c} - ${d}`, ans, shortcut: `Group hundreds & tens: ${ans}` };
       }
     }
 
