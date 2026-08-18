@@ -492,7 +492,7 @@
       scrollbar-width: thin;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.75rem;
     }
 
     /* Structured Visual Tables */
@@ -533,40 +533,90 @@
       color: #38bdf8;
     }
 
-    /* Fractions Grid Cards */
-    .frac-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
-      gap: 0.6rem;
-    }
-
-    .frac-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.65rem 0.75rem;
+    /* Fractions Sub-Sections & Visual Organization */
+    .frac-sub-header {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #38bdf8;
+      margin-bottom: 0.6rem;
       display: flex;
       align-items: center;
+      gap: 0.4rem;
+    }
+
+    .frac-base-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Multiples Group Container */
+    .multiples-family-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .family-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .family-title {
+      font-family: var(--font-sans);
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: #a5b4fc;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 0.35rem;
+      display: flex;
       justify-content: space-between;
     }
 
-    .frac-card:hover {
-      border-color: #818cf8;
-      background: rgba(99, 102, 241, 0.08);
+    .family-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+      gap: 0.4rem;
     }
 
-    .frac-fraction {
+    .frac-chip {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s;
+    }
+
+    .frac-chip:hover {
+      border-color: #818cf8;
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .frac-chip-num {
       font-family: var(--font-mono);
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: #818cf8;
     }
 
-    .frac-percent {
+    .frac-chip-pct {
       font-family: var(--font-mono);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      color: #e5e7eb;
+      color: #f3f4f6;
     }
 
     /* Multiplication Tables Grid */
@@ -609,12 +659,12 @@
     }
 
     .section-title {
-      font-size: 0.85rem;
-      font-weight: 700;
+      font-size: 0.88rem;
+      font-weight: 800;
       color: #818cf8;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.85rem;
       display: flex;
       align-items: center;
       gap: 0.4rem;
@@ -756,13 +806,26 @@
     <!-- Quick Tab Navigator inside Modal -->
     <div class="modal-nav">
       <button class="modal-nav-btn active" id="mnav-all" onclick="filterModalTab('all')">All References</button>
-      <button class="modal-nav-btn" id="mnav-tables" onclick="filterModalTab('tables')">Tables (1–30)</button>
-      <button class="modal-nav-btn" id="mnav-powers" onclick="filterModalTab('powers')">Squares & Cubes</button>
       <button class="modal-nav-btn" id="mnav-fractions" onclick="filterModalTab('fractions')">Fractions & %</button>
+      <button class="modal-nav-btn" id="mnav-powers" onclick="filterModalTab('powers')">Squares & Cubes</button>
+      <button class="modal-nav-btn" id="mnav-tables" onclick="filterModalTab('tables')">Tables (1–30)</button>
     </div>
 
     <div class="modal-body" id="modal-body-content">
       
+      <!-- FRACTIONS SECTION -->
+      <section id="sec-fractions">
+        <div class="section-title">📊 Fraction to Percentage Equivalents</div>
+        
+        <!-- Part 1: Numerator 1 Base Fractions -->
+        <div class="frac-sub-header">🔹 Part 1: Unit Fractions (Numerator = 1, 1/2 to 1/20)</div>
+        <div class="frac-base-grid" id="modal-base-fractions-grid"></div>
+
+        <!-- Part 2: Common Multiples Grouped by Denominator -->
+        <div class="frac-sub-header" style="color: #a5b4fc; margin-top: 0.5rem;">🔹 Part 2: Common Multiples (Grouped by Denominator)</div>
+        <div class="multiples-family-container" id="modal-multiples-container"></div>
+      </section>
+
       <!-- SQUARES SECTION -->
       <section id="sec-squares">
         <div class="section-title">⚡ Squares (1² to 30²)</div>
@@ -773,12 +836,6 @@
       <section id="sec-cubes">
         <div class="section-title">🧊 Cubes (1³ to 20³)</div>
         <div class="grid-table" id="modal-cubes-grid"></div>
-      </section>
-
-      <!-- FRACTIONS SECTION -->
-      <section id="sec-fractions">
-        <div class="section-title">📊 Core Fraction to Percentage Equivalents</div>
-        <div class="frac-grid" id="modal-fractions-grid"></div>
       </section>
 
       <!-- MULTIPLICATION TABLES SECTION -->
@@ -802,50 +859,139 @@
 
   let anchorSquareOrCube, anchorTable, anchorFrac;
 
-  const FRAC_DATA = [
+  // Base Unit Fractions (1/2 through 1/20)
+  const BASE_UNIT_FRACTIONS = [
     { label: '1/2', p: '50%', denom: 2, mult: 1 },
     { label: '1/3', p: '33.33%', denom: 3, mult: 1 },
-    { label: '2/3', p: '66.67%', denom: 3, mult: 2 },
     { label: '1/4', p: '25%', denom: 4, mult: 1 },
-    { label: '3/4', p: '75%', denom: 4, mult: 3 },
     { label: '1/5', p: '20%', denom: 5, mult: 1 },
+    { label: '1/6', p: '16.67%', denom: 6, mult: 1 },
+    { label: '1/7', p: '14.28%', denom: 7, mult: 1 },
+    { label: '1/8', p: '12.5%', denom: 8, mult: 1 },
+    { label: '1/9', p: '11.11%', denom: 9, mult: 1 },
+    { label: '1/10', p: '10%', denom: 10, mult: 1 },
+    { label: '1/11', p: '9.09%', denom: 11, mult: 1 },
+    { label: '1/12', p: '8.33%', denom: 12, mult: 1 },
+    { label: '1/13', p: '7.69%', denom: 13, mult: 1 },
+    { label: '1/14', p: '7.14%', denom: 14, mult: 1 },
+    { label: '1/15', p: '6.67%', denom: 15, mult: 1 },
+    { label: '1/16', p: '6.25%', denom: 16, mult: 1 },
+    { label: '1/17', p: '5.88%', denom: 17, mult: 1 },
+    { label: '1/18', p: '5.55%', denom: 18, mult: 1 },
+    { label: '1/19', p: '5.26%', denom: 19, mult: 1 },
+    { label: '1/20', p: '5%', denom: 20, mult: 1 }
+  ];
+
+  // Common Multiples grouped by Denominator Families
+  const MULTIPLE_FRACTION_FAMILIES = [
+    {
+      denom: 3,
+      name: 'Denominator /3',
+      items: [
+        { label: '2/3', p: '66.67%' }
+      ]
+    },
+    {
+      denom: 4,
+      name: 'Denominator /4',
+      items: [
+        { label: '3/4', p: '75%' }
+      ]
+    },
+    {
+      denom: 5,
+      name: 'Denominator /5',
+      items: [
+        { label: '2/5', p: '40%' },
+        { label: '3/5', p: '60%' },
+        { label: '4/5', p: '80%' }
+      ]
+    },
+    {
+      denom: 6,
+      name: 'Denominator /6',
+      items: [
+        { label: '5/6', p: '83.33%' }
+      ]
+    },
+    {
+      denom: 7,
+      name: 'Denominator /7',
+      items: [
+        { label: '2/7', p: '28.57%' },
+        { label: '3/7', p: '42.85%' },
+        { label: '4/7', p: '57.14%' },
+        { label: '5/7', p: '71.42%' },
+        { label: '6/7', p: '85.71%' }
+      ]
+    },
+    {
+      denom: 8,
+      name: 'Denominator /8',
+      items: [
+        { label: '3/8', p: '37.5%' },
+        { label: '5/8', p: '62.5%' },
+        { label: '7/8', p: '87.5%' }
+      ]
+    },
+    {
+      denom: 9,
+      name: 'Denominator /9',
+      items: [
+        { label: '2/9', p: '22.22%' },
+        { label: '4/9', p: '44.44%' },
+        { label: '5/9', p: '55.55%' },
+        { label: '7/9', p: '77.77%' },
+        { label: '8/9', p: '88.88%' }
+      ]
+    },
+    {
+      denom: 12,
+      name: 'Denominator /12',
+      items: [
+        { label: '5/12', p: '41.67%' },
+        { label: '7/12', p: '58.33%' },
+        { label: '11/12', p: '91.67%' }
+      ]
+    },
+    {
+      denom: 16,
+      name: 'Denominator /16',
+      items: [
+        { label: '3/16', p: '18.75%' },
+        { label: '5/16', p: '31.25%' },
+        { label: '7/16', p: '43.75%' }
+      ]
+    }
+  ];
+
+  // Flattened list for random quiz generation
+  const ALL_FRAC_DATA = [
+    ...BASE_UNIT_FRACTIONS,
+    { label: '2/3', p: '66.67%', denom: 3, mult: 2 },
+    { label: '3/4', p: '75%', denom: 4, mult: 3 },
     { label: '2/5', p: '40%', denom: 5, mult: 2 },
     { label: '3/5', p: '60%', denom: 5, mult: 3 },
     { label: '4/5', p: '80%', denom: 5, mult: 4 },
-    { label: '1/6', p: '16.67%', denom: 6, mult: 1 },
     { label: '5/6', p: '83.33%', denom: 6, mult: 5 },
-    { label: '1/7', p: '14.28%', denom: 7, mult: 1 },
     { label: '2/7', p: '28.57%', denom: 7, mult: 2 },
     { label: '3/7', p: '42.85%', denom: 7, mult: 3 },
     { label: '4/7', p: '57.14%', denom: 7, mult: 4 },
     { label: '5/7', p: '71.42%', denom: 7, mult: 5 },
     { label: '6/7', p: '85.71%', denom: 7, mult: 6 },
-    { label: '1/8', p: '12.5%', denom: 8, mult: 1 },
     { label: '3/8', p: '37.5%', denom: 8, mult: 3 },
     { label: '5/8', p: '62.5%', denom: 8, mult: 5 },
     { label: '7/8', p: '87.5%', denom: 8, mult: 7 },
-    { label: '1/9', p: '11.11%', denom: 9, mult: 1 },
     { label: '2/9', p: '22.22%', denom: 9, mult: 2 },
     { label: '4/9', p: '44.44%', denom: 9, mult: 4 },
     { label: '5/9', p: '55.55%', denom: 9, mult: 5 },
     { label: '7/9', p: '77.77%', denom: 9, mult: 7 },
     { label: '8/9', p: '88.88%', denom: 9, mult: 8 },
-    { label: '1/10', p: '10%', denom: 10, mult: 1 },
-    { label: '1/11', p: '9.09%', denom: 11, mult: 1 },
-    { label: '1/12', p: '8.33%', denom: 12, mult: 1 },
     { label: '5/12', p: '41.67%', denom: 12, mult: 5 },
     { label: '7/12', p: '58.33%', denom: 12, mult: 7 },
     { label: '11/12', p: '91.67%', denom: 12, mult: 11 },
-    { label: '1/13', p: '7.69%', denom: 13, mult: 1 },
-    { label: '1/14', p: '7.14%', denom: 14, mult: 1 },
-    { label: '1/15', p: '6.67%', denom: 15, mult: 1 },
-    { label: '1/16', p: '6.25%', denom: 16, mult: 1 },
     { label: '3/16', p: '18.75%', denom: 16, mult: 3 },
-    { label: '5/16', p: '31.25%', denom: 16, mult: 5 },
-    { label: '1/17', p: '5.88%', denom: 17, mult: 1 },
-    { label: '1/18', p: '5.55%', denom: 18, mult: 1 },
-    { label: '1/19', p: '5.26%', denom: 19, mult: 1 },
-    { label: '1/20', p: '5%', denom: 20, mult: 1 }
+    { label: '5/16', p: '31.25%', denom: 16, mult: 5 }
   ];
 
   function randInt(min, max) {
@@ -866,7 +1012,7 @@
       { type: 'cb', val: 14, text: '14³ = 2744' }
     ]);
     anchorTable = pickRandom([17, 19, 23, 24, 26, 27, 28, 29]);
-    anchorFrac = pickRandom(FRAC_DATA);
+    anchorFrac = pickRandom(ALL_FRAC_DATA);
   }
 
   function generateSingleQuestion(id) {
@@ -906,8 +1052,8 @@
 
     // 2. Percentages & Fractions
     if (roll < 0.52) {
-      const f1 = useAnchor ? anchorFrac : pickRandom(FRAC_DATA);
-      const f2 = pickRandom(FRAC_DATA);
+      const f1 = useAnchor ? anchorFrac : pickRandom(ALL_FRAC_DATA);
+      const f2 = pickRandom(ALL_FRAC_DATA);
 
       const mul1 = randInt(1, 4);
       const mul2 = randInt(1, 4);
@@ -1189,19 +1335,56 @@
   }
 
   function filterModalTab(tab) {
-    const buttons = ['all', 'tables', 'powers', 'fractions'];
+    const buttons = ['all', 'fractions', 'powers', 'tables'];
     buttons.forEach(b => {
       document.getElementById(`mnav-${b}`).classList.toggle('active', b === tab);
     });
 
+    document.getElementById('sec-fractions').classList.toggle('hidden', tab !== 'all' && tab !== 'fractions');
     document.getElementById('sec-squares').classList.toggle('hidden', tab !== 'all' && tab !== 'powers');
     document.getElementById('sec-cubes').classList.toggle('hidden', tab !== 'all' && tab !== 'powers');
-    document.getElementById('sec-fractions').classList.toggle('hidden', tab !== 'all' && tab !== 'fractions');
     document.getElementById('sec-tables').classList.toggle('hidden', tab !== 'all' && tab !== 'tables');
   }
 
   function initReferenceData() {
-    // 1. Squares Grid (1 to 30)
+    // 1. Fractions Part 1: Base Unit Fractions (1/2 to 1/20)
+    let baseFrHtml = '';
+    BASE_UNIT_FRACTIONS.forEach(f => {
+      baseFrHtml += `
+        <div class="frac-chip">
+          <span class="frac-chip-num">${f.label}</span>
+          <span class="frac-chip-pct">${f.p}</span>
+        </div>
+      `;
+    });
+    document.getElementById('modal-base-fractions-grid').innerHTML = baseFrHtml;
+
+    // 2. Fractions Part 2: Multiples Grouped By Denominator Families
+    let familyHtml = '';
+    MULTIPLE_FRACTION_FAMILIES.forEach(fam => {
+      let itemsHtml = '';
+      fam.items.forEach(item => {
+        itemsHtml += `
+          <div class="frac-chip">
+            <span class="frac-chip-num">${item.label}</span>
+            <span class="frac-chip-pct">${item.p}</span>
+          </div>
+        `;
+      });
+
+      familyHtml += `
+        <div class="family-card">
+          <div class="family-title">
+            <span>${fam.name}</span>
+            <span style="font-size: 0.68rem; color: var(--text-muted);">${fam.items.length} Multiples</span>
+          </div>
+          <div class="family-items">${itemsHtml}</div>
+        </div>
+      `;
+    });
+    document.getElementById('modal-multiples-container').innerHTML = familyHtml;
+
+    // 3. Squares Grid (1 to 30)
     let sqHtml = '';
     for(let i = 1; i <= 30; i++) {
       sqHtml += `
@@ -1213,7 +1396,7 @@
     }
     document.getElementById('modal-squares-grid').innerHTML = sqHtml;
 
-    // 2. Cubes Grid (1 to 20)
+    // 4. Cubes Grid (1 to 20)
     let cbHtml = '';
     for(let i = 1; i <= 20; i++) {
       cbHtml += `
@@ -1225,19 +1408,7 @@
     }
     document.getElementById('modal-cubes-grid').innerHTML = cbHtml;
 
-    // 3. Fractions Grid
-    let frHtml = '';
-    FRAC_DATA.forEach(f => {
-      frHtml += `
-        <div class="frac-card">
-          <span class="frac-fraction">${f.label}</span>
-          <span class="frac-percent">${f.p}</span>
-        </div>
-      `;
-    });
-    document.getElementById('modal-fractions-grid').innerHTML = frHtml;
-
-    // 4. Multiplication Tables (1 to 30)
+    // 5. Multiplication Tables (1 to 30)
     let tbHtml = '';
     for(let t = 1; t <= 30; t++) {
       let rows = '';
