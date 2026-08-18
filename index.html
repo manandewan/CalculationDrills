@@ -1214,6 +1214,7 @@
     <div class="modal-nav">
       <button class="modal-nav-btn active" id="mnav-fractions" onclick="filterModalTab('fractions')">Fractions & %</button>
       <button class="modal-nav-btn" id="mnav-powers" onclick="filterModalTab('powers')">Squares & Cubes</button>
+      <button class="modal-nav-btn" id="mnav-factorials" onclick="filterModalTab('factorials')">Factorials (1! to 10!)</button>
       <button class="modal-nav-btn" id="mnav-tables" onclick="filterModalTab('tables')">Tables (1–30)</button>
     </div>
 
@@ -1242,6 +1243,12 @@
       <section id="sec-cubes">
         <div class="section-title">🧊 Cubes (1³ to 20³)</div>
         <div class="grid-table" id="modal-cubes-grid"></div>
+      </section>
+
+      <!-- FACTORIALS SECTION -->
+      <section id="sec-factorials">
+        <div class="section-title">❗ Factorials (0! to 10!)</div>
+        <div class="grid-table" id="modal-factorials-grid"></div>
       </section>
 
       <!-- MULTIPLICATION TABLES SECTION -->
@@ -1370,8 +1377,8 @@
     const useAnchor = Math.random() < 0.45;
     let q;
 
-    // 1. Squares & Cubes
-    if (roll < 0.28) {
+    // 1. Squares & Cubes (roll < 0.20)
+    if (roll < 0.20) {
       const category = 'Squares & Cubes';
       if (configDifficulty === 'easy') {
         const isCube = Math.random() < 0.25;
@@ -1506,21 +1513,63 @@
       }
     }
 
-    // 5. Mental Multiplication
+    // 6. Factorials Archetype (NEW)
     else {
-      const category = 'Mental Products';
+      const category = 'Factorials';
+      const factVals = { 0: 1, 1: 1, 2: 2, 3: 6, 4: 24, 5: 120, 6: 720, 7: 5040, 8: 40320, 9: 362880, 10: 3628800 };
+      
       if (configDifficulty === 'easy') {
-        const a = randInt(21, 89);
-        const b = randInt(4, 9);
-        q = { id, category, expr: `${a} × ${b}`, ans: a * b, shortcut: `Split: (${Math.floor(a/10)*10} × ${b}) + (${a%10} × ${b}) = ${a*b}` };
+        // Easy: 4! + 5!, 6! / 3!, 5! - 4!, etc.
+        const opType = randInt(1, 3);
+        if (opType === 1) {
+          const n1 = randInt(3, 5);
+          const n2 = randInt(3, 5);
+          q = { id, category, expr: `${n1}! + ${n2}!`, ans: factVals[n1] + factVals[n2], shortcut: `${n1}! (${factVals[n1]}) + ${n2}! (${factVals[n2]}) = ${factVals[n1] + factVals[n2]}` };
+        } else if (opType === 2) {
+          const n = randInt(4, 6);
+          const offset = randInt(1, 5) * 10;
+          q = { id, category, expr: `${n}! - ${offset}`, ans: factVals[n] - offset, shortcut: `${n}! = ${factVals[n]} ➔ ${factVals[n]} - ${offset} = ${factVals[n] - offset}` };
+        } else {
+          const n = randInt(4, 6);
+          const d = n - randInt(1, 2);
+          const ans = factVals[n] / factVals[d];
+          q = { id, category, expr: `${n}! / ${d}!`, ans, shortcut: `${n}! / ${d}! = cancel terms = ${ans}` };
+        }
       } else if (configDifficulty === 'hard') {
-        const a = randInt(35, 98);
-        const b = randInt(23, 89);
-        q = { id, category, expr: `${a} × ${b}`, ans: a * b, shortcut: `Distribute: ${a} × (${Math.floor(b/10)*10} + ${b%10}) = ${a*b}` };
+        // Hard: 7! / 4!, 8! / 5!, 6! + 5! / 4!, 7! - 6!
+        const opType = randInt(1, 3);
+        if (opType === 1) {
+          const n = randInt(6, 8);
+          const d = n - 3;
+          const ans = factVals[n] / factVals[d];
+          q = { id, category, expr: `${n}! / ${d}!`, ans, shortcut: `${n}! / ${d}! = ${n} × ${n-1} × ${n-2} = ${ans}` };
+        } else if (opType === 2) {
+          const n = randInt(6, 7);
+          const prev = n - 1;
+          const ans = factVals[n] - factVals[prev];
+          q = { id, category, expr: `${n}! - ${prev}!`, ans, shortcut: `${n}! - ${prev}! = ${prev}! × (${n} - 1) = ${factVals[prev]} × ${n-1} = ${ans}` };
+        } else {
+          const n = randInt(5, 7);
+          const sq = randInt(12, 25);
+          q = { id, category, expr: `${n}! + ${sq}²`, ans: factVals[n] + (sq*sq), shortcut: `${n}! (${factVals[n]}) + ${sq}² (${sq*sq}) = ${factVals[n] + (sq*sq)}` };
+        }
       } else {
-        const a = randInt(18, 89);
-        const b = randInt(12, 32);
-        q = { id, category, expr: `${a} × ${b}`, ans: a * b, shortcut: `Distribute: ${a} × (${Math.floor(b/10)*10} + ${b%10}) = ${a*b}` };
+        // Normal: 6! / 4!, 7! / 5!, 5! × 3, 6! - 5!
+        const opType = randInt(1, 3);
+        if (opType === 1) {
+          const n = randInt(5, 7);
+          const d = n - 2;
+          const ans = factVals[n] / factVals[d];
+          q = { id, category, expr: `${n}! / ${d}!`, ans, shortcut: `${n}! / ${d}! = ${n} × ${n-1} = ${ans}` };
+        } else if (opType === 2) {
+          const n = randInt(5, 6);
+          const m = randInt(3, 7);
+          q = { id, category, expr: `${n}! × ${m}`, ans: factVals[n] * m, shortcut: `${n}! = ${factVals[n]} ➔ ${factVals[n]} × ${m} = ${factVals[n] * m}` };
+        } else {
+          const n = randInt(5, 6);
+          const prev = n - 1;
+          q = { id, category, expr: `${n}! - ${prev}!`, ans: factVals[n] - factVals[prev], shortcut: `${n}! (${factVals[n]}) - ${prev}! (${factVals[prev]}) = ${factVals[n] - factVals[prev]}` };
+        }
       }
     }
 
@@ -1833,7 +1882,7 @@
   }
 
   function filterModalTab(tab) {
-    const buttons = ['fractions', 'powers', 'tables'];
+    const buttons = ['fractions', 'powers', 'factorials', 'tables'];
     buttons.forEach(b => {
       const el = document.getElementById(`mnav-${b}`);
       if (el) el.classList.toggle('active', b === tab);
@@ -1842,6 +1891,7 @@
     document.getElementById('sec-fractions').classList.toggle('hidden', tab !== 'fractions');
     document.getElementById('sec-squares').classList.toggle('hidden', tab !== 'powers');
     document.getElementById('sec-cubes').classList.toggle('hidden', tab !== 'powers');
+    document.getElementById('sec-factorials').classList.toggle('hidden', tab !== 'factorials');
     document.getElementById('sec-tables').classList.toggle('hidden', tab !== 'tables');
   }
 
@@ -1881,6 +1931,7 @@
     });
     document.getElementById('modal-multiples-container').innerHTML = familyHtml;
 
+    // Squares Grid (1 to 30)
     let sqHtml = '';
     for(let i = 1; i <= 30; i++) {
       sqHtml += `
@@ -1892,6 +1943,7 @@
     }
     document.getElementById('modal-squares-grid').innerHTML = sqHtml;
 
+    // Cubes Grid (1 to 20)
     let cbHtml = '';
     for(let i = 1; i <= 20; i++) {
       cbHtml += `
@@ -1903,6 +1955,20 @@
     }
     document.getElementById('modal-cubes-grid').innerHTML = cbHtml;
 
+    // Factorials Grid (0! to 10!)
+    const factVals = { 0: 1, 1: 1, 2: 2, 3: 6, 4: 24, 5: 120, 6: 720, 7: 5040, 8: 40320, 9: 362880, 10: 3628800 };
+    let factHtml = '';
+    for(let i = 0; i <= 10; i++) {
+      factHtml += `
+        <div class="math-cell">
+          <span class="math-cell-base">${i}!</span>
+          <span class="math-cell-val" style="font-size: 0.88rem;">${factVals[i].toLocaleString()}</span>
+        </div>
+      `;
+    }
+    document.getElementById('modal-factorials-grid').innerHTML = factHtml;
+
+    // Tables (1 to 30)
     let tbHtml = '';
     for(let t = 1; t <= 30; t++) {
       let rows = '';
