@@ -141,6 +141,73 @@
       background: rgba(255, 255, 255, 0.05);
     }
 
+    /* Interactive App Feature Tour / Spotlight */
+    .tour-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      pointer-events: auto;
+      transition: opacity 0.25s ease;
+    }
+
+    .tour-spotlight {
+      position: absolute;
+      border-radius: 16px;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.8), 0 0 25px rgba(99, 102, 241, 0.8);
+      border: 2px solid #818cf8;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+    }
+
+    .tour-tooltip {
+      position: absolute;
+      background: #111422;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 1.25rem 1.4rem;
+      width: 320px;
+      max-width: calc(100vw - 32px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tour-step-counter {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a5b4fc;
+    }
+
+    .tour-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+      margin-top: -0.2rem;
+    }
+
+    .tour-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .tour-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.25rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
     .home-hero {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -1118,7 +1185,7 @@
 <div class="container">
 
   <!-- Header Bar -->
-  <header>
+  <header id="tour-top-bar">
     <div class="brand-title" onclick="navigateTo('home')">
       CALCULATION RUSH
     </div>
@@ -1131,46 +1198,49 @@
   <!-- VIEW 1: HOME PAGE HERO & DRILL SETTINGS -->
   <main id="home-view">
     <section class="home-hero">
-      <h1 class="hero-title">Calculation Rush</h1>
+      <h1 class="hero-title" id="tour-hero-title">Calculation Rush</h1>
       <p class="hero-subtitle">
         Solve as many speed calculation questions as you can before the clock runs out.<br>
         <span style="color: var(--success); font-weight:700;">+3</span> for correct, <span style="color: var(--danger); font-weight:700;">-1</span> for incorrect.
       </p>
 
       <!-- Drill Configuration Options -->
-      <div class="config-card">
+      <div class="config-card" id="tour-config-card">
         
-        <!-- 1. Time Selection -->
-        <div class="config-group">
-          <div class="config-label">1. Duration</div>
-          <div class="config-options">
-            <button class="config-opt-btn" onclick="setConfig('duration', 5, this)">5 Min</button>
-            <button class="config-opt-btn" onclick="setConfig('duration', 10, this)">10 Min</button>
-            <button class="config-opt-btn active" onclick="setConfig('duration', 15, this)">15 Min</button>
+        <!-- Drill Pacing and Mode Settings -->
+        <div id="tour-drill-settings" style="display: flex; flex-direction: column; gap: 1.1rem;">
+          <!-- 1. Time Selection -->
+          <div class="config-group">
+            <div class="config-label">1. Duration</div>
+            <div class="config-options">
+              <button class="config-opt-btn" onclick="setConfig('duration', 5, this)">5 Min</button>
+              <button class="config-opt-btn" onclick="setConfig('duration', 10, this)">10 Min</button>
+              <button class="config-opt-btn active" onclick="setConfig('duration', 15, this)">15 Min</button>
+            </div>
           </div>
-        </div>
 
-        <!-- 2. Difficulty Selection -->
-        <div class="config-group">
-          <div class="config-label">2. Difficulty Level</div>
-          <div class="config-options">
-            <button class="config-opt-btn" onclick="setConfig('difficulty', 'easy', this)">Easy</button>
-            <button class="config-opt-btn active" onclick="setConfig('difficulty', 'normal', this)">Normal</button>
-            <button class="config-opt-btn" onclick="setConfig('difficulty', 'hard', this)">Hard</button>
+          <!-- 2. Difficulty Selection -->
+          <div class="config-group">
+            <div class="config-label">2. Difficulty Level</div>
+            <div class="config-options">
+              <button class="config-opt-btn" onclick="setConfig('difficulty', 'easy', this)">Easy</button>
+              <button class="config-opt-btn active" onclick="setConfig('difficulty', 'normal', this)">Normal</button>
+              <button class="config-opt-btn" onclick="setConfig('difficulty', 'hard', this)">Hard</button>
+            </div>
           </div>
-        </div>
 
-        <!-- 3. Question Type Selection -->
-        <div class="config-group">
-          <div class="config-label">3. Question Type</div>
-          <div class="config-options">
-            <button class="config-opt-btn" onclick="setConfig('qtype', 'mcq', this)">MCQ (A / B / C / D)</button>
-            <button class="config-opt-btn active" onclick="setConfig('qtype', 'tita', this)">TITA (Type-In)</button>
+          <!-- 3. Question Type Selection -->
+          <div class="config-group">
+            <div class="config-label">3. Question Type</div>
+            <div class="config-options">
+              <button class="config-opt-btn" onclick="setConfig('qtype', 'mcq', this)">MCQ (A / B / C / D)</button>
+              <button class="config-opt-btn active" onclick="setConfig('qtype', 'tita', this)">TITA (Type-In)</button>
+            </div>
           </div>
         </div>
 
         <!-- 4. Topic Customization Filter -->
-        <div class="config-group">
+        <div class="config-group" id="tour-topics-group">
           <div class="config-label">4. Topics to Practice</div>
           <div class="config-options" style="margin-bottom: 0.4rem;">
             <button class="config-opt-btn active" id="topic-mode-all" onclick="setTopicMode('all', this)">Default (All Topics)</button>
@@ -1334,6 +1404,25 @@
 
   </section>
 
+</div>
+
+<!-- Interactive App Feature Tour / Spotlight Overlay -->
+<div id="app-tour" class="tour-overlay hidden">
+  <div id="tour-spotlight" class="tour-spotlight"></div>
+  <div id="tour-tooltip" class="tour-tooltip">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span class="tour-step-counter" id="tour-step-indicator">Step 1 of 4</span>
+      <button class="btn btn-ghost" style="padding: 2px 6px; font-size: 0.72rem; border: none; color: var(--text-muted);" onclick="endTour()">Skip</button>
+    </div>
+    <div class="tour-title" id="tour-title-text">Welcome to Calculation Rush</div>
+    <div class="tour-desc" id="tour-desc-text">
+      The goal is to solve as many speed calculation questions as you can before the clock runs out. Train instant mental retrieval for multi-topic calculations under timed conditions (+3 for correct, -1 for wrong).
+    </div>
+    <div class="tour-footer">
+      <button class="btn btn-ghost" id="tour-prev-btn" style="padding: 0.35rem 0.7rem; font-size: 0.76rem;" onclick="navTour(-1)">Previous</button>
+      <button class="btn btn-primary" id="tour-next-btn" style="padding: 0.35rem 0.9rem; font-size: 0.78rem;" onclick="navTour(1)">Next</button>
+    </div>
+  </div>
 </div>
 
 <!-- History Modal -->
@@ -2575,8 +2664,114 @@
     }
   });
 
+  // Interactive Feature Tour / Spotlight Walkthrough
+  let currentTourStep = 0;
+  const TOUR_STEPS = [
+    {
+      targetId: 'tour-hero-title',
+      title: 'Welcome to Calculation Rush',
+      desc: 'The goal is to solve as many speed calculation questions as you can before the clock runs out. Multi-topic mental arithmetic with +3 for correct and -1 for incorrect.',
+      placement: 'bottom'
+    },
+    {
+      targetId: 'tour-drill-settings',
+      title: 'Configure Your Sprint',
+      desc: 'Select your preferred time duration (5m, 10m, 15m), difficulty level (Easy, Normal, Hard), and question input mode (MCQ vs Type-In).',
+      placement: 'bottom'
+    },
+    {
+      targetId: 'tour-topics-group',
+      title: 'Target Specific Topics',
+      desc: 'Drill all categories by default, or switch to Custom Selection to practice specific areas like Powers, Fractions & %, Factorials, Tables, or Roots.',
+      placement: 'top'
+    },
+    {
+      targetId: 'tour-top-bar',
+      title: 'History and Reference Dashboard',
+      desc: 'At the top bar, you can review your past sprint scores, accuracy, and pacing in History, and look up all fraction, power, and table formulas in Reference.',
+      placement: 'bottom'
+    }
+  ];
+
+  function startTour() {
+    currentTourStep = 0;
+    document.getElementById('app-tour').classList.remove('hidden');
+    renderTourStep();
+  }
+
+  function navTour(dir) {
+    currentTourStep += dir;
+    if (currentTourStep >= TOUR_STEPS.length) {
+      endTour();
+      return;
+    }
+    if (currentTourStep < 0) currentTourStep = 0;
+    renderTourStep();
+  }
+
+  function endTour() {
+    document.getElementById('app-tour').classList.add('hidden');
+    try {
+      localStorage.setItem('rush_tour_seen', 'true');
+    } catch(e) {}
+  }
+
+  function renderTourStep() {
+    const step = TOUR_STEPS[currentTourStep];
+    const target = document.getElementById(step.targetId);
+    if (!target) return;
+
+    document.getElementById('tour-step-indicator').textContent = `Step ${currentTourStep + 1} of ${TOUR_STEPS.length}`;
+    document.getElementById('tour-title-text').textContent = step.title;
+    document.getElementById('tour-desc-text').textContent = step.desc;
+    document.getElementById('tour-prev-btn').style.visibility = currentTourStep === 0 ? 'hidden' : 'visible';
+    document.getElementById('tour-next-btn').textContent = currentTourStep === TOUR_STEPS.length - 1 ? 'Start Drilling' : 'Next';
+
+    // Position spotlight cutout around the target element
+    const rect = target.getBoundingClientRect();
+    const padding = 8;
+    const spot = document.getElementById('tour-spotlight');
+    spot.style.width = `${rect.width + (padding * 2)}px`;
+    spot.style.height = `${rect.height + (padding * 2)}px`;
+    spot.style.top = `${rect.top + window.scrollY - padding}px`;
+    spot.style.left = `${rect.left + window.scrollX - padding}px`;
+
+    // Position tooltip relative to target
+    const tip = document.getElementById('tour-tooltip');
+    const tipWidth = 320;
+    let tipTop, tipLeft;
+
+    if (step.placement === 'top') {
+      tipTop = rect.top + window.scrollY - 165;
+      tipLeft = rect.left + window.scrollX + (rect.width / 2) - (tipWidth / 2);
+    } else {
+      tipTop = rect.bottom + window.scrollY + 16;
+      tipLeft = rect.left + window.scrollX + (rect.width / 2) - (tipWidth / 2);
+    }
+
+    // Keep tooltip within viewport bounds
+    tipLeft = Math.max(16, Math.min(window.innerWidth - tipWidth - 16, tipLeft));
+    if (tipTop < 10) tipTop = rect.bottom + window.scrollY + 16;
+
+    tip.style.top = `${tipTop}px`;
+    tip.style.left = `${tipLeft}px`;
+
+    // Smooth scroll into view
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function checkFirstTimeTour() {
+    try {
+      const seen = localStorage.getItem('rush_tour_seen');
+      if (!seen) {
+        setTimeout(startTour, 300);
+      }
+    } catch(e) {}
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
     initReferenceData();
+    checkFirstTimeTour();
     navigateTo('home');
   });
 </script>
