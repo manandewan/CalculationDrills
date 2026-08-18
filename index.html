@@ -1122,12 +1122,13 @@
 
         <!-- 4. Topic Customization Filter -->
         <div class="config-group">
-          <div class="config-label">
-            <span>4. Topics to Practice</span>
-            <span style="font-size: 0.65rem; color: var(--text-muted); cursor:pointer;" onclick="toggleAllTopics()">Select / Deselect All</span>
+          <div class="config-label">4. Topics to Practice</div>
+          <div class="config-options" style="margin-bottom: 0.4rem;">
+            <button class="config-opt-btn active" id="topic-mode-all" onclick="setTopicMode('all', this)">Default (All Topics)</button>
+            <button class="config-opt-btn" id="topic-mode-custom" onclick="setTopicMode('custom', this)">Custom Selection</button>
           </div>
-          <div class="topics-grid" id="topics-selector-container">
-            <div class="topic-chip selected" data-topic="powers" onclick="toggleTopic(this, 'powers')">⚡ Powers (2/3/Sq/Cb)</div>
+          <div class="topics-grid hidden" id="topics-selector-container">
+            <div class="topic-chip selected" data-topic="powers" onclick="toggleTopic(this, 'powers')">⚡ Powers (2ⁿ, 3ⁿ, Sq, Cb)</div>
             <div class="topic-chip selected" data-topic="fractions" onclick="toggleTopic(this, 'fractions')">📊 Fractions & %</div>
             <div class="topic-chip selected" data-topic="factorials" onclick="toggleTopic(this, 'factorials')">❗ Factorials</div>
             <div class="topic-chip selected" data-topic="tables" onclick="toggleTopic(this, 'tables')">🔢 Tables & Products</div>
@@ -1483,6 +1484,21 @@
       configDifficulty = val;
     } else if (type === 'qtype') {
       configQType = val;
+    }
+  }
+
+  function setTopicMode(mode, btn) {
+    const parent = btn.parentElement;
+    parent.querySelectorAll('.config-opt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const container = document.getElementById('topics-selector-container');
+    if (mode === 'all') {
+      container.classList.add('hidden');
+      enabledTopics = new Set(['powers', 'fractions', 'factorials', 'tables', 'add_sub', 'roots_decimals']);
+      document.querySelectorAll('.topic-chip').forEach(c => c.classList.add('selected'));
+    } else {
+      container.classList.remove('hidden');
     }
   }
 
