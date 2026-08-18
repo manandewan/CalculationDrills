@@ -1722,12 +1722,12 @@
     // Determine active generators strictly matching selected topics
     const activeGenerators = [];
 
-    // 1. Powers Generator (Squares 1-30, Cubes 1-20, Powers of 2..7)
+    // 1. Powers Generator (Squares 1-30, Cubes 1-20, Powers of 2..7, Difference of Squares a²-b², and Base 50/100 Hybrids)
     if (enabledTopics.has('powers')) {
       activeGenerators.push(() => {
         const category = 'Powers';
-        const sub = randInt(1, 3);
-        if (sub === 1) { // Squares hybrid
+        const sub = randInt(1, 5);
+        if (sub === 1) { // Standard Squares hybrid
           const sq = configDifficulty === 'easy' ? randInt(11, 20) : configDifficulty === 'hard' ? randInt(18, 30) : randInt(12, 28);
           const sqVal = sq * sq;
           const offset = randInt(10, 80);
@@ -1743,6 +1743,33 @@
           const ans = isPlus ? cbVal + offset : cbVal - offset;
           const targetSec = computeDynamicIdealTime([{ type: 'cb', val: cb }, { type: 'add_sub', terms: 2 }]);
           return { signature: `cb_${cb}_${isPlus}_${offset}`, id, category, expr: `${cb}³ ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, shortcut: `${cb}³ (${cbVal}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else if (sub === 3) { // High-Yield Pattern 1: Difference of Squares (a² - b²) coupled with Add/Sub
+          const a = randInt(21, 55);
+          const b = a - randInt(2, 8);
+          const diffTerm = (a - b) * (a + b); // a² - b²
+          const offset = randInt(15, 95);
+          const isPlus = Math.random() > 0.45;
+          const ans = isPlus ? diffTerm + offset : Math.abs(diffTerm - offset);
+          const expr = isPlus ? `(${a}² - ${b}²) + ${offset}` : (diffTerm >= offset ? `(${a}² - ${b}²) - ${offset}` : `${offset} - (${a}² - ${b}²)`);
+          const targetSec = computeDynamicIdealTime([{ type: 'sq', val: a }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `diffsq_${a}_${b}_${isPlus}_${offset}`, id, category, expr, ans, targetSec, shortcut: `(${a}-${b})(${a}+${b}) = ${a-b} × ${a+b} = ${diffTerm} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else if (sub === 4) { // High-Yield Pattern 2: Near-50 / Near-100 Base Squaring Hybrids
+          const isNear50 = Math.random() > 0.4;
+          let num, numSq;
+          if (isNear50) {
+            const diff = pickRandom([-4, -3, -2, -1, 1, 2, 3, 4, 6]);
+            num = 50 + diff;
+            numSq = num * num; // (25 + diff)*100 + diff²
+          } else {
+            const diff = pickRandom([-6, -5, -4, -3, -2, -1, 1, 2, 3, 4]);
+            num = 100 + diff;
+            numSq = num * num; // (100 + 2*diff)*100 + diff²
+          }
+          const offset = randInt(20, 120);
+          const isPlus = Math.random() > 0.5;
+          const ans = isPlus ? numSq + offset : numSq - offset;
+          const targetSec = computeDynamicIdealTime([{ type: 'sq', val: 25 }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `basesq_${num}_${isPlus}_${offset}`, id, category, expr: `${num}² ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, shortcut: `${num}² = ${numSq} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
         } else { // Higher base powers (2..7)
           const base = pickRandom([2, 3, 4, 5, 6, 7]);
           let exp, val;
@@ -1761,16 +1788,15 @@
       });
     }
 
-    // 2. Fractions & Percentages Generator (Includes CAT 5/18 & 18/5 Factor Hybrids)
+    // 2. Fractions & Percentages Generator (Includes 5/18 & 18/5, % Reversals A% of B = B% of A, & % Splitting)
     if (enabledTopics.has('fractions')) {
       activeGenerators.push(() => {
         const category = 'Fractions & %';
-        const isConversionFactor = Math.random() < 0.35; // 35% chance for high-yield 5/18 or 18/5 arithmetic
+        const subMode = randInt(1, 4);
 
-        if (isConversionFactor) {
+        if (subMode === 1) { // 5/18 or 18/5 factor arithmetic
           const isFiveEighteenth = Math.random() > 0.5;
           if (isFiveEighteenth) {
-            // (5/18 of 18*k) + or - offset (e.g. 5/18 of 72 = 20)
             const k = randInt(2, configDifficulty === 'hard' ? 15 : 9);
             const base = 18 * k;
             const term = 5 * k;
@@ -1781,7 +1807,6 @@
             const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: 18, mult: 5 }, { type: 'add_sub', terms: 2 }]);
             return { signature: `c518_${base}_${isPlus}_${offset}`, id, category, expr, ans, targetSec, shortcut: `5/18 × ${base} = 5 × ${k} = ${term} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
           } else {
-            // (18/5 of 5*k) + or - offset (e.g. 18/5 of 45 = 162)
             const k = randInt(3, configDifficulty === 'hard' ? 12 : 7);
             const base = 5 * k;
             const term = 18 * k;
@@ -1792,19 +1817,40 @@
             const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: 5, mult: 18 }, { type: 'add_sub', terms: 2 }]);
             return { signature: `c185_${base}_${isPlus}_${offset}`, id, category, expr, ans, targetSec, shortcut: `18/5 × ${base} = 18 × ${k} = ${term} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
           }
+        } else if (subMode === 2) { // High-Yield Pattern 4: Percentage Reversals (A% of B = B% of A)
+          // e.g. 32% of 250 = 25% of 320 = 80; 48% of 50 = 50% of 48 = 24; 84% of 25 = 25% of 84 = 21
+          const friendlyBase = pickRandom([50, 250, 500, 25, 75]);
+          const otherNum = pickRandom([16, 24, 28, 32, 36, 44, 48, 52, 64, 72, 84, 96]);
+          const fracTerm = Math.round((otherNum * friendlyBase) / 100);
+          const offset = randInt(15, 65);
+          const isPlus = Math.random() > 0.45;
+          const ans = isPlus ? fracTerm + offset : Math.abs(fracTerm - offset);
+          const expr = isPlus ? `(${otherNum}% of ${friendlyBase}) + ${offset}` : (fracTerm >= offset ? `(${otherNum}% of ${friendlyBase}) - ${offset}` : `${offset} - (${otherNum}% of ${friendlyBase})`);
+          const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: 4, mult: 1 }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `revpct_${otherNum}_${friendlyBase}_${isPlus}`, id, category, expr, ans, targetSec, shortcut: `Reverse: ${friendlyBase}% of ${otherNum * (friendlyBase > 100 ? 1 : 1)} = ${fracTerm} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else if (subMode === 3) { // High-Yield Pattern 4B: 10% + 5% + 1% Decomposition
+          const p = pickRandom([15, 16, 35, 45, 55, 65, 75, 85]);
+          const base = randInt(12, 48) * 10;
+          const fracTerm = Math.round((p / 100) * base);
+          const offset = randInt(20, 80);
+          const isPlus = Math.random() > 0.5;
+          const ans = isPlus ? fracTerm + offset : Math.abs(fracTerm - offset);
+          const expr = isPlus ? `(${p}% of ${base}) + ${offset}` : (fracTerm >= offset ? `(${p}% of ${base}) - ${offset}` : `${offset} - (${p}% of ${base})`);
+          const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: 10, mult: 3 }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `splitpct_${p}_${base}_${isPlus}`, id, category, expr, ans, targetSec, shortcut: `Breakdown: ${p}% of ${base} = ${fracTerm} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else { // Standard Fraction multiple lookup
+          const f = pickRandom(ALL_FRAC_DATA);
+          const multipliers = [2, 3, 4, 5, 6, 7, 8, 9, 12, 14, 15, 16, 18, 20, 25];
+          const multChoice = pickRandom(multipliers);
+          const base = f.denom * multChoice * 10;
+          const fracTerm = Math.round((base / f.denom) * f.mult);
+          const offset = randInt(15, 95);
+          const isPlus = Math.random() > 0.4;
+          const ans = isPlus ? fracTerm + offset : Math.abs(fracTerm - offset);
+          const expr = isPlus ? `(${f.p} of ${base}) + ${offset}` : (fracTerm >= offset ? `(${f.p} of ${base}) - ${offset}` : `${offset} - (${f.p} of ${base})`);
+          const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: f.denom, mult: f.mult }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `frac_${f.label}_${base}_${isPlus}`, id, category, expr, ans, targetSec, shortcut: `(${f.label} × ${base} = ${fracTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
         }
-
-        const f = pickRandom(ALL_FRAC_DATA);
-        const multipliers = [2, 3, 4, 5, 6, 7, 8, 9, 12, 14, 15, 16, 18, 20, 25];
-        const multChoice = pickRandom(multipliers);
-        const base = f.denom * multChoice * 10;
-        const fracTerm = Math.round((base / f.denom) * f.mult);
-        const offset = randInt(15, 95);
-        const isPlus = Math.random() > 0.4;
-        const ans = isPlus ? fracTerm + offset : Math.abs(fracTerm - offset);
-        const expr = isPlus ? `(${f.p} of ${base}) + ${offset}` : (fracTerm >= offset ? `(${f.p} of ${base}) - ${offset}` : `${offset} - (${f.p} of ${base})`);
-        const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: f.denom, mult: f.mult }, { type: 'add_sub', terms: 2 }]);
-        return { signature: `frac_${f.label}_${base}_${isPlus}`, id, category, expr, ans, targetSec, shortcut: `(${f.label} × ${base} = ${fracTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
       });
     }
 
@@ -1835,10 +1881,25 @@
       });
     }
 
-    // 4. Tables & Products Generator
+    // 4. Tables & Products Generator (Includes (x-d)(x+d) Equal Distance Twins)
     if (enabledTopics.has('tables')) {
       activeGenerators.push(() => {
         const category = 'Tables & Products';
+        const isTwinProduct = Math.random() < 0.45; // High-Yield Pattern 3: (x-d)(x+d) = x² - d²
+
+        if (isTwinProduct) {
+          const mid = pickRandom([20, 25, 30, 35, 40, 50, 60, 70]);
+          const d = pickRandom([1, 2, 3, 4, 5]);
+          const p1 = mid - d;
+          const p2 = mid + d;
+          const prodVal = (mid * mid) - (d * d);
+          const offset = randInt(15, 85);
+          const isPlus = Math.random() > 0.45;
+          const ans = isPlus ? prodVal + offset : prodVal - offset;
+          const targetSec = computeDynamicIdealTime([{ type: 'prod', a: p1, b: p2 }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `twprod_${p1}_${p2}_${isPlus}`, id, category, expr: `(${p1} × ${p2}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, shortcut: `(${mid}² - ${d}² = ${mid*mid}-${d*d} = ${prodVal}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        }
+
         const t = configDifficulty === 'easy' ? randInt(12, 19) : randInt(13, 29);
         const m = configDifficulty === 'easy' ? randInt(3, 6) : randInt(3, 9);
         const tableTerm = t * m;
@@ -1850,10 +1911,24 @@
       });
     }
 
-    // 5. Pure Addition & Subtraction Generator
+    // 5. Pure Addition & Subtraction Generator (Includes Multi-Term DILR Cumulative Column Sums)
     if (enabledTopics.has('add_sub')) {
       activeGenerators.push(() => {
         const category = 'Addition & Subtraction';
+        const isColumnSum = Math.random() < 0.45; // High-Yield Pattern 5: Multi-Term DILR Cumulative Sum
+
+        if (isColumnSum) {
+          const count = configDifficulty === 'easy' ? 4 : configDifficulty === 'hard' ? 5 : 4;
+          const terms = [];
+          for (let i = 0; i < count; i++) {
+            terms.push(randInt(22, 98));
+          }
+          const sum = terms.reduce((acc, v) => acc + v, 0);
+          const expr = terms.join(' + ');
+          const targetSec = computeDynamicIdealTime([{ type: 'add_sub', terms: count }]);
+          return { signature: `colsum_${terms.join('_')}`, id, category, expr, ans: sum, targetSec, shortcut: `Group tens (${terms.map(t => Math.floor(t/10)*10).reduce((a,b)=>a+b,0)}) + units (${terms.map(t => t%10).reduce((a,b)=>a+b,0)}) = ${sum}` };
+        }
+
         if (configDifficulty === 'easy') {
           const a = randInt(45, 140);
           const b = randInt(35, 120);
