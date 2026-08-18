@@ -31,10 +31,16 @@
       margin: 0;
       padding: 0;
       user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     input {
       user-select: auto;
+      font-size: 16px; /* Prevents iOS auto-zoom on input focus */
+    }
+
+    button {
+      touch-action: manipulation; /* Removes 300ms mobile tap delay */
     }
 
     body {
@@ -1063,12 +1069,12 @@
 
       <div class="expression" id="arena-expression">Loading...</div>
 
-      <!-- Option A: TITA Input -->
-      <div class="input-wrapper" id="arena-tita-wrapper">
+      <!-- Option A: TITA Input (Mobile-Optimized Form) -->
+      <form class="input-wrapper" id="arena-tita-wrapper" onsubmit="handleTitaFormSubmit(event)">
         <input type="number" inputmode="decimal" step="any" class="rush-input" id="rush-input" 
                placeholder="Answer" autocomplete="off" autofocus>
         <div class="input-hint">Type answer and press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Enter</kbd></div>
-      </div>
+      </form>
 
       <!-- Option B: MCQ Options Grid -->
       <div class="mcq-container hidden" id="arena-mcq-wrapper">
@@ -1548,6 +1554,11 @@
         mcqWrapper.appendChild(btn);
       });
     }
+  }
+
+  function handleTitaFormSubmit(e) {
+    if (e) e.preventDefault();
+    submitCurrentAnswer();
   }
 
   function submitCurrentAnswer() {
