@@ -986,8 +986,7 @@
 
     <!-- Modal Filter Tabs -->
     <div class="modal-nav">
-      <button class="modal-nav-btn active" id="mnav-all" onclick="filterModalTab('all')">All References</button>
-      <button class="modal-nav-btn" id="mnav-fractions" onclick="filterModalTab('fractions')">Fractions & %</button>
+      <button class="modal-nav-btn active" id="mnav-fractions" onclick="filterModalTab('fractions')">Fractions & %</button>
       <button class="modal-nav-btn" id="mnav-powers" onclick="filterModalTab('powers')">Squares & Cubes</button>
       <button class="modal-nav-btn" id="mnav-tables" onclick="filterModalTab('tables')">Tables (1–30)</button>
     </div>
@@ -1520,6 +1519,7 @@
 
   // Modal Handlers
   function openModal() {
+    filterModalTab('fractions');
     document.getElementById('ref-modal').classList.remove('hidden');
   }
 
@@ -1529,15 +1529,16 @@
   }
 
   function filterModalTab(tab) {
-    const buttons = ['all', 'fractions', 'powers', 'tables'];
+    const buttons = ['fractions', 'powers', 'tables'];
     buttons.forEach(b => {
-      document.getElementById(`mnav-${b}`).classList.toggle('active', b === tab);
+      const el = document.getElementById(`mnav-${b}`);
+      if (el) el.classList.toggle('active', b === tab);
     });
 
-    document.getElementById('sec-fractions').classList.toggle('hidden', tab !== 'all' && tab !== 'fractions');
-    document.getElementById('sec-squares').classList.toggle('hidden', tab !== 'all' && tab !== 'powers');
-    document.getElementById('sec-cubes').classList.toggle('hidden', tab !== 'all' && tab !== 'powers');
-    document.getElementById('sec-tables').classList.toggle('hidden', tab !== 'all' && tab !== 'tables');
+    document.getElementById('sec-fractions').classList.toggle('hidden', tab !== 'fractions');
+    document.getElementById('sec-squares').classList.toggle('hidden', tab !== 'powers');
+    document.getElementById('sec-cubes').classList.toggle('hidden', tab !== 'powers');
+    document.getElementById('sec-tables').classList.toggle('hidden', tab !== 'tables');
   }
 
   function initReferenceData() {
