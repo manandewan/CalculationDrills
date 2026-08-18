@@ -1,6 +1,8 @@
 # ⚡ Calculation Rush
 
-High-intensity, arcade-paced mental arithmetic conditioning engine designed for competitive management entrance examinations (**CAT / XAT / GMAT / GRE**).
+> High-intensity, arcade-paced mental arithmetic conditioning engine designed for competitive management entrance examinations (**CAT / XAT / GMAT / GRE**).
+
+**🌐 Live Application:** https://manandewan.github.io/CalculationDrills
 
 ---
 
@@ -86,7 +88,7 @@ CalculationDrills/
 ## 🚀 Getting Started
 
 ### Option 1: Live Web App
-Open the deployed GitHub Pages URL directly on any desktop or mobile browser.
+Open **https://manandewan.github.io/CalculationDrills** directly on any desktop or mobile browser.
 
 ### Option 2: Mobile App Experience (PWA / Add to Home Screen)
 1. Open the app link on iOS Safari or Android Chrome.
