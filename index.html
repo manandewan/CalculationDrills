@@ -1393,7 +1393,7 @@
         const isPlus = Math.random() > 0.4;
         const ans = isPlus ? factTerm + fracTerm : Math.abs(factTerm - fracTerm);
         const expr = isPlus ? `(${n}! × ${mult}) + (${f.p} of ${base})` : (factTerm >= fracTerm ? `(${n}! × ${mult}) - (${f.p} of ${base})` : `(${f.p} of ${base}) - (${n}! × ${mult})`);
-        q = { id, category, expr, ans, shortcut: `Factorial term: ${factTerm} | Fraction term: ${fracTerm} ➔ ${ans}` };
+        q = { id, category, expr, ans, targetSec: 4.5, shortcut: `Factorial term: ${factTerm} | Fraction term: ${fracTerm} ➔ ${ans}` };
       } else if (configDifficulty === 'hard') {
         const n = randInt(5, 6); // 5! (120) or 6! (720)
         const d = n - 2; // e.g. 6!/4! = 30
@@ -1406,7 +1406,7 @@
         const isPlus = Math.random() > 0.5;
         const ans = isPlus ? factTerm + fracTerm - addTerm : factTerm - fracTerm + addTerm;
         const expr = isPlus ? `(${n}! / ${d}! × ${mult}) + (${f.p} of ${base}) - ${addTerm}` : `(${n}! / ${d}! × ${mult}) - (${f.p} of ${base}) + ${addTerm}`;
-        q = { id, category, expr, ans, shortcut: `Factorial ratio: ${factTerm} | Fraction: ${fracTerm} | Offset: ${addTerm} ➔ ${ans}` };
+        q = { id, category, expr, ans, targetSec: 8.0, shortcut: `Factorial ratio: ${factTerm} | Fraction: ${fracTerm} | Offset: ${addTerm} ➔ ${ans}` };
       } else {
         // Normal
         const n = randInt(4, 5); // 4! (24) or 5! (120)
@@ -1417,7 +1417,7 @@
         const isPlus = Math.random() > 0.4;
         const ans = isPlus ? factTerm + fracTerm : Math.abs(factTerm - fracTerm);
         const expr = isPlus ? `(${n}! × ${mult}) + (${f.p} of ${base})` : (factTerm >= fracTerm ? `(${n}! × ${mult}) - (${f.p} of ${base})` : `(${f.p} of ${base}) - (${n}! × ${mult})`);
-        q = { id, category, expr, ans, shortcut: `(${factVals[n]} × ${mult} = ${factTerm}) ${isPlus ? '+' : '-'} (${fracTerm}) = ${ans}` };
+        q = { id, category, expr, ans, targetSec: 6.0, shortcut: `(${factVals[n]} × ${mult} = ${factTerm}) ${isPlus ? '+' : '-'} (${fracTerm}) = ${ans}` };
       }
     }
 
@@ -1434,7 +1434,7 @@
         const tableTerm = t * m;
         const isPlus = Math.random() > 0.4;
         const ans = isPlus ? sqTerm + tableTerm : sqTerm - tableTerm;
-        q = { id, category, expr: `${sq}² ${isPlus ? '+' : '-'} (${t} × ${m})`, ans, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} (${tableTerm}) = ${ans}` };
+        q = { id, category, expr: `${sq}² ${isPlus ? '+' : '-'} (${t} × ${m})`, ans, targetSec: 4.0, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} (${tableTerm}) = ${ans}` };
       } else if (configDifficulty === 'hard') {
         const cb = randInt(12, 18);
         const cbTerm = cb * cb * cb;
@@ -1444,7 +1444,7 @@
         const m2 = randInt(4, 8);
         const tableCombo = (t1 * m1) + (t2 * m2);
         const ans = cbTerm - tableCombo;
-        q = { id, category, expr: `${cb}³ - (${t1} × ${m1} + ${t2} × ${m2})`, ans, shortcut: `${cb}³ (${cbTerm}) - (${t1*m1} + ${t2*m2} = ${tableCombo}) = ${ans}` };
+        q = { id, category, expr: `${cb}³ - (${t1} × ${m1} + ${t2} × ${m2})`, ans, targetSec: 8.5, shortcut: `${cb}³ (${cbTerm}) - (${t1*m1} + ${t2*m2} = ${tableCombo}) = ${ans}` };
       } else {
         // Normal
         const isCube = Math.random() < 0.4;
@@ -1456,7 +1456,7 @@
           const tableTerm = t * m;
           const isPlus = Math.random() > 0.5;
           const ans = isPlus ? cbTerm + tableTerm : cbTerm - tableTerm;
-          q = { id, category, expr: `${cb}³ ${isPlus ? '+' : '-'} (${t} × ${m})`, ans, shortcut: `${cb}³ (${cbTerm}) ${isPlus ? '+' : '-'} ${tableTerm} = ${ans}` };
+          q = { id, category, expr: `${cb}³ ${isPlus ? '+' : '-'} (${t} × ${m})`, ans, targetSec: 6.0, shortcut: `${cb}³ (${cbTerm}) ${isPlus ? '+' : '-'} ${tableTerm} = ${ans}` };
         } else {
           const sq = randInt(16, 29);
           const sqTerm = sq * sq;
@@ -1465,7 +1465,7 @@
           const tableTerm = t * m;
           const isPlus = Math.random() > 0.5;
           const ans = isPlus ? sqTerm + tableTerm : sqTerm - tableTerm;
-          q = { id, category, expr: `${sq}² ${isPlus ? '+' : '-'} (${t} × ${m})`, ans, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} ${tableTerm} = ${ans}` };
+          q = { id, category, expr: `${sq}² ${isPlus ? '+' : '-'} (${t} × ${m})`, ans, targetSec: 5.5, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} ${tableTerm} = ${ans}` };
         }
       }
     }
@@ -1483,7 +1483,7 @@
         const m = randInt(2, 6);
         const tableTerm = t * m;
         const ans = fracTerm + tableTerm;
-        q = { id, category, expr: `(${f.p} of ${base}) + (${t} × ${m})`, ans, shortcut: `(${f.label} × ${base} = ${fracTerm}) + (${t} × ${m} = ${tableTerm}) = ${ans}` };
+        q = { id, category, expr: `(${f.p} of ${base}) + (${t} × ${m})`, ans, targetSec: 4.0, shortcut: `(${f.label} × ${base} = ${fracTerm}) + (${t} × ${m} = ${tableTerm}) = ${ans}` };
       } else if (configDifficulty === 'hard') {
         const base = f.denom * randInt(4, 9) * 10;
         const fracTerm = Math.round((base / f.denom) * f.mult);
@@ -1492,7 +1492,7 @@
         const t2 = randInt(14, 26);
         const m2 = randInt(4, 8);
         const ans = fracTerm + (t1 * m1) - (t2 * m2);
-        q = { id, category, expr: `(${f.p} of ${base}) + (${t1} × ${m1}) - (${t2} × ${m2})`, ans, shortcut: `Fraction (${fracTerm}) + Table1 (${t1*m1}) - Table2 (${t2*m2}) = ${ans}` };
+        q = { id, category, expr: `(${f.p} of ${base}) + (${t1} × ${m1}) - (${t2} × ${m2})`, ans, targetSec: 7.5, shortcut: `Fraction (${fracTerm}) + Table1 (${t1*m1}) - Table2 (${t2*m2}) = ${ans}` };
       } else {
         // Normal
         const base = f.denom * randInt(3, 7) * 10;
@@ -1503,7 +1503,7 @@
         const isPlus = Math.random() > 0.4;
         const ans = isPlus ? fracTerm + tableTerm : Math.abs(fracTerm - tableTerm);
         const expr = isPlus ? `(${f.p} of ${base}) + (${t} × ${m})` : (fracTerm >= tableTerm ? `(${f.p} of ${base}) - (${t} × ${m})` : `(${t} × ${m}) - (${f.p} of ${base})`);
-        q = { id, category, expr, ans, shortcut: `Fraction (${fracTerm}) ${isPlus ? '+' : '-'} Table (${tableTerm}) = ${ans}` };
+        q = { id, category, expr, ans, targetSec: 5.5, shortcut: `Fraction (${fracTerm}) ${isPlus ? '+' : '-'} Table (${tableTerm}) = ${ans}` };
       }
     }
 
@@ -1514,12 +1514,12 @@
       const category = 'Factorials + Powers';
       if (configDifficulty === 'easy') {
         const n = randInt(3, 4); // 3! (6) or 4! (24)
-        const sq = randInt(12, 18); // 144 - 324
+        const sq = randInt(12, 18);
         const m = randInt(2, 4);
         const factTerm = factVals[n] * m;
         const sqTerm = sq * sq;
         const ans = sqTerm + factTerm;
-        q = { id, category, expr: `${sq}² + (${n}! × ${m})`, ans, shortcut: `${sq}² (${sqTerm}) + (${n}! × ${m} = ${factTerm}) = ${ans}` };
+        q = { id, category, expr: `${sq}² + (${n}! × ${m})`, ans, targetSec: 4.5, shortcut: `${sq}² (${sqTerm}) + (${n}! × ${m} = ${factTerm}) = ${ans}` };
       } else if (configDifficulty === 'hard') {
         const n = randInt(5, 6); // 5! (120) or 6! (720)
         const cb = randInt(12, 17);
@@ -1527,7 +1527,7 @@
         const m = randInt(3, 8);
         const factTerm = factVals[n] * m;
         const ans = cbTerm - factTerm;
-        q = { id, category, expr: `${cb}³ - (${n}! × ${m})`, ans, shortcut: `${cb}³ (${cbTerm}) - (${n}! × ${m} = ${factTerm}) = ${ans}` };
+        q = { id, category, expr: `${cb}³ - (${n}! × ${m})`, ans, targetSec: 8.0, shortcut: `${cb}³ (${cbTerm}) - (${n}! × ${m} = ${factTerm}) = ${ans}` };
       } else {
         // Normal
         const n = randInt(4, 5); // 4! (24) or 5! (120)
@@ -1538,7 +1538,7 @@
         const isPlus = Math.random() > 0.4;
         const ans = isPlus ? sqTerm + factTerm : Math.abs(sqTerm - factTerm);
         const expr = isPlus ? `${sq}² + (${n}! × ${m})` : (sqTerm >= factTerm ? `${sq}² - (${n}! × ${m})` : `(${n}! × ${m}) - ${sq}²`);
-        q = { id, category, expr, ans, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} (${n}! × ${m} = ${factTerm}) = ${ans}` };
+        q = { id, category, expr, ans, targetSec: 6.0, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} (${n}! × ${m} = ${factTerm}) = ${ans}` };
       }
     }
 
@@ -1554,7 +1554,7 @@
         const sq = randInt(11, 16);
         const sqTerm = sq * sq;
         const ans = fracTerm + sqTerm;
-        q = { id, category, expr: `(${f.p} of ${base}) + ${sq}²`, ans, shortcut: `(${f.label} × ${base} = ${fracTerm}) + (${sq}² = ${sqTerm}) = ${ans}` };
+        q = { id, category, expr: `(${f.p} of ${base}) + ${sq}²`, ans, targetSec: 4.5, shortcut: `(${f.label} × ${base} = ${fracTerm}) + (${sq}² = ${sqTerm}) = ${ans}` };
       } else if (configDifficulty === 'hard') {
         const base = f.denom * randInt(4, 9) * 10;
         const fracTerm = Math.round((base / f.denom) * f.mult);
@@ -1562,7 +1562,7 @@
         const cbTerm = cb * cb * cb;
         const offset = randInt(40, 120);
         const ans = cbTerm - fracTerm + offset;
-        q = { id, category, expr: `${cb}³ - (${f.p} of ${base}) + ${offset}`, ans, shortcut: `${cb}³ (${cbTerm}) - Fraction (${fracTerm}) + ${offset} = ${ans}` };
+        q = { id, category, expr: `${cb}³ - (${f.p} of ${base}) + ${offset}`, ans, targetSec: 8.0, shortcut: `${cb}³ (${cbTerm}) - Fraction (${fracTerm}) + ${offset} = ${ans}` };
       } else {
         // Normal
         const base = f.denom * randInt(3, 7) * 10;
@@ -1572,7 +1572,7 @@
         const isPlus = Math.random() > 0.5;
         const ans = isPlus ? sqTerm + fracTerm : Math.abs(sqTerm - fracTerm);
         const expr = isPlus ? `${sq}² + (${f.p} of ${base})` : (sqTerm >= fracTerm ? `${sq}² - (${f.p} of ${base})` : `(${f.p} of ${base}) - ${sq}²`);
-        q = { id, category, expr, ans, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} Fraction (${fracTerm}) = ${ans}` };
+        q = { id, category, expr, ans, targetSec: 6.0, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} Fraction (${fracTerm}) = ${ans}` };
       }
     }
 
@@ -1589,7 +1589,7 @@
         const tableTerm = t * m;
         const offset = randInt(10, 40);
         const ans = tableTerm + factTerm - offset;
-        q = { id, category, expr: `(${t} × ${m}) + ${n}! - ${offset}`, ans, shortcut: `Table (${tableTerm}) + ${n}! (${factTerm}) - ${offset} = ${ans}` };
+        q = { id, category, expr: `(${t} × ${m}) + ${n}! - ${offset}`, ans, targetSec: 4.5, shortcut: `Table (${tableTerm}) + ${n}! (${factTerm}) - ${offset} = ${ans}` };
       } else if (configDifficulty === 'hard') {
         const n = randInt(5, 6);
         const d = n - 2; // e.g. 7!/5! = 42
@@ -1601,10 +1601,10 @@
         const p2 = randInt(12, 22);
         const prodTerm = p1 * p2;
         const ans = (ratio * 2) + tableTerm - prodTerm;
-        q = { id, category, expr: `(${n}! / ${d}! × 2) + (${t} × ${m}) - (${p1} × ${p2})`, ans, shortcut: `Ratio (${ratio * 2}) + Table (${tableTerm}) - Product (${prodTerm}) = ${ans}` };
+        q = { id, category, expr: `(${n}! / ${d}! × 2) + (${t} × ${m}) - (${p1} × ${p2})`, ans, targetSec: 8.5, shortcut: `Ratio (${ratio * 2}) + Table (${tableTerm}) - Product (${prodTerm}) = ${ans}` };
       } else {
         // Normal
-        const n = randInt(4, 5); // 4! (24) or 5! (120)
+        const n = randInt(4, 5);
         const mult = randInt(2, 5);
         const factTerm = factVals[n] * mult;
         const t = randInt(14, 28);
@@ -1613,7 +1613,7 @@
         const isPlus = Math.random() > 0.5;
         const ans = isPlus ? tableTerm + factTerm : Math.abs(tableTerm - factTerm);
         const expr = isPlus ? `(${t} × ${m}) + (${n}! × ${mult})` : (tableTerm >= factTerm ? `(${t} × ${m}) - (${n}! × ${mult})` : `(${n}! × ${mult}) - (${t} × ${m})`);
-        q = { id, category, expr, ans, shortcut: `Table (${tableTerm}) ${isPlus ? '+' : '-'} Factorial (${factTerm}) = ${ans}` };
+        q = { id, category, expr, ans, targetSec: 6.0, shortcut: `Table (${tableTerm}) ${isPlus ? '+' : '-'} Factorial (${factTerm}) = ${ans}` };
       }
     }
 
@@ -1627,14 +1627,14 @@
         const b = randInt(35, 95);
         const c = randInt(20, 60);
         const ans = a + b - c;
-        q = { id, category, expr: `${a} + ${b} - ${c}`, ans, shortcut: `(${a} + ${b}) - ${c} = ${a+b} - ${c} = ${ans}` };
+        q = { id, category, expr: `${a} + ${b} - ${c}`, ans, targetSec: 3.5, shortcut: `(${a} + ${b}) - ${c} = ${a+b} - ${c} = ${ans}` };
       } else if (configDifficulty === 'hard') {
         const a = randInt(140, 480);
         const b = randInt(160, 520);
         const c = randInt(120, 390);
         const d = randInt(90, 260);
         const ans = a + b + c - d;
-        q = { id, category, expr: `${a} + ${b} + ${c} - ${d}`, ans, shortcut: `Group hundreds & tens: ${ans}` };
+        q = { id, category, expr: `${a} + ${b} + ${c} - ${d}`, ans, targetSec: 6.5, shortcut: `Group hundreds & tens: ${ans}` };
       } else {
         // Normal
         const a = randInt(65, 220);
@@ -1642,7 +1642,7 @@
         const c = randInt(50, 180);
         const d = randInt(40, 140);
         const ans = a + b + c - d;
-        q = { id, category, expr: `${a} + ${b} + ${c} - ${d}`, ans, shortcut: `Group hundreds & tens: ${ans}` };
+        q = { id, category, expr: `${a} + ${b} + ${c} - ${d}`, ans, targetSec: 5.0, shortcut: `Group hundreds & tens: ${ans}` };
       }
     }
 
@@ -1922,13 +1922,21 @@
           ? '<span style="color: var(--danger); font-weight:700;">-1 (Wrong)</span>' 
           : '<span style="color: var(--text-muted); font-weight:700;">0 (Skipped)</span>';
 
+      const actualTime = item.timeSec ? item.timeSec.toFixed(1) + 's' : '0.0s';
+      const targetTime = item.targetSec ? item.targetSec.toFixed(1) + 's' : '5.0s';
+      const isFast = item.timeSec && item.targetSec ? item.timeSec <= item.targetSec : false;
+      const paceColor = isFast ? 'var(--success)' : '#fbbf24';
+
       card.innerHTML = `
         <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem; font-family: var(--font-mono);">
-          <span><b>#${item.id}</b> ${item.expr} <span style="font-size: 0.72rem; color: var(--text-muted);">(${item.timeSec ? item.timeSec.toFixed(1)+'s' : ''})</span></span>
+          <span><b>#${item.id}</b> ${item.expr}</span>
           <span>${badge}</span>
         </div>
-        <div style="color: var(--text-muted); font-size: 0.82rem;">
-          Your answer: <b style="color: #fff;">${item.userVal !== null ? item.userVal : 'Skipped'}</b> | Correct: <b style="color: #fff;">${item.ans}</b>
+        <div style="display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.2rem;">
+          <div>Your answer: <b style="color: #fff;">${item.userVal !== null ? item.userVal : 'Skipped'}</b> | Correct: <b style="color: #fff;">${item.ans}</b></div>
+          <div style="font-family: var(--font-mono); font-size: 0.76rem;">
+            Time: <b style="color: ${paceColor};">${actualTime}</b> <span style="color: var(--text-muted);">(Expected: ${targetTime})</span>
+          </div>
         </div>
         <div class="review-shortcut">⚡ <b>Solution:</b> ${item.shortcut}</div>
       `;
