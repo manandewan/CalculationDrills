@@ -1468,9 +1468,9 @@
     <!-- Modal Filter Tabs -->
     <div class="modal-nav">
       <button class="modal-nav-btn active" id="mnav-fractions" onclick="filterModalTab('fractions')">Fractions & %</button>
-      <button class="modal-nav-btn" id="mnav-powers" onclick="filterModalTab('powers')">Powers & Roots</button>
+      <button class="modal-nav-btn" id="mnav-powers" onclick="filterModalTab('powers')">Powers (2ⁿ–7ⁿ, Sq, Cb)</button>
       <button class="modal-nav-btn" id="mnav-factorials" onclick="filterModalTab('factorials')">Factorials</button>
-      <button class="modal-nav-btn" id="mnav-roots" onclick="filterModalTab('roots')">Multipliers</button>
+      <button class="modal-nav-btn" id="mnav-roots" onclick="filterModalTab('roots')">Roots</button>
       <button class="modal-nav-btn" id="mnav-tables" onclick="filterModalTab('tables')">Tables (1–30)</button>
     </div>
 
@@ -1503,13 +1503,10 @@
         <div class="grid-table" id="modal-factorials-grid"></div>
       </section>
 
-      <!-- ROOTS & MULTIPLIERS SECTION -->
+      <!-- ROOTS SECTION -->
       <section id="sec-roots">
         <div class="section-title">Square Roots and Cube Roots</div>
-        <div class="grid-table" id="modal-roots-grid" style="margin-bottom: 1.5rem;"></div>
-
-        <div class="section-title">Percentage Multipliers and Decimals</div>
-        <div class="grid-table" id="modal-multipliers-grid"></div>
+        <div class="grid-table" id="modal-roots-grid"></div>
       </section>
 
       <!-- MULTIPLICATION TABLES SECTION -->
@@ -2618,7 +2615,7 @@
     for(let i = 0; i <= 10; i++) factHtml += `<div class="math-cell"><span class="math-cell-base">${i}!</span><span class="math-cell-val" style="font-size: 0.88rem;">${factVals[i].toLocaleString()}</span></div>`;
     document.getElementById('modal-factorials-grid').innerHTML = factHtml;
 
-    // Roots & Multipliers
+    // Roots
     const roots = [
       { base: '√2', val: '1.414' }, { base: '√3', val: '1.732' }, { base: '√5', val: '2.236' },
       { base: '√6', val: '2.449' }, { base: '√7', val: '2.645' }, { base: '√8', val: '2.828' },
@@ -2629,16 +2626,6 @@
       rootHtml += `<div class="math-cell"><span class="math-cell-base">${r.base}</span><span class="math-cell-val">${r.val}</span></div>`;
     });
     document.getElementById('modal-roots-grid').innerHTML = rootHtml;
-
-    const mults = [
-      { base: '× 1.25', val: '+25% (5/4)' }, { base: '× 1.50', val: '+50% (3/2)' }, { base: '× 1.75', val: '+75% (7/4)' },
-      { base: '× 0.375', val: '37.5% (3/8)' }, { base: '× 0.625', val: '62.5% (5/8)' }, { base: '× 1.33', val: '+33.3% (4/3)' }
-    ];
-    let multHtml = '';
-    mults.forEach(m => {
-      multHtml += `<div class="math-cell"><span class="math-cell-base">${m.base}</span><span class="math-cell-val" style="font-size: 0.78rem;">${m.val}</span></div>`;
-    });
-    document.getElementById('modal-multipliers-grid').innerHTML = multHtml;
 
     // Tables
     let tbHtml = '';
