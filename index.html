@@ -454,7 +454,7 @@
 
     .input-wrapper {
       width: 100%;
-      max-width: 320px;
+      max-width: 360px;
       position: relative;
     }
 
@@ -1226,10 +1226,15 @@
       <div class="expression" id="arena-expression">Loading...</div>
 
       <!-- Option A: TITA Input -->
-      <form class="input-wrapper" id="arena-tita-wrapper" onsubmit="handleTitaFormSubmit(event)">
-        <input type="number" inputmode="decimal" step="any" class="rush-input" id="rush-input" 
-               placeholder="Answer" autocomplete="off" autofocus>
-        <div class="input-hint">Type answer and press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Enter</kbd> | <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Space</kbd> to Pause</div>
+      <form class="input-wrapper" id="arena-tita-wrapper" onsubmit="handleTitaFormSubmit(event)" style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+        <div style="display: flex; width: 100%; gap: 0.5rem;">
+          <input type="number" inputmode="decimal" step="any" class="rush-input" id="rush-input" 
+                 placeholder="Answer" autocomplete="off" autofocus>
+          <button type="submit" class="btn btn-primary" style="padding: 0 1.5rem; font-size: 1.1rem; font-weight: 700; border-radius: 14px;">
+            Submit
+          </button>
+        </div>
+        <div class="input-hint">Press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Enter</kbd> or click Submit | <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Space</kbd> to Pause</div>
       </form>
 
       <!-- Option B: MCQ Options Grid -->
