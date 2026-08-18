@@ -45,7 +45,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1.25rem 1rem 3rem;
+      justify-content: center;
+      padding: 1.25rem 1rem;
       background-image: 
         radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 102, 241, 0.15), transparent),
         radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.06), transparent),
@@ -54,10 +55,10 @@
 
     .container {
       width: 100%;
-      max-width: 860px;
+      max-width: 680px;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     /* Top Navigation Header */
@@ -65,7 +66,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.9rem 1.5rem;
+      padding: 0.9rem 1.25rem;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 16px;
@@ -87,7 +88,7 @@
 
     .nav-actions {
       display: flex;
-      gap: 0.6rem;
+      gap: 0.5rem;
       align-items: center;
     }
 
@@ -140,15 +141,14 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 20px;
-      padding: 2.25rem 2rem;
+      padding: 2.75rem 2rem;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       backdrop-filter: blur(20px);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
       position: relative;
-      overflow: hidden;
     }
 
     .hero-title {
@@ -164,9 +164,9 @@
     .hero-subtitle {
       font-size: 0.95rem;
       color: var(--text-muted);
-      max-width: 540px;
+      max-width: 500px;
       line-height: 1.5;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
     }
 
     .stats-overview {
@@ -174,15 +174,15 @@
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 0.75rem;
       width: 100%;
-      max-width: 600px;
-      margin-bottom: 1.75rem;
+      max-width: 520px;
+      margin-bottom: 2rem;
     }
 
     .stat-pill {
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 0.75rem 0.5rem;
+      padding: 0.85rem 0.5rem;
       text-align: center;
     }
 
@@ -191,7 +191,7 @@
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--text-muted);
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.25rem;
     }
 
     .stat-pill-val {
@@ -202,203 +202,10 @@
 
     .hero-cta {
       display: flex;
-      gap: 0.75rem;
-    }
-
-    /* Home Reference Tables Container */
-    .dashboard-container {
-      display: flex;
       flex-direction: column;
-      gap: 1.75rem;
-    }
-
-    .dash-section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 1.5rem;
-      backdrop-filter: blur(16px);
-    }
-
-    .section-title {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: #818cf8;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .section-subtitle {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-weight: 500;
-      text-transform: none;
-    }
-
-    /* Grid Cells */
-    .grid-table {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 0.5rem;
-    }
-
-    .math-cell {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 0.6rem 0.4rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-      transition: all 0.15s;
-    }
-
-    .math-cell:hover {
-      border-color: var(--border-focus);
-      background: rgba(99, 102, 241, 0.1);
-      transform: translateY(-1px);
-    }
-
-    .math-cell-base {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .math-cell-val {
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      font-weight: 700;
-      color: #38bdf8;
-    }
-
-    /* Fractions Sub-Sections & Visual Organization */
-    .frac-sub-header {
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #38bdf8;
-      margin-bottom: 0.6rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .frac-base-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .multiples-family-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 0.75rem;
-    }
-
-    .family-card {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 0.75rem 0.85rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .family-title {
-      font-family: var(--font-sans);
-      font-size: 0.74rem;
-      font-weight: 800;
-      color: #a5b4fc;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      padding-bottom: 0.35rem;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .family-items {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 0.4rem;
-    }
-
-    .frac-chip {
-      background: rgba(255, 255, 255, 0.035);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 8px;
-      padding: 0.45rem 0.6rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.15s;
-    }
-
-    .frac-chip:hover {
-      border-color: #818cf8;
-      background: rgba(99, 102, 241, 0.1);
-    }
-
-    .frac-chip-num {
-      font-family: var(--font-mono);
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: #818cf8;
-    }
-
-    .frac-chip-pct {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #f3f4f6;
-    }
-
-    /* Multiplication Tables Grid */
-    .tables-matrix {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 0.75rem;
-    }
-
-    .table-col-card {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 0.75rem;
-    }
-
-    .table-col-header {
-      font-family: var(--font-sans);
-      font-size: 0.78rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #a5b4fc;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 0.4rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .table-col-row {
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 0.76rem;
-      line-height: 1.6;
-      color: var(--text-muted);
-    }
-
-    .table-col-row b {
-      color: #f3f4f6;
+      width: 100%;
+      max-width: 320px;
     }
 
     /* Sprint Rush Arena */
@@ -635,6 +442,255 @@
       border-radius: 6px;
     }
 
+    /* Modal - Reference Tables */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1.25rem;
+    }
+
+    .modal-content {
+      background: #0d101a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      max-width: 960px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .modal-nav {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .modal-nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .modal-nav-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .modal-nav-btn.active {
+      color: #fff;
+      background: var(--accent);
+    }
+
+    .modal-body {
+      padding: 1.5rem 1.75rem;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* Structured Visual Tables */
+    .grid-table {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .math-cell {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.6rem 0.4rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      transition: all 0.15s;
+    }
+
+    .math-cell:hover {
+      border-color: var(--border-focus);
+      background: rgba(99, 102, 241, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .math-cell-base {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .math-cell-val {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    /* Fractions Sub-Sections */
+    .frac-sub-header {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #38bdf8;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .frac-base-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .multiples-family-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .family-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .family-title {
+      font-family: var(--font-sans);
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: #a5b4fc;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .family-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 0.4rem;
+    }
+
+    .frac-chip {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s;
+    }
+
+    .frac-chip:hover {
+      border-color: #818cf8;
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .frac-chip-num {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #818cf8;
+    }
+
+    .frac-chip-pct {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #f3f4f6;
+    }
+
+    /* Multiplication Tables Grid */
+    .tables-matrix {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .table-col-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem;
+    }
+
+    .table-col-header {
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a5b4fc;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .table-col-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .table-col-row b {
+      color: #f3f4f6;
+    }
+
+    .section-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #818cf8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -650,15 +706,13 @@
       CAT SPRINT RUSH
     </div>
     <div class="nav-actions">
-      <button class="btn btn-ghost" id="nav-home-btn" onclick="navigateTo('home')">🏠 Dashboard</button>
-      <button class="btn btn-primary" id="nav-rush-btn" onclick="startRush()">⚡ Start 15-Min Sprint</button>
+      <button class="btn btn-ghost" onclick="openModal()">📚 Reference Tables</button>
+      <button class="btn btn-primary" id="header-launch-btn" onclick="startRush()">⚡ Start Sprint</button>
     </div>
   </header>
 
-  <!-- VIEW 1: HOME PAGE DASHBOARD -->
-  <main id="home-view" class="dashboard-container">
-    
-    <!-- Hero / Sprint Launchpad -->
+  <!-- VIEW 1: HOME PAGE HERO -->
+  <main id="home-view">
     <section class="home-hero">
       <h1 class="hero-title">Calculation Conditioning Sprint</h1>
       <p class="hero-subtitle">
@@ -685,52 +739,11 @@
         <button class="btn btn-primary" style="font-size: 1.05rem; padding: 0.85rem 2rem;" onclick="startRush()">
           🚀 Launch 15-Min Rush
         </button>
+        <button class="btn btn-secondary" onclick="openModal()">
+          📚 Open Reference Tables
+        </button>
       </div>
     </section>
-
-    <!-- Section 1: Fractions & Percentages Reference -->
-    <section class="dash-section">
-      <div class="section-title">
-        <span>📊 Core Fraction to Percentage Equivalents</span>
-        <span class="section-subtitle">Unit Fractions & Common Multiples</span>
-      </div>
-
-      <!-- Part 1: Unit Fractions -->
-      <div class="frac-sub-header">🔹 Part 1: Unit Fractions (Numerator = 1, 1/2 to 1/20)</div>
-      <div class="frac-base-grid" id="home-base-fractions"></div>
-
-      <!-- Part 2: Multiples -->
-      <div class="frac-sub-header" style="color: #a5b4fc; margin-top: 0.75rem;">🔹 Part 2: Common Multiples (Grouped by Denominator)</div>
-      <div class="multiples-family-container" id="home-multiples-fractions"></div>
-    </section>
-
-    <!-- Section 2: Squares (1 to 30) -->
-    <section class="dash-section">
-      <div class="section-title">
-        <span>⚡ Squares (1² to 30²)</span>
-        <span class="section-subtitle">Rapid Base Recall</span>
-      </div>
-      <div class="grid-table" id="home-squares-grid"></div>
-    </section>
-
-    <!-- Section 3: Cubes (1 to 20) -->
-    <section class="dash-section">
-      <div class="section-title">
-        <span>🧊 Cubes (1³ to 20³)</span>
-        <span class="section-subtitle">High-Range Volume Recall</span>
-      </div>
-      <div class="grid-table" id="home-cubes-grid"></div>
-    </section>
-
-    <!-- Section 4: Multiplication Tables (1 to 30) -->
-    <section class="dash-section">
-      <div class="section-title">
-        <span>🔢 Multiplication Tables (1 through 30)</span>
-        <span class="section-subtitle">Full 1–30 Multiples</span>
-      </div>
-      <div class="tables-matrix" id="home-tables-matrix"></div>
-    </section>
-
   </main>
 
   <!-- VIEW 2: ACTIVE SPRINT RUSH ARENA -->
@@ -806,7 +819,7 @@
 
       <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
         <button class="btn btn-primary" onclick="startRush()">🔄 Play Again</button>
-        <button class="btn btn-secondary" onclick="navigateTo('home')">🏠 Back to Dashboard</button>
+        <button class="btn btn-secondary" onclick="navigateTo('home')">🏠 Back to Home</button>
       </div>
     </div>
 
@@ -819,6 +832,62 @@
     </div>
   </section>
 
+</div>
+
+<!-- Reference Modal Dashboard -->
+<div id="ref-modal" class="modal-backdrop hidden" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #fff;">Reference Dashboard (1 through 30)</h3>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Key foundational calculations for rapid retrieval</p>
+      </div>
+      <button class="btn btn-ghost" style="padding: 0.35rem 0.7rem; font-size: 0.9rem;" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- Modal Filter Tabs -->
+    <div class="modal-nav">
+      <button class="modal-nav-btn active" id="mnav-all" onclick="filterModalTab('all')">All References</button>
+      <button class="modal-nav-btn" id="mnav-fractions" onclick="filterModalTab('fractions')">Fractions & %</button>
+      <button class="modal-nav-btn" id="mnav-powers" onclick="filterModalTab('powers')">Squares & Cubes</button>
+      <button class="modal-nav-btn" id="mnav-tables" onclick="filterModalTab('tables')">Tables (1–30)</button>
+    </div>
+
+    <div class="modal-body" id="modal-body-content">
+      
+      <!-- FRACTIONS SECTION -->
+      <section id="sec-fractions">
+        <div class="section-title">📊 Fraction to Percentage Equivalents</div>
+        
+        <!-- Part 1: Unit Fractions -->
+        <div class="frac-sub-header">🔹 Part 1: Unit Fractions (Numerator = 1, 1/2 to 1/20)</div>
+        <div class="frac-base-grid" id="modal-base-fractions-grid"></div>
+
+        <!-- Part 2: Multiples -->
+        <div class="frac-sub-header" style="color: #a5b4fc; margin-top: 0.5rem;">🔹 Part 2: Common Multiples (Grouped by Denominator)</div>
+        <div class="multiples-family-container" id="modal-multiples-container"></div>
+      </section>
+
+      <!-- SQUARES SECTION -->
+      <section id="sec-squares">
+        <div class="section-title">⚡ Squares (1² to 30²)</div>
+        <div class="grid-table" id="modal-squares-grid"></div>
+      </section>
+
+      <!-- CUBES SECTION -->
+      <section id="sec-cubes">
+        <div class="section-title">🧊 Cubes (1³ to 20³)</div>
+        <div class="grid-table" id="modal-cubes-grid"></div>
+      </section>
+
+      <!-- MULTIPLICATION TABLES SECTION -->
+      <section id="sec-tables">
+        <div class="section-title">🔢 Multiplication Tables (1 through 30)</div>
+        <div class="tables-matrix" id="modal-tables-matrix"></div>
+      </section>
+
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1541,7 +1610,29 @@
     document.getElementById('hist-drills').textContent = drills;
   }
 
-  function renderHomeDashboard() {
+  // Modal Handlers
+  function openModal() {
+    document.getElementById('ref-modal').classList.remove('hidden');
+  }
+
+  function closeModal(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById('ref-modal').classList.add('hidden');
+  }
+
+  function filterModalTab(tab) {
+    const buttons = ['all', 'fractions', 'powers', 'tables'];
+    buttons.forEach(b => {
+      document.getElementById(`mnav-${b}`).classList.toggle('active', b === tab);
+    });
+
+    document.getElementById('sec-fractions').classList.toggle('hidden', tab !== 'all' && tab !== 'fractions');
+    document.getElementById('sec-squares').classList.toggle('hidden', tab !== 'all' && tab !== 'powers');
+    document.getElementById('sec-cubes').classList.toggle('hidden', tab !== 'all' && tab !== 'powers');
+    document.getElementById('sec-tables').classList.toggle('hidden', tab !== 'all' && tab !== 'tables');
+  }
+
+  function initReferenceData() {
     // 1. Fractions Part 1: Base Unit Fractions (1/2 to 1/20)
     let baseFrHtml = '';
     BASE_UNIT_FRACTIONS.forEach(f => {
@@ -1552,7 +1643,7 @@
         </div>
       `;
     });
-    document.getElementById('home-base-fractions').innerHTML = baseFrHtml;
+    document.getElementById('modal-base-fractions-grid').innerHTML = baseFrHtml;
 
     // 2. Fractions Part 2: Multiples Grouped By Denominator Families
     let familyHtml = '';
@@ -1577,7 +1668,7 @@
         </div>
       `;
     });
-    document.getElementById('home-multiples-fractions').innerHTML = familyHtml;
+    document.getElementById('modal-multiples-container').innerHTML = familyHtml;
 
     // 3. Squares Grid (1 to 30)
     let sqHtml = '';
@@ -1589,7 +1680,7 @@
         </div>
       `;
     }
-    document.getElementById('home-squares-grid').innerHTML = sqHtml;
+    document.getElementById('modal-squares-grid').innerHTML = sqHtml;
 
     // 4. Cubes Grid (1 to 20)
     let cbHtml = '';
@@ -1601,7 +1692,7 @@
         </div>
       `;
     }
-    document.getElementById('home-cubes-grid').innerHTML = cbHtml;
+    document.getElementById('modal-cubes-grid').innerHTML = cbHtml;
 
     // 5. Multiplication Tables (1 to 30)
     let tbHtml = '';
@@ -1622,7 +1713,7 @@
         </div>
       `;
     }
-    document.getElementById('home-tables-matrix').innerHTML = tbHtml;
+    document.getElementById('modal-tables-matrix').innerHTML = tbHtml;
   }
 
   document.addEventListener('keydown', (e) => {
@@ -1632,7 +1723,7 @@
   });
 
   window.addEventListener('DOMContentLoaded', () => {
-    renderHomeDashboard();
+    initReferenceData();
     loadHistoricalData();
     navigateTo('home');
   });
