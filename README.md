@@ -8,11 +8,11 @@
 
 ## 🎯 The Purpose
 
-In competitive aptitude exams like **CAT (Common Admission Test)**, the primary bottleneck in Quant and Data Interpretation & Logical Reasoning (DILR) is **working memory overload**. 
+In competitive aptitude exams like **CAT (Common Admission Test)**, knowing concepts, formulas, and problem-solving shortcuts is essential—but none of it matters if you cannot accurately and rapidly arrive at the final numerical answer.
 
-When intermediate calculations (such as $37.5\% \text{ of } 240$, $19 \times 7$, or $28^2 - 22^2$) take 15–20 seconds on rough scratch sheets, students experience cognitive fatigue and run out of time on multi-step reasoning questions.
+When intermediate calculations (such as $37.5\% \text{ of } 240$, $19 \times 7$, or $28^2 - 22^2$) take 15–20 seconds on rough sheets, valuable time slips away and careless arithmetic errors cost marks.
 
-**Calculation Rush** transforms procedural calculation from the prefrontal cortex (slow, conscious computation) into the basal ganglia (instant subconscious reflex) through rapid, gamified, multi-topic hybrid sprints.
+**Calculation Rush** conditions your mental arithmetic into pure subconscious reflex through rapid, gamified, multi-topic hybrid sprints. It bridges the gap between knowing the concept and executing the final calculation with speed and accuracy under clock pressure.
 
 ---
 
