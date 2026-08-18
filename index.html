@@ -173,6 +173,37 @@
       margin-bottom: 1.5rem;
     }
 
+    .trend-card {
+      width: 100%;
+      max-width: 520px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 0.9rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      text-align: left;
+    }
+
+    .trend-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a5b4fc;
+    }
+
+    .sparkline-canvas {
+      width: 100%;
+      height: 44px;
+      display: block;
+    }
+
     .config-card {
       width: 100%;
       max-width: 520px;
@@ -1094,6 +1125,15 @@
         Solve as many speed calculation questions as you can before the clock runs out.<br>
         <span style="color: var(--success); font-weight:700;">+3</span> for correct, <span style="color: var(--danger); font-weight:700;">-1</span> for incorrect.
       </p>
+
+      <!-- Minimalist Local Performance Trend -->
+      <div class="trend-card hidden" id="trend-card">
+        <div class="trend-header">
+          <span>Recent Pacing Trend (Sec / Question)</span>
+          <span id="trend-summary" style="font-family: var(--font-mono); color: #fff;"></span>
+        </div>
+        <canvas id="sparkline-canvas" class="sparkline-canvas"></canvas>
+      </div>
 
       <!-- Drill Configuration Options -->
       <div class="config-card">
@@ -2198,6 +2238,90 @@
       `;
       revContainer.appendChild(card);
     });
+
+    // Save sprint data to localStorage and re-render sparkline
+    saveSprintHistory({
+      netScore,
+      accuracy,
+      avgPace: parseFloat((timeSpentSeconds / attempted).toFixed(1)),
+      date: Date.now()
+    });
+  }
+
+  function saveSprintHistory(record) {
+    try {
+      const hist = JSON.parse(localStorage.getItem('rush_history') || '[]');
+      hist.push(record);
+      if (hist.length > 10) hist.shift(); // Keep last 10
+      localStorage.setItem('rush_history', JSON.stringify(hist));
+      renderSparkline();
+    } catch(e) {}
+  }
+
+  function renderSparkline() {
+    try {
+      const hist = JSON.parse(localStorage.getItem('rush_history') || '[]');
+      const card = document.getElementById('trend-card');
+      if (!hist || hist.length < 2) {
+        card.classList.add('hidden');
+        return;
+      }
+      card.classList.remove('hidden');
+
+      const latest = hist[hist.length - 1];
+      const prev = hist[hist.length - 2];
+      const diff = (latest.avgPace - prev.avgPace).toFixed(1);
+      const isFaster = latest.avgPace <= prev.avgPace;
+      
+      document.getElementById('trend-summary').innerHTML = `
+        Latest: <b>${latest.avgPace}s</b> / Q 
+        <span style="font-size: 0.7rem; color: ${isFaster ? 'var(--success)' : 'var(--danger)'};">
+          (${isFaster ? '↓' : '↑'} ${Math.abs(diff)}s)
+        </span>
+      `;
+
+      const canvas = document.getElementById('sparkline-canvas');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const w = rect.width;
+      const h = rect.height;
+      const pts = hist.map(h => h.avgPace);
+      const minVal = Math.min(...pts) * 0.85;
+      const maxVal = Math.max(...pts) * 1.15;
+      const range = maxVal - minVal || 1;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw path
+      ctx.beginPath();
+      const step = (w - 20) / (pts.length - 1);
+      pts.forEach((val, i) => {
+        const x = 10 + i * step;
+        const y = h - 8 - ((val - minVal) / range) * (h - 16);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+
+      ctx.strokeStyle = '#818cf8';
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      // Draw dots
+      pts.forEach((val, i) => {
+        const x = 10 + i * step;
+        const y = h - 8 - ((val - minVal) / range) * (h - 16);
+        ctx.beginPath();
+        ctx.arc(x, y, i === pts.length - 1 ? 4 : 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = i === pts.length - 1 ? '#38bdf8' : '#818cf8';
+        ctx.fill();
+      });
+    } catch(e) {}
   }
 
   function retryMistakes() {
@@ -2411,6 +2535,7 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     initReferenceData();
+    renderSparkline();
     navigateTo('home');
   });
 </script>
