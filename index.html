@@ -1112,6 +1112,7 @@
     </div>
     <div class="nav-actions">
       <button class="btn btn-ghost" id="sound-btn" onclick="toggleSound()">Sound: ON</button>
+      <button class="btn btn-ghost" onclick="openHistoryModal()">History</button>
       <button class="btn btn-ghost" onclick="openTutorial()">Guide</button>
       <button class="btn btn-ghost" onclick="openModal()">Reference</button>
       <button class="btn btn-primary" id="header-launch-btn" onclick="startRush()">Start</button>
@@ -1126,15 +1127,6 @@
         Solve as many speed calculation questions as you can before the clock runs out.<br>
         <span style="color: var(--success); font-weight:700;">+3</span> for correct, <span style="color: var(--danger); font-weight:700;">-1</span> for incorrect.
       </p>
-
-      <!-- Minimalist Local Performance Trend -->
-      <div class="trend-card hidden" id="trend-card">
-        <div class="trend-header">
-          <span>Recent Pacing Trend (Sec / Question)</span>
-          <span id="trend-summary" style="font-family: var(--font-mono); color: #fff;"></span>
-        </div>
-        <canvas id="sparkline-canvas" class="sparkline-canvas"></canvas>
-      </div>
 
       <!-- Drill Configuration Options -->
       <div class="config-card">
@@ -1333,8 +1325,25 @@
 
 </div>
 
-<!-- Tutorial / Quick Start Modal -->
-<div id="tutorial-modal" class="modal-backdrop hidden" onclick="closeTutorial(event)">
+<!-- History Modal -->
+<div id="history-modal" class="modal-backdrop hidden" onclick="closeHistoryModal(event)">
+  <div class="modal-content" style="max-width: 620px;" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #fff;">Attempt History</h3>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Your recent sprint performance stored locally</p>
+      </div>
+      <button class="btn btn-ghost" style="padding: 0.35rem 0.7rem; font-size: 0.9rem;" onclick="closeHistoryModal()">✕</button>
+    </div>
+
+    <div class="modal-body" style="padding: 1.25rem 1.5rem; max-height: 70vh; overflow-y: auto;">
+      <div id="history-empty-msg" style="text-align: center; color: var(--text-muted); padding: 2rem 0; font-size: 0.9rem;">
+        No sprints completed yet. Complete a sprint to see your history!
+      </div>
+      <div id="history-list" style="display: flex; flex-direction: column; gap: 0.65rem;"></div>
+    </div>
+  </div>
+</div>
   <div class="modal-content" style="max-width: 540px;" onclick="event.stopPropagation()">
     <div class="modal-header">
       <div>
@@ -2286,87 +2295,83 @@
       revContainer.appendChild(card);
     });
 
-    // Save sprint data to localStorage and re-render sparkline
+    // Save sprint data to localStorage
     saveSprintHistory({
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      duration: `${configDuration}m`,
+      difficulty: configDifficulty.toUpperCase(),
+      qtype: configQType.toUpperCase(),
       netScore,
-      accuracy,
-      avgPace: parseFloat((timeSpentSeconds / attempted).toFixed(1)),
-      date: Date.now()
+      correct,
+      wrong,
+      accuracy: `${accuracy}%`,
+      avgPace: `${(timeSpentSeconds / attempted).toFixed(1)}s`
     });
   }
 
   function saveSprintHistory(record) {
     try {
       const hist = JSON.parse(localStorage.getItem('rush_history') || '[]');
-      hist.push(record);
-      if (hist.length > 10) hist.shift(); // Keep last 10
+      hist.unshift(record); // newest first
+      if (hist.length > 25) hist.pop(); // keep last 25
       localStorage.setItem('rush_history', JSON.stringify(hist));
-      renderSparkline();
     } catch(e) {}
   }
 
-  function renderSparkline() {
+  function openHistoryModal() {
+    renderHistoryList();
+    document.getElementById('history-modal').classList.remove('hidden');
+  }
+
+  function closeHistoryModal(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById('history-modal').classList.add('hidden');
+  }
+
+  function renderHistoryList() {
     try {
       const hist = JSON.parse(localStorage.getItem('rush_history') || '[]');
-      const card = document.getElementById('trend-card');
-      if (!hist || hist.length < 2) {
-        card.classList.add('hidden');
+      const container = document.getElementById('history-list');
+      const emptyMsg = document.getElementById('history-empty-msg');
+
+      if (!hist || hist.length === 0) {
+        emptyMsg.style.display = 'block';
+        container.innerHTML = '';
         return;
       }
-      card.classList.remove('hidden');
 
-      const latest = hist[hist.length - 1];
-      const prev = hist[hist.length - 2];
-      const diff = (latest.avgPace - prev.avgPace).toFixed(1);
-      const isFaster = latest.avgPace <= prev.avgPace;
-      
-      document.getElementById('trend-summary').innerHTML = `
-        Latest: <b>${latest.avgPace}s</b> / Q 
-        <span style="font-size: 0.7rem; color: ${isFaster ? 'var(--success)' : 'var(--danger)'};">
-          (${isFaster ? '↓' : '↑'} ${Math.abs(diff)}s)
-        </span>
-      `;
+      emptyMsg.style.display = 'none';
+      container.innerHTML = '';
 
-      const canvas = document.getElementById('sparkline-canvas');
-      const ctx = canvas.getContext('2d');
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
+      hist.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'analytics-stat-row';
+        row.style.padding = '0.75rem 0.9rem';
+        row.style.background = 'rgba(255, 255, 255, 0.03)';
+        row.style.borderRadius = '10px';
+        row.style.border = '1px solid var(--card-border)';
+        row.style.display = 'flex';
+        row.style.justifyContent = 'space-between';
+        row.style.alignItems = 'center';
+        row.style.flexWrap = 'wrap';
+        row.style.gap = '0.5rem';
 
-      const w = rect.width;
-      const h = rect.height;
-      const pts = hist.map(h => h.avgPace);
-      const minVal = Math.min(...pts) * 0.85;
-      const maxVal = Math.max(...pts) * 1.15;
-      const range = maxVal - minVal || 1;
-
-      ctx.clearRect(0, 0, w, h);
-
-      // Draw path
-      ctx.beginPath();
-      const step = (w - 20) / (pts.length - 1);
-      pts.forEach((val, i) => {
-        const x = 10 + i * step;
-        const y = h - 8 - ((val - minVal) / range) * (h - 16);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-
-      ctx.strokeStyle = '#818cf8';
-      ctx.lineWidth = 2.5;
-      ctx.lineJoin = 'round';
-      ctx.stroke();
-
-      // Draw dots
-      pts.forEach((val, i) => {
-        const x = 10 + i * step;
-        const y = h - 8 - ((val - minVal) / range) * (h - 16);
-        ctx.beginPath();
-        ctx.arc(x, y, i === pts.length - 1 ? 4 : 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = i === pts.length - 1 ? '#38bdf8' : '#818cf8';
-        ctx.fill();
+        row.innerHTML = `
+          <div style="display: flex; flex-direction: column; gap: 0.15rem;">
+            <div style="font-weight: 700; font-size: 0.85rem; color: #fff;">
+              ${item.duration} • ${item.difficulty} • ${item.qtype}
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">
+              ${item.date}
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.85rem; font-family: var(--font-mono); font-size: 0.82rem;">
+            <div>Score: <b style="color: #818cf8;">${item.netScore}</b></div>
+            <div>Acc: <b style="color: var(--success);">${item.accuracy}</b></div>
+            <div>Avg Time: <b style="color: #38bdf8;">${item.avgPace}</b></div>
+          </div>
+        `;
+        container.appendChild(row);
       });
     } catch(e) {}
   }
@@ -2603,7 +2608,6 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     initReferenceData();
-    renderSparkline();
     checkFirstTimeTutorial();
     navigateTo('home');
   });
