@@ -1019,118 +1019,146 @@
     /* Mobile Responsive */
     @media (max-width: 640px) {
       body {
-        padding: 0.6rem 0.5rem 2rem;
+        padding: 0.4rem 0.5rem 0.5rem;
         justify-content: flex-start;
       }
 
+      body.locked-screen {
+        overflow: hidden;
+        height: 100dvh;
+        max-height: 100dvh;
+      }
+
       .container {
-        gap: 0.75rem;
+        gap: 0.45rem;
+        height: 100%;
+        max-height: 100%;
       }
 
       header {
-        padding: 0.6rem 0.8rem;
+        padding: 0.45rem 0.75rem;
         border-radius: 12px;
         flex-wrap: nowrap;
         justify-content: space-between;
       }
 
       .brand-title {
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         white-space: nowrap;
         letter-spacing: -0.01em;
       }
 
       .nav-actions {
         display: flex;
-        gap: 0.35rem;
+        gap: 0.3rem;
         align-items: center;
       }
 
       .nav-actions .btn {
-        padding: 0.35rem 0.6rem;
-        font-size: 0.75rem;
+        padding: 0.3rem 0.55rem;
+        font-size: 0.72rem;
         border-radius: 8px;
         white-space: nowrap;
       }
 
       .home-hero {
-        padding: 1.75rem 1rem;
-        border-radius: 16px;
+        padding: 0.75rem 0.75rem;
+        border-radius: 14px;
       }
 
       .hero-title {
-        font-size: 1.45rem;
+        font-size: 1.2rem;
+        margin-bottom: 0.15rem;
       }
 
       .hero-subtitle {
-        font-size: 0.82rem;
-        margin-bottom: 1.25rem;
+        font-size: 0.74rem;
+        margin-bottom: 0.65rem;
+        line-height: 1.35;
       }
 
       .config-card {
-        padding: 1rem 0.85rem;
+        padding: 0.65rem 0.7rem;
+        gap: 0.6rem;
+        margin-bottom: 0.65rem;
+      }
+
+      .config-group {
+        gap: 0.25rem;
+      }
+
+      .config-label {
+        font-size: 0.72rem;
       }
 
       .config-options {
         grid-template-columns: repeat(3, 1fr);
+        gap: 0.3rem;
       }
 
       .config-opt-btn {
-        padding: 0.5rem 0.3rem;
-        font-size: 0.75rem;
+        padding: 0.4rem 0.25rem;
+        font-size: 0.72rem;
+        border-radius: 8px;
+      }
+
+      .hero-cta .btn {
+        padding: 0.65rem 1.5rem !important;
+        font-size: 0.92rem !important;
+        border-radius: 12px;
       }
 
       .rush-hud {
-        padding: 0.65rem 0.9rem;
+        padding: 0.5rem 0.75rem;
       }
 
       .hud-value {
-        font-size: 1.15rem;
+        font-size: 1.05rem;
       }
 
       .timer-val {
-        font-size: 1.35rem;
+        font-size: 1.25rem;
       }
 
       .arena-card {
-        padding: 2.25rem 1rem 1.75rem;
-        min-height: 320px;
-        border-radius: 16px;
+        padding: 1.75rem 0.85rem 1.25rem;
+        min-height: 270px;
+        border-radius: 14px;
       }
 
       .q-badge {
-        top: 1rem;
-        left: 1rem;
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
+        top: 0.75rem;
+        left: 0.75rem;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.45rem;
       }
 
       .q-meta-tag {
-        top: 1rem;
-        right: 1rem;
-        font-size: 0.65rem;
-        padding: 0.25rem 0.5rem;
+        top: 0.75rem;
+        right: 0.75rem;
+        font-size: 0.62rem;
+        padding: 0.2rem 0.45rem;
       }
 
       .expression {
-        font-size: 1.75rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.65rem;
+        margin-bottom: 1.25rem;
       }
 
       .rush-input {
-        font-size: 1.5rem;
-        padding: 0.6rem 0.75rem;
+        font-size: 1.4rem;
+        padding: 0.55rem 0.7rem;
       }
 
       .mcq-container {
         grid-template-columns: 1fr;
-        gap: 0.6rem;
+        gap: 0.5rem;
       }
 
       .mcq-btn {
-        padding: 0.75rem 0.9rem;
-        font-size: 1.1rem;
-        min-height: 48px;
+        padding: 0.65rem 0.8rem;
+        font-size: 1.05rem;
+        min-height: 44px;
       }
 
       .score-banner {
@@ -2083,7 +2111,14 @@
     document.getElementById('home-view').classList.toggle('hidden', view !== 'home');
     document.getElementById('rush-view').classList.toggle('hidden', view !== 'rush');
     document.getElementById('results-view').classList.toggle('hidden', view !== 'results');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Lock scrolling on Home and Rush views so entire UI fits in single frame
+    if (view === 'results') {
+      document.body.classList.remove('locked-screen');
+    } else {
+      document.body.classList.add('locked-screen');
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
   function startRush(isRetryMode = false, customMistakeList = null) {
@@ -2837,18 +2872,44 @@
     document.getElementById('tour-prev-btn').style.visibility = currentTourStep === 0 ? 'hidden' : 'visible';
     document.getElementById('tour-next-btn').textContent = currentTourStep === TOUR_STEPS.length - 1 ? 'Start Drilling' : 'Next';
 
-    // Scroll target to top of viewport with offset
-    if (step.targetId === 'tour-top-bar' || step.targetId === 'tour-hero-title') {
-      window.scrollTo({ top: 0, behavior: 'instant' });
+    const rect = target.getBoundingClientRect();
+    const padding = 6;
+    const spot = document.getElementById('tour-spotlight');
+    
+    const spotTop = Math.max(2, rect.top - padding);
+    const spotLeft = Math.max(2, rect.left - padding);
+    const spotWidth = Math.min(window.innerWidth - 4, rect.width + (padding * 2));
+    const spotHeight = rect.height + (padding * 2);
+
+    spot.style.width = `${spotWidth}px`;
+    spot.style.height = `${spotHeight}px`;
+    spot.style.top = `${spotTop}px`;
+    spot.style.left = `${spotLeft}px`;
+
+    const tip = document.getElementById('tour-tooltip');
+    const tipWidth = Math.min(300, window.innerWidth - 24);
+    const tipHeight = tip.offsetHeight || 180;
+    let tipTop, tipLeft;
+
+    if (step.targetId === 'tour-top-bar') {
+      tipTop = rect.bottom + 12;
+    } else if (step.targetId === 'tour-topics-group' || step.targetId === 'tour-drill-settings') {
+      // Place tooltip with strict viewport clearance inside locked single frame
+      const spaceBelow = window.innerHeight - rect.bottom;
+      if (spaceBelow >= tipHeight + 12) {
+        tipTop = rect.bottom + 8;
+      } else {
+        tipTop = Math.max(8, rect.top - tipHeight - 8);
+      }
     } else {
-      const targetTop = target.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: Math.max(0, targetTop - 70), behavior: 'instant' });
+      tipTop = rect.bottom + 10;
     }
 
-    // Immediate placement
-    updateTourPlacement();
-    // Second pass for layout stability
-    requestAnimationFrame(updateTourPlacement);
+    tipLeft = rect.left + (rect.width / 2) - (tipWidth / 2);
+    tipLeft = Math.max(12, Math.min(window.innerWidth - tipWidth - 12, tipLeft));
+
+    tip.style.top = `${tipTop}px`;
+    tip.style.left = `${tipLeft}px`;
   }
 
   function checkFirstTimeTour() {
