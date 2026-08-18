@@ -2785,43 +2785,57 @@
     document.getElementById('tour-prev-btn').style.visibility = currentTourStep === 0 ? 'hidden' : 'visible';
     document.getElementById('tour-next-btn').textContent = currentTourStep === TOUR_STEPS.length - 1 ? 'Start Drilling' : 'Next';
 
-    // Smooth scroll target into center first, then calculate fixed position
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // If spotlighting top bar, scroll immediately to top of page
+    if (step.targetId === 'tour-top-bar') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
     setTimeout(() => {
       const rect = target.getBoundingClientRect();
-      const padding = 8;
+      const padding = 6;
       const spot = document.getElementById('tour-spotlight');
-      spot.style.width = `${rect.width + (padding * 2)}px`;
-      spot.style.height = `${rect.height + (padding * 2)}px`;
-      spot.style.top = `${rect.top - padding}px`;
-      spot.style.left = `${rect.left - padding}px`;
+      
+      // Ensure spotlight fits cleanly in viewport
+      const spotTop = Math.max(2, rect.top - padding);
+      const spotLeft = Math.max(2, rect.left - padding);
+      const spotWidth = Math.min(window.innerWidth - 4, rect.width + (padding * 2));
+      const spotHeight = rect.height + (padding * 2);
+
+      spot.style.width = `${spotWidth}px`;
+      spot.style.height = `${spotHeight}px`;
+      spot.style.top = `${spotTop}px`;
+      spot.style.left = `${spotLeft}px`;
 
       // Position tooltip with clearance above or below target in viewport
       const tip = document.getElementById('tour-tooltip');
-      const tipWidth = Math.min(300, window.innerWidth - 28);
+      const tipWidth = Math.min(300, window.innerWidth - 24);
       const tipHeight = tip.offsetHeight || 200;
       let tipTop, tipLeft;
 
-      // Decide placement based on available space in viewport
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-
-      if (spaceBelow > tipHeight + 20) {
-        tipTop = rect.bottom + 14;
-      } else if (spaceAbove > tipHeight + 20) {
-        tipTop = rect.top - tipHeight - 14;
+      if (step.targetId === 'tour-top-bar') {
+        // Place strictly below the top bar with generous clearance
+        tipTop = rect.bottom + 16;
       } else {
-        // Fallback centered
-        tipTop = Math.max(14, (window.innerHeight / 2) - (tipHeight / 2));
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        if (spaceBelow > tipHeight + 20) {
+          tipTop = rect.bottom + 14;
+        } else if (spaceAbove > tipHeight + 20) {
+          tipTop = rect.top - tipHeight - 14;
+        } else {
+          tipTop = Math.max(14, (window.innerHeight / 2) - (tipHeight / 2));
+        }
       }
 
       tipLeft = rect.left + (rect.width / 2) - (tipWidth / 2);
-      tipLeft = Math.max(14, Math.min(window.innerWidth - tipWidth - 14, tipLeft));
+      tipLeft = Math.max(12, Math.min(window.innerWidth - tipWidth - 12, tipLeft));
 
       tip.style.top = `${tipTop}px`;
       tip.style.left = `${tipLeft}px`;
-    }, 120);
+    }, 180);
   }
 
   function checkFirstTimeTour() {
