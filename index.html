@@ -945,7 +945,7 @@
     /* Mobile Responsive */
     @media (max-width: 640px) {
       body {
-        padding: 0.5rem 0.4rem 2rem;
+        padding: 0.6rem 0.5rem 2rem;
         justify-content: flex-start;
       }
 
@@ -954,26 +954,27 @@
       }
 
       header {
-        padding: 0.5rem 0.65rem;
+        padding: 0.6rem 0.8rem;
         border-radius: 12px;
         flex-wrap: nowrap;
-        gap: 0.4rem;
+        justify-content: space-between;
       }
 
       .brand-title {
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         white-space: nowrap;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.01em;
       }
 
       .nav-actions {
-        gap: 0.25rem;
-        flex-shrink: 0;
+        display: flex;
+        gap: 0.35rem;
+        align-items: center;
       }
 
       .nav-actions .btn {
-        padding: 0.35rem 0.55rem;
-        font-size: 0.72rem;
+        padding: 0.35rem 0.6rem;
+        font-size: 0.75rem;
         border-radius: 8px;
         white-space: nowrap;
       }
@@ -1125,7 +1126,6 @@
       <button class="btn btn-ghost" id="sound-btn" onclick="toggleSound()">Sound</button>
       <button class="btn btn-ghost" onclick="openHistoryModal()">History</button>
       <button class="btn btn-ghost" onclick="openModal()">Reference</button>
-      <button class="btn btn-primary" id="header-launch-btn" onclick="startRush()">Start</button>
     </div>
   </header>
 
