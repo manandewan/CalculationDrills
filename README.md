@@ -1,29 +1,29 @@
-# ⚡ Calculation Rush
+# Calculation Rush
 
-> High-intensity, arcade-paced mental arithmetic conditioning engine designed for competitive management entrance examinations (**CAT / XAT / GMAT / GRE**).
+> High-intensity, arcade-paced mental arithmetic conditioning engine designed for competitive management entrance examinations (CAT / XAT / GMAT / GRE).
 
-**🌐 Live Application:** https://manandewan.github.io/CalculationDrills
+**Live Application:** https://manandewan.github.io/CalculationDrills
 
 ---
 
-## 🎯 The Purpose
+## The Purpose
 
-In competitive aptitude exams like **CAT (Common Admission Test)**, knowing concepts, formulas, and problem-solving shortcuts is essential—but none of it matters if you cannot accurately and rapidly arrive at the final numerical answer.
+In competitive aptitude exams like CAT (Common Admission Test), knowing concepts, formulas, and problem-solving shortcuts is essential—but none of it matters if you cannot accurately and rapidly arrive at the final numerical answer.
 
 When intermediate calculations (such as $37.5\% \text{ of } 240$, $19 \times 7$, or $28^2 - 22^2$) take 15–20 seconds on rough sheets, valuable time slips away and careless arithmetic errors cost marks.
 
-**Calculation Rush** conditions your mental arithmetic into pure subconscious reflex through rapid, gamified, multi-topic hybrid sprints. It bridges the gap between knowing the concept and executing the final calculation with speed and accuracy under clock pressure.
+Calculation Rush conditions your mental arithmetic into pure subconscious reflex through rapid, gamified, multi-topic hybrid sprints. It bridges the gap between knowing the concept and executing the final calculation with speed and accuracy under clock pressure.
 
 ---
 
-## ✨ Core Features
+## Core Features
 
-### 1. 🧮 100% Dynamic On-The-Fly Question Engine
+### 1. 100% Dynamic On-The-Fly Question Engine
 * **Infinite Replayability:** Zero static or hardcoded question banks. Every problem, operand, solution step, and distractor is generated algorithmically in real time.
 * **Anti-Repetition Signature Cache:** Tracks the last 15 mathematical signatures to guarantee zero back-to-back duplicate questions.
 * **No Isolated Drills:** Operations are combined into realistic hybrid expressions with addition and subtraction.
 
-### 2. ⚡ Cognitive "Ideal Time" Dynamic Benchmarking
+### 2. Cognitive "Ideal Time" Dynamic Benchmarking
 Every generated question analyzes its own cognitive load (retrieval steps, operations, and intermediate terms) to compute an objective target completion time:
 * **Squares ($1^2\text{--}30^2$):** $+1.2\text{s}$ to $+2.2\text{s}$
 * **Cubes ($1^3\text{--}20^3$):** $+2.0\text{s}$ to $+3.2\text{s}$
@@ -31,20 +31,20 @@ Every generated question analyzes its own cognitive load (retrieval steps, opera
 * **Factorial Ratios ($\frac{7!}{5!}$):** $+2.5\text{s}$ to $+4.5\text{s}$
 * **Equal-Distance Product Twins ($(x-d)(x+d)$):** $+3.0\text{s}$ to $+4.5\text{s}$
 
-### 3. 🛡️ Anti-Cheesing MCQ Distractor Traps
+### 3. Anti-Cheesing MCQ Distractor Traps
 * Distractor options intentionally share identical unit digits ($\pm 10, \pm 20, \pm 50, \pm 100$ offsets).
 * Eliminates the ability to cheese questions via unit-digit elimination; forces full mental computation.
 
-### 4. 🔄 Untimed "Retry Mistakes" Practice Mode
+### 4. Untimed "Retry Mistakes" Practice Mode
 * Sprints log incorrect or skipped questions into an active mistake queue.
-* Clicking **Retry Mistakes** launches an **Untimed Stopwatch Mode** allowing deep, deliberate decomposition of weak areas without clock pressure.
+* Clicking Retry Mistakes launches an Untimed Stopwatch Mode allowing deep, deliberate decomposition of weak areas without clock pressure.
 
-### 5. 📊 Local Analytics & Streak Tracking
+### 5. Local Analytics & Streak Tracking
 * **Detailed Breakdown:** Accuracy %, Net Score ($+3$ for correct, $-1$ for wrong), Average Pace per Question, and Time Sinks.
 * **Weak Area Detection:** Automatically tags categories where accuracy drops below 75%.
-* **Local History Log:** Persists your last 25 sprint attempts in `localStorage` with individual delete (**✕**) and **Clear All** controls.
+* **Local History Log:** Persists your last 25 sprint attempts in localStorage with individual delete and Clear All controls.
 
-### 6. 📱 Interactive Spotlight Guide & Full Reference Dashboard
+### 6. Interactive Spotlight Guide & Full Reference Dashboard
 * **Interactive Spotlight Walkthrough:** 4-step live UI spotlight explaining duration, difficulty modes, topic selectors, and navigation.
 * **Comprehensive Reference Deck:** High-speed lookup tables for:
   * Fractions ($\frac{1}{2}\text{ to }\frac{1}{20}$ and family multiples)
@@ -56,7 +56,7 @@ Every generated question analyzes its own cognitive load (retrieval steps, opera
 
 ---
 
-## 🧠 High-Yield CAT Calculation Patterns
+## High-Yield CAT Calculation Patterns
 
 The generator tests the following high-frequency patterns:
 
@@ -71,7 +71,7 @@ The generator tests the following high-frequency patterns:
 
 ---
 
-## 🛠️ Architecture & Tech Stack
+## Architecture & Tech Stack
 
 * **Zero Dependencies:** Built entirely with standard HTML5, CSS3 (Modern Glassmorphism & Custom Properties), and Vanilla JavaScript (ES6+).
 * **Single File Architecture:** Zero asset build pipelines, zero npm bloating, 100% offline-first execution.
@@ -85,14 +85,14 @@ CalculationDrills/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Option 1: Live Web App
 Open **https://manandewan.github.io/CalculationDrills** directly on any desktop or mobile browser.
 
 ### Option 2: Mobile App Experience (PWA / Add to Home Screen)
 1. Open the app link on iOS Safari or Android Chrome.
-2. Tap **Share** $\rightarrow$ **"Add to Home Screen"**.
+2. Tap Share -> "Add to Home Screen".
 3. Launch directly from your home screen as a full-screen, distraction-free app.
 
 ### Option 3: Local Development
@@ -102,18 +102,18 @@ git clone https://github.com/manandewan/CalculationDrills.git
 cd CalculationDrills
 python3 -m http.server 5173
 ```
-Open **`http://localhost:5173`** in your browser.
+Open `http://localhost:5173` in your browser.
 
 ---
 
-## 📈 Recommended 100-Day Conditioning Routine
+## Recommended 100-Day Conditioning Routine
 
-1. **Daily Anchor:** Do exactly one **15-Minute Sprint** every morning before starting your regular CAT prep.
-2. **First 14 Days (Adaptation):** Allow yourself to jot down **only 1 intermediate anchor number** on paper (e.g. holding `72` while computing `90`).
+1. **Daily Anchor:** Do exactly one 15-Minute Sprint every morning before starting your regular CAT prep.
+2. **First 14 Days (Adaptation):** Allow yourself to jot down only 1 intermediate anchor number on paper (e.g. holding `72` while computing `90`).
 3. **Days 15–100 (Automaticity):** Drop pen and paper completely. Force mental left-to-right decomposition.
-4. **Always Close the Loop:** Use the **Retry Mistakes** untimed mode after every session to eliminate misretrievals before logging off.
+4. **Always Close the Loop:** Use the Retry Mistakes untimed mode after every session to eliminate misretrievals before logging off.
 
 ---
 
-## 📄 License
+## License
 MIT License. Free to use, adapt, and practice with for all competitive exam aspirants.
