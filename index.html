@@ -2268,6 +2268,18 @@
       emptyMsg.style.display = 'none';
       container.innerHTML = '';
 
+      // Clear all header if history exists
+      const clearAllRow = document.createElement('div');
+      clearAllRow.style.display = 'flex';
+      clearAllRow.style.justifyContent = 'space-between';
+      clearAllRow.style.alignItems = 'center';
+      clearAllRow.style.marginBottom = '0.4rem';
+      clearAllRow.innerHTML = `
+        <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">${hist.length} Attempts Logged</span>
+        <button class="btn btn-ghost" style="padding: 2px 8px; font-size: 0.7rem; color: var(--danger); border-color: rgba(239,68,68,0.2);" onclick="clearAllHistory()">Clear All</button>
+      `;
+      container.appendChild(clearAllRow);
+
       hist.forEach((item, idx) => {
         const row = document.createElement('div');
         row.className = 'analytics-stat-row';
@@ -2290,14 +2302,33 @@
               ${item.date}
             </div>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.85rem; font-family: var(--font-mono); font-size: 0.82rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; font-family: var(--font-mono); font-size: 0.82rem;">
             <div>Score: <b style="color: #818cf8;">${item.netScore}</b></div>
             <div>Acc: <b style="color: var(--success);">${item.accuracy}</b></div>
-            <div>Avg Time: <b style="color: #38bdf8;">${item.avgPace}</b></div>
+            <div>Avg: <b style="color: #38bdf8;">${item.avgPace}</b></div>
+            <button class="btn btn-ghost" style="padding: 2px 6px; font-size: 0.75rem; color: var(--text-muted); border: none; margin-left: 0.2rem;" title="Delete this attempt" onclick="deleteHistoryRecord(${idx})">✕</button>
           </div>
         `;
         container.appendChild(row);
       });
+    } catch(e) {}
+  }
+
+  function deleteHistoryRecord(idx) {
+    try {
+      const hist = JSON.parse(localStorage.getItem('rush_history') || '[]');
+      if (idx >= 0 && idx < hist.length) {
+        hist.splice(idx, 1);
+        localStorage.setItem('rush_history', JSON.stringify(hist));
+        renderHistoryList();
+      }
+    } catch(e) {}
+  }
+
+  function clearAllHistory() {
+    try {
+      localStorage.removeItem('rush_history');
+      renderHistoryList();
     } catch(e) {}
   }
 
