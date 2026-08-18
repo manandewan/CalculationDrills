@@ -1113,7 +1113,6 @@
     <div class="nav-actions">
       <button class="btn btn-ghost" id="sound-btn" onclick="toggleSound()">Sound: ON</button>
       <button class="btn btn-ghost" onclick="openHistoryModal()">History</button>
-      <button class="btn btn-ghost" onclick="openTutorial()">Guide</button>
       <button class="btn btn-ghost" onclick="openModal()">Reference</button>
       <button class="btn btn-primary" id="header-launch-btn" onclick="startRush()">Start</button>
     </div>
@@ -1338,81 +1337,6 @@
         No sprints completed yet. Complete a sprint to see your history!
       </div>
       <div id="history-list" style="display: flex; flex-direction: column; gap: 0.65rem;"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Tutorial / Quick Start Multi-Step Walkthrough Modal -->
-<div id="tutorial-modal" class="modal-backdrop hidden" onclick="closeTutorial(event)">
-  <div class="modal-content" style="max-width: 520px;" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <div>
-        <h3 style="font-size: 1.15rem; font-weight: 800; color: #fff;">Quick Start Guide</h3>
-        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;" id="tutorial-step-subtitle">Step 1 of 4: Hybrid Calculation Format</p>
-      </div>
-      <button class="btn btn-ghost" style="padding: 0.35rem 0.7rem; font-size: 0.9rem;" onclick="closeTutorial()">✕</button>
-    </div>
-
-    <div class="modal-body" style="padding: 1.5rem 1.75rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
-      
-      <!-- Step 1 -->
-      <div id="tut-step-1" class="tut-step">
-        <div style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem;">Hybrid Multi-Topic Problems</div>
-        <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.85rem;">
-          To mirror real test conditions, questions are never isolated. They combine 2 to 3 topics at once (e.g. Factorials with Percentages, Powers with Multiplication Tables).
-        </p>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 10px; font-family: var(--font-mono); font-size: 0.85rem; color: #818cf8;">
-          Example: (4! × 3) + (37.5% of 240) = 162
-        </div>
-      </div>
-
-      <!-- Step 2 -->
-      <div id="tut-step-2" class="tut-step hidden">
-        <div style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem;">Scoring & Dynamic Ideal Time</div>
-        <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.85rem;">
-          Each sprint rewards <b style="color: var(--success);">+3</b> for correct answers and penalizes <b style="color: var(--danger);">-1</b> for incorrect attempts.
-        </p>
-        <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6;">
-          Every question features an objective <b>Ideal Time</b> benchmark (typically 5s–11s) dynamically evaluated from the exact mental operations required.
-        </p>
-      </div>
-
-      <!-- Step 3 -->
-      <div id="tut-step-3" class="tut-step hidden">
-        <div style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem;">Pacing Controls & Shortcuts</div>
-        <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.85rem;">
-          • <b>TITA Mode:</b> Type your answer and press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Enter</kbd> (optimized for mobile numeric keypad).<br>
-          • <b>MCQ Mode:</b> Click or press hotkeys <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">A</kbd>, <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">B</kbd>, <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">C</kbd>, <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">D</kbd>.<br>
-          • <b>Pause:</b> Hit <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Space</kbd> or click the Pause button anytime.
-        </p>
-      </div>
-
-      <!-- Step 4 -->
-      <div id="tut-step-4" class="tut-step hidden">
-        <div style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem;">Reference Tables & Custom Topics</div>
-        <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.85rem;">
-          Use the <b>Reference</b> dashboard to look up fractions, powers of 2 to 7, squares, cubes, and factorials.
-        </p>
-        <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6;">
-          You can toggle specific topics on the Home screen to customize your practice session.
-        </p>
-      </div>
-
-      <!-- Step Navigation Footer -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--card-border);">
-        <button class="btn btn-ghost" id="tut-prev-btn" onclick="navTutorial(-1)" style="visibility: hidden;">Previous</button>
-        
-        <!-- Dot Indicators -->
-        <div style="display: flex; gap: 0.35rem;">
-          <span class="tut-dot active" id="tut-dot-1" style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent);"></span>
-          <span class="tut-dot" id="tut-dot-2" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15);"></span>
-          <span class="tut-dot" id="tut-dot-3" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15);"></span>
-          <span class="tut-dot" id="tut-dot-4" style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15);"></span>
-        </div>
-
-        <button class="btn btn-primary" id="tut-next-btn" onclick="navTutorial(1)">Next</button>
-      </div>
-
     </div>
   </div>
 </div>
@@ -2612,66 +2536,8 @@
     }
   });
 
-  let currentTutorialStep = 1;
-  const TOTAL_TUTORIAL_STEPS = 4;
-  const TUTORIAL_TITLES = [
-    'Hybrid Calculation Format',
-    'Scoring & Dynamic Ideal Time',
-    'Pacing Controls & Shortcuts',
-    'Reference Tables & Custom Topics'
-  ];
-
-  function openTutorial() {
-    currentTutorialStep = 1;
-    updateTutorialUI();
-    document.getElementById('tutorial-modal').classList.remove('hidden');
-  }
-
-  function navTutorial(dir) {
-    currentTutorialStep += dir;
-    if (currentTutorialStep > TOTAL_TUTORIAL_STEPS) {
-      closeTutorial();
-      return;
-    }
-    if (currentTutorialStep < 1) currentTutorialStep = 1;
-    updateTutorialUI();
-  }
-
-  function updateTutorialUI() {
-    for (let i = 1; i <= TOTAL_TUTORIAL_STEPS; i++) {
-      const stepEl = document.getElementById(`tut-step-${i}`);
-      const dotEl = document.getElementById(`tut-dot-${i}`);
-      if (stepEl) stepEl.classList.toggle('hidden', i !== currentTutorialStep);
-      if (dotEl) {
-        dotEl.style.background = i === currentTutorialStep ? 'var(--accent)' : 'rgba(255,255,255,0.15)';
-      }
-    }
-
-    document.getElementById('tutorial-step-subtitle').textContent = `Step ${currentTutorialStep} of ${TOTAL_TUTORIAL_STEPS}: ${TUTORIAL_TITLES[currentTutorialStep - 1]}`;
-    document.getElementById('tut-prev-btn').style.visibility = currentTutorialStep === 1 ? 'hidden' : 'visible';
-    document.getElementById('tut-next-btn').textContent = currentTutorialStep === TOTAL_TUTORIAL_STEPS ? "Got It, Let's Start" : 'Next';
-  }
-
-  function closeTutorial(e) {
-    if (e && e.target !== e.currentTarget) return;
-    document.getElementById('tutorial-modal').classList.add('hidden');
-    try {
-      localStorage.setItem('rush_tutorial_seen', 'true');
-    } catch(e) {}
-  }
-
-  function checkFirstTimeTutorial() {
-    try {
-      const seen = localStorage.getItem('rush_tutorial_seen');
-      if (!seen) {
-        openTutorial();
-      }
-    } catch(e) {}
-  }
-
   window.addEventListener('DOMContentLoaded', () => {
     initReferenceData();
-    checkFirstTimeTutorial();
     navigateTo('home');
   });
 </script>
