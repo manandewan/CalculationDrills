@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAT Sprint Rush - Endless</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card-bg: rgba(18, 22, 34, 0.9);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: #6366f1;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.35);
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.35);
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    input {
+      user-select: auto;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 102, 241, 0.15), transparent),
+        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.05), transparent);
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Header Bar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 1.25rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      backdrop-filter: blur(16px);
+    }
+
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 40%, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .rush-badge {
+      font-size: 0.65rem;
+      background: #f59e0b;
+      color: #000;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .stats-summary {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      align-items: center;
+    }
+
+    .stats-badge {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Top Sprint Control HUD */
+    .rush-hud {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.75rem 1.25rem;
+    }
+
+    .hud-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hud-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .hud-value {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .hud-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .timer-val {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+
+    .timer-val.danger {
+      color: var(--danger);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Arena Central Box */
+    .arena-card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.75rem 2rem;
+      min-height: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .arena-card.correct-anim {
+      border-color: var(--success);
+      box-shadow: 0 0 40px var(--success-glow);
+      animation: popGreen 0.3s ease;
+    }
+
+    .arena-card.wrong-anim {
+      border-color: var(--danger);
+      box-shadow: 0 0 40px var(--danger-glow);
+      animation: shakeRed 0.3s ease;
+    }
+
+    @keyframes popGreen {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shakeRed {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .q-badge {
+      position: absolute;
+      top: 1.25rem;
+      left: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.3rem 0.65rem;
+      border-radius: 8px;
+    }
+
+    .q-anchor-tag {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.12);
+      padding: 0.3rem 0.65rem;
+      border-radius: 8px;
+    }
+
+    .expression {
+      font-family: var(--font-mono);
+      font-size: 2.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 2rem;
+      line-height: 1.3;
+    }
+
+    .input-wrapper {
+      width: 100%;
+      max-width: 320px;
+      position: relative;
+    }
+
+    .rush-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      font-family: var(--font-mono);
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: #fff;
+      padding: 0.65rem 1rem;
+      text-align: center;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .rush-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 20px var(--accent-glow);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .input-hint {
+      margin-top: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .feedback-overlay {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 1.6rem;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(0);
+      transition: all 0.35s ease;
+    }
+
+    .feedback-overlay.show-up {
+      opacity: 1;
+      transform: translateY(-45px);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.7rem 1.4rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Cover Screen */
+    .cover-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .cover-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .rules-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: left;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      max-width: 440px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+    }
+
+    .rules-list li {
+      list-style-type: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Results Screen */
+    .results-view {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .score-banner {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 0.75rem;
+      text-align: center;
+    }
+
+    .score-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.9rem 0.5rem;
+    }
+
+    .score-card-val {
+      font-family: var(--font-mono);
+      font-size: 1.45rem;
+      font-weight: 800;
+    }
+
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 380px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      padding-right: 0.25rem;
+    }
+
+    .review-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    .review-item.correct { border-left: 4px solid var(--success); }
+    .review-item.wrong { border-left: 4px solid var(--danger); }
+    .review-item.unattempted { border-left: 4px solid var(--text-muted); }
+
+    .review-shortcut {
+      color: #93c5fd;
+      font-size: 0.78rem;
+      margin-top: 0.35rem;
+      font-family: var(--font-mono);
+      background: rgba(59, 130, 246, 0.08);
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: #111420;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 780px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .ref-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .ref-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .ref-box h4 {
+      font-size: 0.8rem;
+      color: #818cf8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .ref-box-text {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header Bar -->
+  <header>
+    <div class="brand-title">
+      CAT SPRINT RUSH <span class="rush-badge">ENDLESS 15 MIN</span>
+    </div>
+    <div class="stats-summary">
+      <div>Previous Net: <span class="stats-badge" id="hist-score">--</span></div>
+      <div>Accuracy: <span class="stats-badge" id="hist-acc">--</span></div>
+      <button class="btn btn-ghost" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;" onclick="openModal()">📚 Reference Tables</button>
+    </div>
+  </header>
+
+  <!-- Cover Screen -->
+  <div id="cover-view" class="arena-card cover-view">
+    <div class="cover-title">Endless Sprint Rush</div>
+    <div class="rules-list">
+      <li>⚡ <b>Endless Mode:</b> No question cap. Solve as many as you can in 15 mins.</li>
+      <li>⚡ <b>Scoring (+3 / -1):</b> +3 for correct, -1 for wrong.</li>
+      <li>⚡ <b>Zero Scratchpad:</b> Strictly mental calculation.</li>
+      <li>⚡ <b>Instant Flow:</b> Type answer & hit Enter to immediately trigger the next problem.</li>
+    </div>
+    <button class="btn btn-primary" style="font-size: 1.1rem; padding: 0.9rem 2.2rem;" onclick="startRush()">
+      🚀 Start Rush
+    </button>
+  </div>
+
+  <!-- Active Rush Arena -->
+  <div id="rush-view" class="hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+    <!-- HUD -->
+    <div class="rush-hud">
+      <div class="hud-stat">
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="hud-score" style="color: #818cf8;">0</span>
+      </div>
+      <div class="hud-center">
+        <span class="hud-label">Time Remaining</span>
+        <span class="timer-val" id="timer">15:00</span>
+      </div>
+      <div class="hud-stat" style="align-items: flex-end;">
+        <span class="hud-label">Solved / Attempted</span>
+        <span class="hud-value" id="hud-qnum">0</span>
+      </div>
+    </div>
+
+    <!-- Arena Question Box -->
+    <div class="arena-card" id="arena-box">
+      <div class="q-badge" id="arena-qbadge">#01</div>
+      <div class="q-anchor-tag" id="arena-anchor-tag">SPEED SPRINT</div>
+
+      <div class="expression" id="arena-expression">Loading...</div>
+
+      <div class="input-wrapper">
+        <input type="number" step="any" class="rush-input" id="rush-input" 
+               placeholder="Answer" autocomplete="off" autofocus>
+        <div class="input-hint">Type answer and press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Enter</kbd></div>
+      </div>
+
+      <div class="feedback-overlay" id="feedback-txt"></div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <button class="btn btn-ghost" onclick="skipQuestion()">Skip (0 pts) ➔</button>
+      <button class="btn btn-secondary" onclick="finishSprint()">End Sprint</button>
+    </div>
+  </div>
+
+  <!-- Results Screen -->
+  <div id="results-view" class="results-view hidden">
+    <div class="arena-card" style="min-height: auto; padding: 2rem;">
+      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Sprint Complete! 🏁</h2>
+
+      <div class="score-banner" style="width: 100%;">
+        <div class="score-card">
+          <div class="hud-label">Net Score</div>
+          <div class="score-card-val" id="res-net" style="color: #818cf8;">0</div>
+        </div>
+        <div class="score-card">
+          <div class="hud-label">Total Solved</div>
+          <div class="score-card-val" id="res-solved" style="color: #38bdf8;">0</div>
+        </div>
+        <div class="score-card">
+          <div class="hud-label">Correct (+3)</div>
+          <div class="score-card-val" id="res-correct" style="color: var(--success);">0</div>
+        </div>
+        <div class="score-card">
+          <div class="hud-label">Wrong (-1)</div>
+          <div class="score-card-val" id="res-wrong" style="color: var(--danger);">0</div>
+        </div>
+        <div class="score-card">
+          <div class="hud-label">Accuracy</div>
+          <div class="score-card-val" id="res-acc">0%</div>
+        </div>
+        <div class="score-card">
+          <div class="hud-label">Speed</div>
+          <div class="score-card-val" id="res-speed">0 Q/m</div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="margin-top: 1.5rem; font-size: 1rem;" onclick="resetRush()">
+        🔄 Play Again
+      </button>
+    </div>
+
+    <!-- Review Breakdown -->
+    <div class="arena-card" style="min-height: auto; padding: 1.5rem; align-items: stretch;">
+      <h3 style="font-size: 0.95rem; font-weight: 700; text-align: left; margin-bottom: 0.75rem;">
+        Attempted Questions Breakdown & Shortcuts:
+      </h3>
+      <div class="review-list" id="review-container"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Reference Modal -->
+<div id="ref-modal" class="modal-backdrop hidden" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 style="font-size: 1.1rem; font-weight: 700;">Reference Tables (1 through 30)</h3>
+      <button class="btn btn-ghost" style="padding: 0.3rem 0.6rem;" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="ref-grid">
+        <div class="ref-box">
+          <h4>Squares ($1^2 - 30^2$)</h4>
+          <div class="ref-box-text" id="modal-squares"></div>
+        </div>
+        <div class="ref-box">
+          <h4>Cubes ($1^3 - 20^3$)</h4>
+          <div class="ref-box-text" id="modal-cubes"></div>
+        </div>
+        <div class="ref-box" style="grid-column: 1 / -1;">
+          <h4>Fractions & Percentages</h4>
+          <div class="ref-box-text">
+            1/2 = 50% &bull; 1/3 = 33.33% &bull; 2/3 = 66.67% &bull; 1/4 = 25% &bull; 3/4 = 75%<br>
+            1/5 = 20% &bull; 2/5 = 40% &bull; 3/5 = 60% &bull; 4/5 = 80%<br>
+            1/6 = 16.67% &bull; 5/6 = 83.33% &bull; 1/7 = 14.28% &bull; 2/7 = 28.57%<br>
+            1/8 = 12.5% &bull; 3/8 = 37.5% &bull; 5/8 = 62.5% &bull; 7/8 = 87.5%<br>
+            1/9 = 11.11% &bull; 1/11 = 9.09% &bull; 1/12 = 8.33% &bull; 1/13 = 7.69% &bull; 1/14 = 7.14%<br>
+            1/15 = 6.67% &bull; 1/16 = 6.25% &bull; 1/17 = 5.88% &bull; 1/18 = 5.55% &bull; 1/19 = 5.26% &bull; 1/20 = 5%
+          </div>
+        </div>
+        <div class="ref-box" style="grid-column: 1 / -1;">
+          <h4>Multiplication Tables (11 to 30)</h4>
+          <div class="ref-box-text" id="modal-tables"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // App State
+  let timerInterval = null;
+  let timeRemaining = 15 * 60;
+  let isRunning = false;
+  let questionCounter = 0;
+  let currentQuestion = null;
+  let answers = [];
+
+  // Anchors for the current session
+  let anchorSquareOrCube, anchorTable, anchorFrac;
+
+  const FRAC_DATA = [
+    { p: '50%', val: 1/2, num: 240, denom: 2, mult: 1, label: '1/2' },
+    { p: '33.33%', val: 1/3, num: 270, denom: 3, mult: 1, label: '1/3' },
+    { p: '66.67%', val: 2/3, num: 180, denom: 3, mult: 2, label: '2/3' },
+    { p: '25%', val: 1/4, num: 320, denom: 4, mult: 1, label: '1/4' },
+    { p: '75%', val: 3/4, num: 280, denom: 4, mult: 3, label: '3/4' },
+    { p: '20%', val: 1/5, num: 350, denom: 5, mult: 1, label: '1/5' },
+    { p: '40%', val: 2/5, num: 250, denom: 5, mult: 2, label: '2/5' },
+    { p: '60%', val: 3/5, num: 250, denom: 5, mult: 3, label: '3/5' },
+    { p: '16.67%', val: 1/6, num: 240, denom: 6, mult: 1, label: '1/6' },
+    { p: '83.33%', val: 5/6, num: 180, denom: 6, mult: 5, label: '5/6' },
+    { p: '14.28%', val: 1/7, num: 210, denom: 7, mult: 1, label: '1/7' },
+    { p: '28.57%', val: 2/7, num: 280, denom: 7, mult: 2, label: '2/7' },
+    { p: '12.5%', val: 1/8, num: 320, denom: 8, mult: 1, label: '1/8' },
+    { p: '37.5%', val: 3/8, num: 240, denom: 8, mult: 3, label: '3/8' },
+    { p: '62.5%', val: 5/8, num: 320, denom: 8, mult: 5, label: '5/8' },
+    { p: '87.5%', val: 7/8, num: 400, denom: 8, mult: 7, label: '7/8' },
+    { p: '11.11%', val: 1/9, num: 270, denom: 9, mult: 1, label: '1/9' },
+    { p: '9.09%', val: 1/11, num: 330, denom: 11, mult: 1, label: '1/11' },
+    { p: '8.33%', val: 1/12, num: 240, denom: 12, mult: 1, label: '1/12' },
+    { p: '6.25%', val: 1/16, num: 320, denom: 16, mult: 1, label: '1/16' }
+  ];
+
+  function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function resetAnchors() {
+    anchorSquareOrCube = pickRandom([
+      { type: 'sq', val: 24, text: '24² = 576' },
+      { type: 'sq', val: 27, text: '27² = 729' },
+      { type: 'sq', val: 28, text: '28² = 784' },
+      { type: 'cb', val: 13, text: '13³ = 2197' },
+      { type: 'cb', val: 17, text: '17³ = 4913' },
+      { type: 'cb', val: 14, text: '14³ = 2744' }
+    ]);
+    anchorTable = pickRandom([17, 19, 23, 24, 26, 27, 28, 29]);
+    anchorFrac = pickRandom(FRAC_DATA);
+  }
+
+  // Dynamic On-the-Fly Question Generator
+  function generateSingleQuestion(id) {
+    const roll = Math.random();
+    const useAnchor = Math.random() < 0.45;
+
+    // 1. Squares & Cubes
+    if (roll < 0.28) {
+      if (useAnchor && anchorSquareOrCube.type === 'sq') {
+        const sq = anchorSquareOrCube.val;
+        const op = randInt(1, 2);
+        if (op === 1) {
+          const other = randInt(12, 22);
+          return { id, expr: `${sq}² + ${other}²`, ans: (sq*sq) + (other*other), shortcut: `${sq}² (${sq*sq}) + ${other}² (${other*other}) = ${(sq*sq)+(other*other)}` };
+        } else {
+          const other = randInt(11, 23);
+          return { id, expr: `${sq}² - ${other}²`, ans: (sq*sq) - (other*other), shortcut: `(a-b)(a+b) = (${sq}-${other})(${sq}+${other}) = ${sq-other} × ${sq+other} = ${(sq-other)*(sq+other)}` };
+        }
+      } else if (useAnchor && anchorSquareOrCube.type === 'cb') {
+        const cb = anchorSquareOrCube.val;
+        const cbVal = cb*cb*cb;
+        const sub = randInt(10, 40) * 100;
+        return { id, expr: `${cb}³ - ${sub}`, ans: cbVal - sub, shortcut: `${cb}³ = ${cbVal}; ${cbVal} - ${sub} = ${cbVal - sub}` };
+      } else {
+        const isCube = Math.random() < 0.35;
+        if (isCube) {
+          const c = randInt(11, 16);
+          const sub = randInt(5, 30) * 50;
+          return { id, expr: `${c}³ - ${sub}`, ans: (c*c*c) - sub, shortcut: `${c}³ = ${c*c*c}; ${c*c*c} - ${sub} = ${(c*c*c)-sub}` };
+        } else {
+          const a = randInt(16, 29);
+          const b = randInt(12, 22);
+          return { id, expr: `${a}² - ${b}²`, ans: (a*a) - (b*b), shortcut: `(a+b)(a-b) = (${a}+${b})(${a}-${b}) = ${a+b} × ${a-b} = ${(a+b)*(a-b)}` };
+        }
+      }
+    }
+
+    // 2. Percentages & Fractions
+    if (roll < 0.52) {
+      const f1 = useAnchor ? anchorFrac : pickRandom(FRAC_DATA);
+      const f2 = pickRandom(FRAC_DATA);
+
+      const mul1 = randInt(1, 4);
+      const mul2 = randInt(1, 4);
+      const val1 = f1.denom * mul1 * randInt(2, 5) * 10;
+      const val2 = f2.denom * mul2 * randInt(2, 5) * 10;
+
+      const part1 = Math.round((val1 / f1.denom) * f1.mult);
+      const part2 = Math.round((val2 / f2.denom) * f2.mult);
+
+      const isPlus = Math.random() > 0.3;
+      if (isPlus) {
+        return {
+          id,
+          expr: `${f1.p} of ${val1} + ${f2.p} of ${val2}`,
+          ans: part1 + part2,
+          shortcut: `(${f1.label} × ${val1}) + (${f2.label} × ${val2}) = ${part1} + ${part2} = ${part1 + part2}`
+        };
+      } else {
+        const higher = Math.max(part1, part2);
+        const lower = Math.min(part1, part2);
+        const hExpr = higher === part1 ? `${f1.p} of ${val1}` : `${f2.p} of ${val2}`;
+        const lExpr = higher === part1 ? `${f2.p} of ${val2}` : `${f1.p} of ${val1}`;
+        return {
+          id,
+          expr: `${hExpr} - ${lExpr}`,
+          ans: higher - lower,
+          shortcut: `${higher} - ${lower} = ${higher - lower}`
+        };
+      }
+    }
+
+    // 3. Table Operations
+    if (roll < 0.74) {
+      const t1 = useAnchor ? anchorTable : randInt(13, 29);
+      const m1 = randInt(4, 9);
+      const t2 = randInt(12, 29);
+      const m2 = randInt(3, 8);
+
+      const term1 = t1 * m1;
+      const term2 = t2 * m2;
+      const isPlus = Math.random() > 0.5;
+
+      return {
+        id,
+        expr: `${t1} × ${m1} ${isPlus ? '+' : '-'} ${t2} × ${m2}`,
+        ans: isPlus ? term1 + term2 : term1 - term2,
+        shortcut: `${t1}×${m1} = ${term1}, ${t2}×${m2} = ${term2} ➔ ${term1} ${isPlus ? '+' : '-'} ${term2} = ${isPlus ? term1+term2 : term1-term2}`
+      };
+    }
+
+    // 4. Chained Mental Arithmetic
+    if (roll < 0.88) {
+      const a = randInt(45, 180);
+      const b = randInt(55, 230);
+      const c = randInt(60, 240);
+      const d = randInt(30, 120);
+      return {
+        id,
+        expr: `${a} + ${b} + ${c} - ${d}`,
+        ans: a + b + c - d,
+        shortcut: `Group hundreds & tens: (${Math.floor(a/10)*10}+${Math.floor(b/10)*10}+${Math.floor(c/10)*10}-${Math.floor(d/10)*10}) + units = ${a+b+c-d}`
+      };
+    }
+
+    // 5. Mental Multiplication
+    if (Math.random() > 0.5) {
+      const a = randInt(18, 89);
+      const b = randInt(12, 32);
+      return {
+        id,
+        expr: `${a} × ${b}`,
+        ans: a * b,
+        shortcut: `Distribute: ${a} × (${Math.floor(b/10)*10} + ${b%10}) = ${a * Math.floor(b/10)*10} + ${a * (b%10)} = ${a*b}`
+      };
+    } else {
+      const a = randInt(125, 480);
+      const b = randInt(4, 9);
+      return {
+        id,
+        expr: `${a} × ${b}`,
+        ans: a * b,
+        shortcut: `Split: (${Math.floor(a/100)*100} × ${b}) + (${(a%100)} × ${b}) = ${Math.floor(a/100)*100*b} + ${(a%100)*b} = ${a*b}`
+      };
+    }
+  }
+
+  // Rush Gameplay Flow
+  function startRush() {
+    resetAnchors();
+    answers = [];
+    questionCounter = 0;
+    timeRemaining = 15 * 60;
+    isRunning = true;
+
+    document.getElementById('cover-view').classList.add('hidden');
+    document.getElementById('results-view').classList.add('hidden');
+    document.getElementById('rush-view').classList.remove('hidden');
+
+    spawnNextQuestion();
+
+    // Timer
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timeRemaining--;
+      updateTimerDisplay();
+      if (timeRemaining <= 0) {
+        clearInterval(timerInterval);
+        finishSprint();
+      }
+    }, 1000);
+  }
+
+  function spawnNextQuestion() {
+    questionCounter++;
+    currentQuestion = generateSingleQuestion(questionCounter);
+
+    document.getElementById('arena-qbadge').textContent = `#${questionCounter.toString().padStart(2, '0')}`;
+    document.getElementById('hud-qnum').textContent = `${answers.length}`;
+    document.getElementById('arena-expression').textContent = currentQuestion.expr;
+
+    const input = document.getElementById('rush-input');
+    input.value = '';
+    input.disabled = false;
+    input.focus();
+  }
+
+  function submitCurrentAnswer() {
+    if (!isRunning) return;
+    const input = document.getElementById('rush-input');
+    const valStr = input.value.trim();
+    if (valStr === '') return;
+
+    const userNum = parseFloat(valStr);
+    const isCorrect = Math.abs(userNum - currentQuestion.ans) < 0.05;
+
+    answers.push({
+      ...currentQuestion,
+      userVal: userNum,
+      status: isCorrect ? 'correct' : 'wrong'
+    });
+
+    triggerFeedback(isCorrect);
+  }
+
+  function skipQuestion() {
+    if (!isRunning) return;
+    answers.push({
+      ...currentQuestion,
+      userVal: null,
+      status: 'unattempted'
+    });
+    spawnNextQuestion();
+  }
+
+  function triggerFeedback(isCorrect) {
+    const arena = document.getElementById('arena-box');
+    const fb = document.getElementById('feedback-txt');
+    const input = document.getElementById('rush-input');
+    input.disabled = true;
+
+    if (isCorrect) {
+      arena.classList.add('correct-anim');
+      fb.style.color = 'var(--success)';
+      fb.textContent = '+3';
+      fb.classList.add('show-up');
+    } else {
+      arena.classList.add('wrong-anim');
+      fb.style.color = 'var(--danger)';
+      fb.textContent = '-1';
+      fb.classList.add('show-up');
+    }
+
+    // Live score calculation
+    let currentScore = 0;
+    answers.forEach(a => {
+      if (a.status === 'correct') currentScore += 3;
+      else if (a.status === 'wrong') currentScore -= 1;
+    });
+    document.getElementById('hud-score').textContent = currentScore;
+    document.getElementById('hud-qnum').textContent = `${answers.length}`;
+
+    setTimeout(() => {
+      arena.classList.remove('correct-anim', 'wrong-anim');
+      fb.classList.remove('show-up');
+      if (timeRemaining > 0) {
+        spawnNextQuestion();
+      } else {
+        finishSprint();
+      }
+    }, 280);
+  }
+
+  function finishSprint() {
+    clearInterval(timerInterval);
+    isRunning = false;
+
+    document.getElementById('rush-view').classList.add('hidden');
+    document.getElementById('results-view').classList.remove('hidden');
+
+    let correct = 0;
+    let wrong = 0;
+
+    answers.forEach(a => {
+      if (a.status === 'correct') correct++;
+      else if (a.status === 'wrong') wrong++;
+    });
+
+    const netScore = (correct * 3) - (wrong * 1);
+    const attempted = correct + wrong;
+    const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+    const timeSpentSeconds = (15 * 60) - timeRemaining;
+    const timeSpentMin = Math.max(0.1, timeSpentSeconds / 60);
+    const speed = (attempted / timeSpentMin).toFixed(1);
+
+    // Save Historical
+    localStorage.setItem('cat_math_hist_score', netScore);
+    localStorage.setItem('cat_math_hist_acc', `${accuracy}%`);
+    loadHistoricalData();
+
+    // Render stats
+    document.getElementById('res-net').textContent = netScore;
+    document.getElementById('res-solved').textContent = correct;
+    document.getElementById('res-correct').textContent = correct;
+    document.getElementById('res-wrong').textContent = wrong;
+    document.getElementById('res-acc').textContent = `${accuracy}%`;
+    document.getElementById('res-speed').textContent = `${speed} Q/m`;
+
+    // Render review
+    const revContainer = document.getElementById('review-container');
+    revContainer.innerHTML = '';
+
+    answers.forEach(item => {
+      const card = document.createElement('div');
+      card.className = `review-item ${item.status}`;
+      
+      let badge = item.status === 'correct' 
+        ? '<span style="color: var(--success); font-weight:700;">+3 (Correct)</span>' 
+        : item.status === 'wrong' 
+          ? '<span style="color: var(--danger); font-weight:700;">-1 (Wrong)</span>' 
+          : '<span style="color: var(--text-muted); font-weight:700;">0 (Skipped)</span>';
+
+      card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem; font-family: var(--font-mono);">
+          <span><b>#${item.id}</b> ${item.expr}</span>
+          <span>${badge}</span>
+        </div>
+        <div style="color: var(--text-muted);">
+          Your answer: <b style="color: #fff;">${item.userVal !== null ? item.userVal : 'Skipped'}</b> | Correct: <b style="color: #fff;">${item.ans}</b>
+        </div>
+        <div class="review-shortcut">⚡ <b>Shortcut:</b> ${item.shortcut}</div>
+      `;
+      revContainer.appendChild(card);
+    });
+  }
+
+  function resetRush() {
+    document.getElementById('results-view').classList.add('hidden');
+    document.getElementById('cover-view').classList.remove('hidden');
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timeRemaining / 60);
+    const s = timeRemaining % 60;
+    const el = document.getElementById('timer');
+    el.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    el.classList.toggle('danger', timeRemaining <= 120);
+  }
+
+  function loadHistoricalData() {
+    const score = localStorage.getItem('cat_math_hist_score');
+    const acc = localStorage.getItem('cat_math_hist_acc');
+    if (score !== null) document.getElementById('hist-score').textContent = score;
+    if (acc !== null) document.getElementById('hist-acc').textContent = acc;
+  }
+
+  // Modal Handlers
+  function openModal() {
+    document.getElementById('ref-modal').classList.remove('hidden');
+  }
+
+  function closeModal(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById('ref-modal').classList.add('hidden');
+  }
+
+  function initReferenceData() {
+    // Squares
+    let sqHtml = '';
+    for(let i=1; i<=30; i++) {
+      sqHtml += `<b>${i}²</b> = ${i*i}${i%5===0 ? '<br>' : ' &bull; '}`;
+    }
+    document.getElementById('modal-squares').innerHTML = sqHtml;
+
+    // Cubes
+    let cbHtml = '';
+    for(let i=1; i<=20; i++) {
+      cbHtml += `<b>${i}³</b> = ${i*i*i}${i%4===0 ? '<br>' : ' &bull; '}`;
+    }
+    document.getElementById('modal-cubes').innerHTML = cbHtml;
+
+    // Tables
+    let tbHtml = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.5rem;">';
+    for(let t=11; t<=30; t++) {
+      tbHtml += `<div style="background: rgba(255,255,255,0.02); padding: 0.4rem; border-radius: 6px; border: 1px solid var(--border);">`;
+      tbHtml += `<div style="color: #a5b4fc; font-weight:700; font-size: 0.7rem;">Table of ${t}</div>`;
+      for(let m=1; m<=10; m++) {
+        tbHtml += `${t}×${m}=<b>${t*m}</b><br>`;
+      }
+      tbHtml += `</div>`;
+    }
+    tbHtml += '</div>';
+    document.getElementById('modal-tables').innerHTML = tbHtml;
+  }
+
+  // Keyboard Handler (Instant Enter Submit)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && isRunning) {
+      submitCurrentAnswer();
+    }
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    initReferenceData();
+    loadHistoricalData();
+  });
+</script>
+</body>
+</html>
