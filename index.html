@@ -1304,7 +1304,7 @@
             Submit
           </button>
         </div>
-        <div class="input-hint">Press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Enter</kbd> or click Submit | <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Space</kbd> to Pause</div>
+        <div class="input-hint">Type your answer and press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">Enter</kbd> or click Submit</div>
       </form>
 
       <!-- Option B: MCQ Options Grid -->
@@ -2643,15 +2643,7 @@
 
   // Keyboard Shortcuts
   document.addEventListener('keydown', (e) => {
-    if (!isRunning) return;
-
-    if (e.code === 'Space' && configQType !== 'tita') {
-      e.preventDefault();
-      togglePause();
-      return;
-    }
-
-    if (isPaused) return;
+    if (!isRunning || isPaused) return;
 
     if (configQType === 'tita') {
       if (e.key === 'Enter') submitCurrentAnswer();
