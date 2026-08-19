@@ -1973,7 +1973,7 @@
         const isPlus = Math.random() > 0.5;
         const ans = isPlus ? tableTerm + offset : tableTerm - offset;
         const targetSec = computeDynamicIdealTime([{ type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
-        return { signature: `tbl_${t}_${m}_${isPlus}`, id, category, expr: `(${t} × ${m}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, hint: `Use table of ${t}: ${t} × ${m} = ${tableTerm}`, shortcut: `(${t} × ${m} = ${tableTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        return { signature: `tbl_${t}_${m}_${isPlus}`, id, category, expr: `(${t} × ${m}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, shortcut: `(${t} × ${m} = ${tableTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
       });
     }
 
@@ -2066,7 +2066,7 @@
         const isPlus = Math.random() > 0.45;
         const ans = isPlus ? sqTerm + tableTerm : sqTerm - tableTerm;
         const targetSec = computeDynamicIdealTime([{ type: 'sq', val: sq }, { type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
-        return { signature: `hyb_pt_${sq}_${t}_${m}`, id, category, expr: `${sq}² ${isPlus ? '+' : '-'} (${t} × ${m})`, ans, targetSec, hint: `Use ${sq}² = ${sqTerm} and ${t} × ${m} = ${tableTerm}`, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} (${tableTerm}) = ${ans}` };
+        return { signature: `hyb_pt_${sq}_${t}_${m}`, id, category, expr: `${sq}² ${isPlus ? '+' : '-'} (${t} × ${m})`, ans, targetSec, hint: `Use ${sq}² = ${sqTerm}`, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} (${tableTerm}) = ${ans}` };
       });
     }
 
@@ -2083,7 +2083,7 @@
         const ans = isPlus ? fracTerm + tableTerm : Math.abs(fracTerm - tableTerm);
         const expr = isPlus ? `(${f.p} of ${base}) + (${t} × ${m})` : (fracTerm >= tableTerm ? `(${f.p} of ${base}) - (${t} × ${m})` : `(${t} × ${m}) - (${f.p} of ${base})`);
         const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: f.denom, mult: f.mult }, { type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
-        return { signature: `hyb_ft_${f.label}_${t}_${m}`, id, category, expr, ans, targetSec, hint: `Use ${f.p} = ${f.label} and ${t} × ${m} = ${tableTerm}`, shortcut: `Fraction (${fracTerm}) ${isPlus ? '+' : '-'} Table (${tableTerm}) = ${ans}` };
+        return { signature: `hyb_ft_${f.label}_${t}_${m}`, id, category, expr, ans, targetSec, hint: `Use ${f.p} = ${f.label}`, shortcut: `Fraction (${fracTerm}) ${isPlus ? '+' : '-'} Table (${tableTerm}) = ${ans}` };
       });
     }
 
