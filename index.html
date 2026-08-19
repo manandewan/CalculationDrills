@@ -1963,7 +1963,7 @@
           const isPlus = Math.random() > 0.45;
           const ans = isPlus ? prodVal + offset : prodVal - offset;
           const targetSec = computeDynamicIdealTime([{ type: 'prod', a: p1, b: p2 }, { type: 'add_sub', terms: 2 }]);
-          return { signature: `twprod_${p1}_${p2}_${isPlus}`, id, category, expr: `(${p1} × ${p2}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, hint: `Use (${mid}-${d})(${mid}+${d}) = ${mid}² - ${d}² = ${prodVal}`, shortcut: `(${mid}² - ${d}² = ${mid*mid}-${d*d} = ${prodVal}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+          return { signature: `twprod_${p1}_${p2}_${isPlus}`, id, category, expr: `(${p1} × ${p2}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, hint: `Use (${mid}-${d})(${mid}+${d}) = ${mid}² - ${d}² = ${mid*mid} - ${d*d} = ${prodVal}`, shortcut: `(${mid}² - ${d}² = ${mid*mid}-${d*d} = ${prodVal}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
         }
 
         const t = randInt(14, 29);
@@ -1973,7 +1973,7 @@
         const isPlus = Math.random() > 0.5;
         const ans = isPlus ? tableTerm + offset : tableTerm - offset;
         const targetSec = computeDynamicIdealTime([{ type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
-        return { signature: `tbl_${t}_${m}_${isPlus}`, id, category, expr: `(${t} × ${m}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, hint: `Use ${t} × ${m} = ${tableTerm}`, shortcut: `(${t} × ${m} = ${tableTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        return { signature: `tbl_${t}_${m}_${isPlus}`, id, category, expr: `(${t} × ${m}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, hint: `Use table of ${t}: ${t} × ${m} = ${tableTerm}`, shortcut: `(${t} × ${m} = ${tableTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
       });
     }
 
