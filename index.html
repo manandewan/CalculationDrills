@@ -1406,6 +1406,10 @@
           <div class="score-card-val" id="res-wrong" style="color: var(--danger);">0</div>
         </div>
         <div class="score-card">
+          <div class="hud-label">Skipped (0)</div>
+          <div class="score-card-val" id="res-skipped" style="color: var(--text-muted);">0</div>
+        </div>
+        <div class="score-card">
           <div class="hud-label">Accuracy</div>
           <div class="score-card-val" id="res-acc">0%</div>
         </div>
@@ -2357,9 +2361,11 @@
 
     let correct = 0;
     let wrong = 0;
+    let skipped = 0;
     answers.forEach(a => {
       if (a.status === 'correct') correct++;
       else if (a.status === 'wrong') wrong++;
+      else if (a.status === 'unattempted') skipped++;
     });
 
     const netScore = (correct * 3) - (wrong * 1);
@@ -2367,7 +2373,7 @@
     const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
     const timeSpentSeconds = isRetryModeActive ? Math.max(1, retryElapsedSeconds) : Math.max(1, (configDuration * 60) - timeRemaining);
     const timeSpentMin = Math.max(0.1, timeSpentSeconds / 60);
-    const avgSecPerQ = attempted > 0 ? (timeSpentSeconds / attempted).toFixed(1) : '0.0';
+    const avgSecPerQ = (attempted + skipped) > 0 ? (timeSpentSeconds / (attempted + skipped)).toFixed(1) : '0.0';
     
     // Format Quiz Time (e.g. 5m 00s, 14m 32s)
     const spentM = Math.floor(timeSpentSeconds / 60);
@@ -2378,6 +2384,7 @@
     document.getElementById('res-attempted').textContent = attempted;
     document.getElementById('res-correct').textContent = correct;
     document.getElementById('res-wrong').textContent = wrong;
+    document.getElementById('res-skipped').textContent = skipped;
     document.getElementById('res-acc').textContent = `${accuracy}%`;
     document.getElementById('res-avg-time').textContent = `${avgSecPerQ}s`;
     document.getElementById('res-quiz-time').textContent = formattedQuizTime;
@@ -2387,31 +2394,33 @@
     document.getElementById('retry-count').textContent = mistakes.length;
     document.getElementById('retry-mistakes-btn').style.display = mistakes.length > 0 ? 'inline-flex' : 'none';
 
-    // Category breakdown (attributed to individual topics rather than compound hybrid names)
+    // Category breakdown (attributed to individual topics and factoring in skips)
     const catStats = {};
-    const addTopicStat = (topicName, isCorrect, isWrong) => {
-      if (!catStats[topicName]) catStats[topicName] = { total: 0, correct: 0, wrong: 0 };
+    const addTopicStat = (topicName, isCorrect, isWrong, isSkipped) => {
+      if (!catStats[topicName]) catStats[topicName] = { total: 0, correct: 0, wrong: 0, skipped: 0 };
       catStats[topicName].total++;
       if (isCorrect) catStats[topicName].correct++;
       if (isWrong) catStats[topicName].wrong++;
+      if (isSkipped) catStats[topicName].skipped++;
     };
 
     answers.forEach(a => {
       const isCorrect = a.status === 'correct';
       const isWrong = a.status === 'wrong';
+      const isSkipped = a.status === 'unattempted';
       const cat = a.category || '';
 
       // Deconstruct categories into pure individual topics
-      if (cat.includes('Fraction')) addTopicStat('Fractions & %', isCorrect, isWrong);
-      if (cat.includes('Table')) addTopicStat('Tables & Products', isCorrect, isWrong);
-      if (cat.includes('Factorial')) addTopicStat('Factorials', isCorrect, isWrong);
-      if (cat.includes('Power') || cat.includes('Square') || cat.includes('Cube')) addTopicStat('Powers', isCorrect, isWrong);
-      if (cat.includes('Addition') || cat.includes('Add / Sub')) addTopicStat('Addition & Subtraction', isCorrect, isWrong);
-      if (cat.includes('Root') || cat.includes('Decimal')) addTopicStat('Roots & Decimals', isCorrect, isWrong);
+      if (cat.includes('Fraction')) addTopicStat('Fractions & %', isCorrect, isWrong, isSkipped);
+      if (cat.includes('Table')) addTopicStat('Tables & Products', isCorrect, isWrong, isSkipped);
+      if (cat.includes('Factorial')) addTopicStat('Factorials', isCorrect, isWrong, isSkipped);
+      if (cat.includes('Power') || cat.includes('Square') || cat.includes('Cube')) addTopicStat('Powers', isCorrect, isWrong, isSkipped);
+      if (cat.includes('Addition') || cat.includes('Add / Sub')) addTopicStat('Addition & Subtraction', isCorrect, isWrong, isSkipped);
+      if (cat.includes('Root') || cat.includes('Decimal')) addTopicStat('Roots & Decimals', isCorrect, isWrong, isSkipped);
 
       // Fallback if no keyword matched
       if (!cat.includes('Fraction') && !cat.includes('Table') && !cat.includes('Factorial') && !cat.includes('Power') && !cat.includes('Addition') && !cat.includes('Root')) {
-        addTopicStat(cat, isCorrect, isWrong);
+        addTopicStat(cat, isCorrect, isWrong, isSkipped);
       }
     });
 
@@ -2422,11 +2431,12 @@
     sortedCats.forEach(cat => {
       const c = catStats[cat];
       const catAcc = Math.round((c.correct / c.total) * 100);
-      const isWeak = catAcc < 75 && c.wrong > 0;
+      const isWeak = catAcc < 75 && (c.wrong > 0 || c.skipped > 0);
+      const skipLabel = c.skipped > 0 ? ` • ${c.skipped} skp` : '';
       const row = document.createElement('div');
       row.className = 'analytics-stat-row';
       row.innerHTML = `
-        <span>${cat} <span style="font-size: 0.72rem; color: var(--text-muted);">(${c.correct}/${c.total})</span></span>
+        <span>${cat} <span style="font-size: 0.72rem; color: var(--text-muted);">(${c.correct}/${c.total}${skipLabel})</span></span>
         <div style="display: flex; align-items: center; gap: 0.4rem;">
           ${isWeak ? '<span class="weak-tag">Weak Area</span>' : ''}
           <span style="font-family: var(--font-mono); font-weight:700; color: ${catAcc >= 80 ? 'var(--success)' : catAcc >= 60 ? 'var(--warning)' : 'var(--danger)'};">${catAcc}%</span>
