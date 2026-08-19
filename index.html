@@ -1841,7 +1841,9 @@
     if (enabledTopics.has('fractions')) {
       activeGenerators.push(() => {
         const category = 'Fractions & %';
-        const subMode = randInt(1, 4);
+        // Only enable multi-part % splitting (10% + 5% decomposition) on HARD mode
+        const availableSubModes = configDifficulty === 'hard' ? [1, 2, 3, 4] : [1, 2, 4];
+        const subMode = pickRandom(availableSubModes);
 
         if (subMode === 1) { // 5/18 or 18/5 factor arithmetic
           const isFiveEighteenth = Math.random() > 0.5;
@@ -1877,7 +1879,7 @@
           const expr = isPlus ? `(${otherNum}% of ${friendlyBase}) + ${offset}` : (fracTerm >= offset ? `(${otherNum}% of ${friendlyBase}) - ${offset}` : `${offset} - (${otherNum}% of ${friendlyBase})`);
           const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: 4, mult: 1 }, { type: 'add_sub', terms: 2 }]);
           return { signature: `revpct_${otherNum}_${friendlyBase}_${isPlus}`, id, category, expr, ans, targetSec, shortcut: `Reverse: ${friendlyBase}% of ${otherNum * (friendlyBase > 100 ? 1 : 1)} = ${fracTerm} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
-        } else if (subMode === 3) { // High-Yield Pattern 4B: 10% + 5% + 1% Decomposition
+        } else if (subMode === 3) { // High-Yield Pattern 4B: 10% + 5% + 1% Decomposition (Hard mode only)
           const p = pickRandom([15, 16, 35, 45, 55, 65, 75, 85]);
           const base = randInt(12, 48) * 10;
           const fracTerm = Math.round((p / 100) * base);
