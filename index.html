@@ -2377,13 +2377,32 @@
     document.getElementById('retry-count').textContent = mistakes.length;
     document.getElementById('retry-mistakes-btn').style.display = mistakes.length > 0 ? 'inline-flex' : 'none';
 
-    // Category breakdown
+    // Category breakdown (attributed to individual topics rather than compound hybrid names)
     const catStats = {};
+    const addTopicStat = (topicName, isCorrect, isWrong) => {
+      if (!catStats[topicName]) catStats[topicName] = { total: 0, correct: 0, wrong: 0 };
+      catStats[topicName].total++;
+      if (isCorrect) catStats[topicName].correct++;
+      if (isWrong) catStats[topicName].wrong++;
+    };
+
     answers.forEach(a => {
-      if (!catStats[a.category]) catStats[a.category] = { total: 0, correct: 0, wrong: 0 };
-      catStats[a.category].total++;
-      if (a.status === 'correct') catStats[a.category].correct++;
-      if (a.status === 'wrong') catStats[a.category].wrong++;
+      const isCorrect = a.status === 'correct';
+      const isWrong = a.status === 'wrong';
+      const cat = a.category || '';
+
+      // Deconstruct categories into pure individual topics
+      if (cat.includes('Fraction')) addTopicStat('Fractions & %', isCorrect, isWrong);
+      if (cat.includes('Table')) addTopicStat('Tables & Products', isCorrect, isWrong);
+      if (cat.includes('Factorial')) addTopicStat('Factorials', isCorrect, isWrong);
+      if (cat.includes('Power') || cat.includes('Square') || cat.includes('Cube')) addTopicStat('Powers', isCorrect, isWrong);
+      if (cat.includes('Addition') || cat.includes('Add / Sub')) addTopicStat('Addition & Subtraction', isCorrect, isWrong);
+      if (cat.includes('Root') || cat.includes('Decimal')) addTopicStat('Roots & Decimals', isCorrect, isWrong);
+
+      // Fallback if no keyword matched
+      if (!cat.includes('Fraction') && !cat.includes('Table') && !cat.includes('Factorial') && !cat.includes('Power') && !cat.includes('Addition') && !cat.includes('Root')) {
+        addTopicStat(cat, isCorrect, isWrong);
+      }
     });
 
     const catContainer = document.getElementById('analytics-categories-content');
