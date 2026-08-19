@@ -2055,32 +2055,69 @@
       });
     }
 
-    // 5. Addition & Subtraction (CAT/DILR Multi-Term Column Sums & 3-Digit Speed Arithmetic)
+    // 5. Long Multi-Term Addition & Subtraction (4 to 5 terms, Mixed + and -, 2-digit & 3-digit combinations)
     if (enabledTopics.has('add_sub')) {
-      activeGenerators.push(() => {
+      const addSubGenerator = () => {
         const category = 'Addition & Subtraction';
-        const isColumnSum = Math.random() < 0.60;
+        const subMode = randInt(1, 3); // 1: 4-5 Term Mixed (+/-) 2-Digit, 2: 4-Term 3-Digit Mixed, 3: Pure Column Grouping
 
-        if (isColumnSum) {
-          const count = configDifficulty === 'easy' ? 4 : configDifficulty === 'hard' ? 6 : 5;
+        if (subMode === 1) { // 4 to 5 Terms Mixed Addition and Subtraction (e.g. 84 - 37 + 65 + 49 - 28)
+          const termCount = configDifficulty === 'easy' ? 4 : (configDifficulty === 'hard' ? 5 : pickRandom([4, 5]));
+          const terms = [];
+          const ops = [];
+          let currentRunning = randInt(45, 99);
+          terms.push(currentRunning);
+
+          for (let i = 1; i < termCount; i++) {
+            const nextVal = randInt(18, 98);
+            // Ensure running total doesn't plunge below 0
+            const op = (currentRunning > nextVal + 20 && Math.random() < 0.45) ? '-' : '+';
+            ops.push(op);
+            terms.push(nextVal);
+            if (op === '+') currentRunning += nextVal;
+            else currentRunning -= nextVal;
+          }
+
+          let exprParts = [terms[0]];
+          for (let i = 0; i < ops.length; i++) {
+            exprParts.push(ops[i]);
+            exprParts.push(terms[i + 1]);
+          }
+          const expr = exprParts.join(' ');
+          const targetSec = computeDynamicIdealTime([{ type: 'add_sub', terms: termCount }]);
+          return { family: `as_mix_${termCount}`, signature: `as_mix_${terms.join('_')}_${ops.join('')}`, id, category, expr, ans: currentRunning, targetSec, shortcut: `Group positive & negative numbers ➔ ${currentRunning}` };
+        } else if (subMode === 2) { // Mixed 3-Digit & 2-Digit Speed Calculations (e.g. 340 + 265 - 180 + 75)
+          const termCount = 4;
+          const t1 = randInt(160, 580);
+          const t2 = randInt(120, 480);
+          const t3 = randInt(95, 340);
+          const t4 = randInt(45, 260);
+          const isT3Minus = Math.random() > 0.35;
+          const isT4Minus = Math.random() > 0.45;
+          
+          let ans = t1 + t2;
+          ans = isT3Minus ? ans - t3 : ans + t3;
+          ans = isT4Minus ? ans - t4 : ans + t4;
+
+          const expr = `${t1} + ${t2} ${isT3Minus ? '-' : '+'} ${t3} ${isT4Minus ? '-' : '+'} ${t4}`;
+          const targetSec = computeDynamicIdealTime([{ type: 'add_sub', terms: 4 }]);
+          return { family: `as_3digit`, signature: `as_3d_${t1}_${t2}_${t3}_${t4}`, id, category, expr, ans, targetSec, shortcut: `Group hundreds, tens & units ➔ ${ans}` };
+        } else { // 4-6 Term Column Sums (DILR Table Totals)
+          const count = configDifficulty === 'easy' ? 4 : (configDifficulty === 'hard' ? 6 : 5);
           const terms = [];
           for (let i = 0; i < count; i++) {
-            terms.push(randInt(26, 99));
+            terms.push(randInt(28, 98));
           }
           const sum = terms.reduce((acc, v) => acc + v, 0);
           const expr = terms.join(' + ');
           const targetSec = computeDynamicIdealTime([{ type: 'add_sub', terms: count }]);
           return { family: `colsum`, signature: `colsum_${terms.join('_')}`, id, category, expr, ans: sum, targetSec, shortcut: `Group tens (${terms.map(t => Math.floor(t/10)*10).reduce((a,b)=>a+b,0)}) + units (${terms.map(t => t%10).reduce((a,b)=>a+b,0)}) = ${sum}` };
         }
+      };
 
-        const a = randInt(140, 580);
-        const b = randInt(120, 460);
-        const c = randInt(85, 340);
-        const d = randInt(45, 220);
-        const ans = a + b + c - d;
-        const targetSec = computeDynamicIdealTime([{ type: 'add_sub', terms: 4 }]);
-        return { family: `as_4`, signature: `as_${a}_${b}_${c}_${d}`, id, category, expr: `${a} + ${b} + ${c} - ${d}`, ans, targetSec, shortcut: `Group hundreds & tens: ${ans}` };
-      });
+      // Push twice to naturally give healthy frequency when Addition & Subtraction is selected
+      activeGenerators.push(addSubGenerator);
+      activeGenerators.push(addSubGenerator);
     }
 
     // 6. Roots & Decimal Multiplier Twins
