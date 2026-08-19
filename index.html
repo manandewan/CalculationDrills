@@ -2350,6 +2350,9 @@
     if (configQType === 'tita') {
       const inp = document.getElementById('rush-input');
       if (inp) inp.focus();
+    } else if (configQType === 'mcq') {
+      // In MCQ mode, blur hint button so keyboard shortcuts (A/B/C/D, 1/2/3/4) continue to work immediately
+      if (btn) btn.blur();
     }
   }
 
@@ -2835,6 +2838,12 @@
   // Keyboard Shortcuts
   document.addEventListener('keydown', (e) => {
     if (!isRunning || isPaused) return;
+
+    // Toggle hint via 'h' or 'H' if not currently typing in TITA input
+    if ((e.key === 'h' || e.key === 'H') && document.activeElement !== document.getElementById('rush-input')) {
+      toggleHint();
+      return;
+    }
 
     if (configQType === 'tita') {
       if (e.key === 'Enter') submitCurrentAnswer();
