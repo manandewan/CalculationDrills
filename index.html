@@ -1394,8 +1394,8 @@
           <div class="score-card-val" id="res-net" style="color: #818cf8;">0</div>
         </div>
         <div class="score-card">
-          <div class="hud-label">Total Solved</div>
-          <div class="score-card-val" id="res-solved" style="color: #38bdf8;">0</div>
+          <div class="hud-label">Total Attempts</div>
+          <div class="score-card-val" id="res-attempted" style="color: #38bdf8;">0</div>
         </div>
         <div class="score-card">
           <div class="hud-label">Correct (+3)</div>
@@ -1410,8 +1410,12 @@
           <div class="score-card-val" id="res-acc">0%</div>
         </div>
         <div class="score-card">
-          <div class="hud-label">Speed</div>
-          <div class="score-card-val" id="res-speed">0 Q/m</div>
+          <div class="hud-label">Avg Pace</div>
+          <div class="score-card-val" id="res-avg-time">0.0s</div>
+        </div>
+        <div class="score-card">
+          <div class="hud-label">Quiz Time</div>
+          <div class="score-card-val" id="res-quiz-time">0m 00s</div>
         </div>
       </div>
 
@@ -2363,14 +2367,20 @@
     const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
     const timeSpentSeconds = isRetryModeActive ? Math.max(1, retryElapsedSeconds) : Math.max(1, (configDuration * 60) - timeRemaining);
     const timeSpentMin = Math.max(0.1, timeSpentSeconds / 60);
-    const speed = (attempted / timeSpentMin).toFixed(1);
+    const avgSecPerQ = attempted > 0 ? (timeSpentSeconds / attempted).toFixed(1) : '0.0';
+    
+    // Format Quiz Time (e.g. 5m 00s, 14m 32s)
+    const spentM = Math.floor(timeSpentSeconds / 60);
+    const spentS = timeSpentSeconds % 60;
+    const formattedQuizTime = `${spentM}m ${spentS.toString().padStart(2, '0')}s`;
 
     document.getElementById('res-net').textContent = netScore;
-    document.getElementById('res-solved').textContent = correct;
+    document.getElementById('res-attempted').textContent = attempted;
     document.getElementById('res-correct').textContent = correct;
     document.getElementById('res-wrong').textContent = wrong;
     document.getElementById('res-acc').textContent = `${accuracy}%`;
-    document.getElementById('res-speed').textContent = `${speed} Q/m`;
+    document.getElementById('res-avg-time').textContent = `${avgSecPerQ}s`;
+    document.getElementById('res-quiz-time').textContent = formattedQuizTime;
 
     // Retry Mistakes button setup
     const mistakes = answers.filter(a => a.status === 'wrong' || a.status === 'unattempted');
