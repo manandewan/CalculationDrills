@@ -1992,13 +1992,28 @@
       });
     }
 
-    // 4. Tables & Products Generator (Twin Products (x-d)(x+d) & High-Frequency CAT Tables 13..29)
+    // 4. Tables, Products & Division by Primes (Multiplication, Equal-Distance Twins & Mental Division by 3, 7, 11, 13, 17, 19)
     if (enabledTopics.has('tables')) {
       activeGenerators.push(() => {
         const category = 'Tables & Products';
-        const isTwinProduct = Math.random() < 0.5;
+        // Sub-patterns: 1: Division by Primes (35%), 2: Twin Products (35%), 3: Multiplication Tables (30%)
+        const sub = pickWeighted([1, 2, 3], [35, 35, 30]);
 
-        if (isTwinProduct) {
+        if (sub === 1) { // High-Yield Mental Division by Primes (Emphasis on 3, 7, plus 11, 13, 17, 19)
+          // 70% chance to pick 1-10 primes (3, 7), 30% for (11, 13, 17, 19)
+          const isPrimeUnder10 = Math.random() < 0.70;
+          const primeDivisor = isPrimeUnder10 ? pickRandom([3, 7]) : pickRandom([11, 13, 17, 19]);
+          
+          // Generate realistic 3-digit / 4-digit dividend
+          const quotient = primeDivisor <= 7 ? randInt(35, 185) : randInt(14, 65);
+          const dividend = primeDivisor * quotient;
+          const offset = randInt(25, 160);
+          const isPlus = Math.random() > 0.45;
+          const ans = isPlus ? quotient + offset : Math.abs(quotient - offset);
+          const expr = isPlus ? `(${dividend} ÷ ${primeDivisor}) + ${offset}` : (quotient >= offset ? `(${dividend} ÷ ${primeDivisor}) - ${offset}` : `${offset} - (${dividend} ÷ ${primeDivisor})`);
+          const targetSec = computeDynamicIdealTime([{ type: 'table', t: primeDivisor, m: 8 }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `divprime_${dividend}_${primeDivisor}_${isPlus}`, id, category, expr, ans, targetSec, shortcut: `${dividend} ÷ ${primeDivisor} = ${quotient} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else if (sub === 2) { // Twin Products (x-d)(x+d)
           const highYieldMids = [25, 30, 35, 40, 50, 60];
           const extendedMids = [24, 45, 75];
           const midPool = configDifficulty === 'hard' ? [...highYieldMids, ...extendedMids] : highYieldMids;
@@ -2012,20 +2027,19 @@
           const ans = isPlus ? prodVal + offset : prodVal - offset;
           const targetSec = computeDynamicIdealTime([{ type: 'prod', a: p1, b: p2 }, { type: 'add_sub', terms: 2 }]);
           return { signature: `twprod_${p1}_${p2}_${isPlus}`, id, category, expr: `(${p1} × ${p2}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, hint: `Use (${mid}-${d})(${mid}+${d}) = ${mid}² - ${d}² = ${mid*mid} - ${d*d} = ${prodVal}`, shortcut: `(${mid}² - ${d}² = ${mid*mid}-${d*d} = ${prodVal}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else { // High-Yield Tables (17, 19, 23, 24, 26, 29, 14, 16, 18)
+          const primaryTables = [17, 19, 23, 24, 26, 29, 14, 16, 18];
+          const extendedTables = [13, 21, 22, 27, 28];
+          const tPool = configDifficulty === 'hard' ? [...primaryTables, ...extendedTables] : primaryTables;
+          const t = pickRandom(tPool);
+          const m = randInt(4, 9);
+          const tableTerm = t * m;
+          const offset = randInt(35, 180);
+          const isPlus = Math.random() > 0.5;
+          const ans = isPlus ? tableTerm + offset : tableTerm - offset;
+          const targetSec = computeDynamicIdealTime([{ type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `tbl_${t}_${m}_${isPlus}`, id, category, expr: `(${t} × ${m}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, shortcut: `(${t} × ${m} = ${tableTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
         }
-
-        // High-Yield Tables (17, 19, 23, 24, 26, 29, 14, 16, 18)
-        const primaryTables = [17, 19, 23, 24, 26, 29, 14, 16, 18];
-        const extendedTables = [13, 21, 22, 27, 28];
-        const tPool = configDifficulty === 'hard' ? [...primaryTables, ...extendedTables] : primaryTables;
-        const t = pickRandom(tPool);
-        const m = randInt(4, 9);
-        const tableTerm = t * m;
-        const offset = randInt(35, 180);
-        const isPlus = Math.random() > 0.5;
-        const ans = isPlus ? tableTerm + offset : tableTerm - offset;
-        const targetSec = computeDynamicIdealTime([{ type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
-        return { signature: `tbl_${t}_${m}_${isPlus}`, id, category, expr: `(${t} × ${m}) ${isPlus ? '+' : '-'} ${offset}`, ans, targetSec, shortcut: `(${t} × ${m} = ${tableTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
       });
     }
 
