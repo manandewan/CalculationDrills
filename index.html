@@ -2005,34 +2005,54 @@
       });
     }
 
-    // 6. Roots & Decimals Generator
+    // 6. Roots & Decimal Multiplier Twins (Multiplying by CAT Decimals via Fractional Equivalents)
     if (enabledTopics.has('roots_decimals')) {
       activeGenerators.push(() => {
         const category = 'Roots & Decimals';
-        const isRoot = Math.random() > 0.4;
-        if (isRoot) {
-          const isCubeRoot = Math.random() > 0.5;
-          if (isCubeRoot) {
-            const base = randInt(7, 18);
-            const cbNum = base * base * base;
-            const offset = randInt(35, 140);
-            const ans = base + offset;
-            const targetSec = computeDynamicIdealTime([{ type: 'root', isCube: true }, { type: 'add_sub', terms: 2 }]);
-            return { signature: `cbrt_${base}_${offset}`, id, category, expr: `∛${cbNum} + ${offset}`, ans, targetSec, hint: `Use ∛${cbNum} = ${base}`, shortcut: `∛${cbNum} = ${base} ➔ ${base} + ${offset} = ${ans}` };
-          } else {
-            const base = randInt(14, 35);
-            const sqNum = base * base;
-            const offset = randInt(30, 160);
-            const ans = base + offset;
-            const targetSec = computeDynamicIdealTime([{ type: 'root', isCube: false }, { type: 'add_sub', terms: 2 }]);
-            return { signature: `rt_${base}_${offset}`, id, category, expr: `√${sqNum} + ${offset}`, ans, targetSec, hint: `Use √${sqNum} = ${base}`, shortcut: `√${sqNum} = ${base} ➔ ${base} + ${offset} = ${ans}` };
-          }
-        } else {
-          const f = pickRandom([{ dec: 1.25, frac: '5/4', name: '1.25' }, { dec: 1.5, frac: '3/2', name: '1.5' }, { dec: 1.75, frac: '7/4', name: '1.75' }, { dec: 0.375, frac: '3/8', name: '0.375' }, { dec: 0.625, frac: '5/8', name: '0.625' }, { dec: 0.875, frac: '7/8', name: '0.875' }, { dec: 1.125, frac: '9/8', name: '1.125' }]);
-          const base = randInt(16, 72) * 8;
-          const ans = Math.round(base * f.dec);
-          const targetSec = computeDynamicIdealTime([{ type: 'mult_dec', isDecimal: true }, { type: 'table', t: 15, m: 4 }]);
-          return { signature: `dec_${f.name}_${base}`, id, category, expr: `${f.name} × ${base}`, ans, targetSec, hint: `Use ${f.name} = ${f.frac}`, shortcut: `${f.name} = ${f.frac} ➔ (${f.frac}) × ${base} = ${ans}` };
+        const subMode = randInt(1, 3); // 1: Square Roots, 2: Cube Roots, 3: Decimal Multiplier Twins
+
+        if (subMode === 1) { // Square Roots + Arithmetic
+          const base = randInt(14, 36);
+          const sqNum = base * base;
+          const offset = randInt(30, 180);
+          const isPlus = Math.random() > 0.45;
+          const ans = isPlus ? base + offset : Math.abs(base - offset);
+          const expr = isPlus ? `√${sqNum} + ${offset}` : (base >= offset ? `√${sqNum} - ${offset}` : `${offset} - √${sqNum}`);
+          const targetSec = computeDynamicIdealTime([{ type: 'root', isCube: false }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `rt_${base}_${offset}_${isPlus}`, id, category, expr, ans, targetSec, hint: `Use √${sqNum} = ${base}`, shortcut: `√${sqNum} = ${base} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else if (subMode === 2) { // Cube Roots + Arithmetic
+          const base = randInt(7, 19);
+          const cbNum = base * base * base;
+          const offset = randInt(35, 160);
+          const isPlus = Math.random() > 0.45;
+          const ans = isPlus ? base + offset : Math.abs(base - offset);
+          const expr = isPlus ? `∛${cbNum} + ${offset}` : (base >= offset ? `∛${cbNum} - ${offset}` : `${offset} - ∛${cbNum}`);
+          const targetSec = computeDynamicIdealTime([{ type: 'root', isCube: true }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `cbrt_${base}_${offset}_${isPlus}`, id, category, expr, ans, targetSec, hint: `Use ∛${cbNum} = ${base}`, shortcut: `∛${cbNum} = ${base} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else { // High-Yield CAT Decimal Multiplier Twins (e.g. 0.375 × 640, 1.25 × 96, 0.875 × 320, 1.333 × 270)
+          const catDecimals = [
+            { dec: 0.125, frac: '1/8', name: '0.125', denom: 8, num: 1 },
+            { dec: 0.375, frac: '3/8', name: '0.375', denom: 8, num: 3 },
+            { dec: 0.625, frac: '5/8', name: '0.625', denom: 8, num: 5 },
+            { dec: 0.875, frac: '7/8', name: '0.875', denom: 8, num: 7 },
+            { dec: 1.125, frac: '9/8', name: '1.125', denom: 8, num: 9 },
+            { dec: 1.25,  frac: '5/4', name: '1.25',  denom: 4, num: 5 },
+            { dec: 1.5,   frac: '3/2', name: '1.5',   denom: 2, num: 3 },
+            { dec: 1.75,  frac: '7/4', name: '1.75',  denom: 4, num: 7 },
+            { dec: 0.833, frac: '5/6', name: '0.833', denom: 6, num: 5 },
+            { dec: 1.333, frac: '4/3', name: '1.333', denom: 3, num: 4 },
+            { dec: 1.667, frac: '5/3', name: '1.667', denom: 3, num: 5 }
+          ];
+          const choice = pickRandom(catDecimals);
+          const k = randInt(4, 28);
+          const base = choice.denom * k * (choice.denom <= 4 ? 10 : 1);
+          const prodVal = Math.round((base / choice.denom) * choice.num);
+          const offset = randInt(25, 140);
+          const isPlus = Math.random() > 0.45;
+          const ans = isPlus ? prodVal + offset : Math.abs(prodVal - offset);
+          const expr = isPlus ? `(${choice.name} × ${base}) + ${offset}` : (prodVal >= offset ? `(${choice.name} × ${base}) - ${offset}` : `${offset} - (${choice.name} × ${base})`);
+          const targetSec = computeDynamicIdealTime([{ type: 'mult_dec', isDecimal: true }, { type: 'add_sub', terms: 2 }]);
+          return { signature: `dec_${choice.name}_${base}_${isPlus}_${offset}`, id, category, expr, ans, targetSec, hint: `Use ${choice.name} = ${choice.frac} ➔ (${choice.frac}) × ${base} = ${prodVal}`, shortcut: `(${choice.frac} × ${base} = ${prodVal}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
         }
       });
     }
