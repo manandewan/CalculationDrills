@@ -2345,7 +2345,7 @@
     setTimeout(() => {
       arena.classList.remove('correct-anim', 'wrong-anim');
       fb.classList.remove('show-up');
-      if (timeRemaining > 0) {
+      if (isRetryModeActive || timeRemaining > 0) {
         spawnNextQuestion();
       } else {
         finishSprint();
