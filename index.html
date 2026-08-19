@@ -1636,27 +1636,32 @@
   ];
 
   const ALL_FRAC_DATA = [];
+  // 1. High-Yield Unit Fractions (1/3 to 1/20) - excluding trivial 1/2 and 1/10
   BASE_UNIT_FRACTIONS.forEach(f => {
-    // Exclude trivial fractions (1/2 = 50%, 1/10 = 10%) from drill generator
     if (f.denom !== 2 && f.denom !== 10) {
       ALL_FRAC_DATA.push(f);
     }
   });
+
+  // 2. High-Yield Multiples commonly tested in CAT Quant & DILR
+  // (Strictly standard families: /3, /4, /5, /6, /7, /8, /9, /11, /12, /14, /15, /16, /18, /20; omitting obscure /13, /17, /19 multiples)
+  const HIGH_YIELD_CAT_DENOMS = new Set([3, 4, 5, 6, 7, 8, 9, 11, 12, 14, 15, 16, 18, 20]);
   MULTIPLE_FRACTION_FAMILIES.forEach(fam => {
-    fam.items.forEach(it => {
-      const parts = it.label.split('/');
-      const d = parseInt(parts[1], 10);
-      const m = parseInt(parts[0], 10);
-      // Exclude trivial multiples (like 2/4 = 50%)
-      if (it.p !== '50%' && it.p !== '10%') {
-        ALL_FRAC_DATA.push({
-          label: it.label,
-          p: it.p,
-          denom: d,
-          mult: m
-        });
-      }
-    });
+    if (HIGH_YIELD_CAT_DENOMS.has(fam.denom)) {
+      fam.items.forEach(it => {
+        const parts = it.label.split('/');
+        const d = parseInt(parts[1], 10);
+        const m = parseInt(parts[0], 10);
+        if (it.p !== '50%' && it.p !== '10%') {
+          ALL_FRAC_DATA.push({
+            label: it.label,
+            p: it.p,
+            denom: d,
+            mult: m
+          });
+        }
+      });
+    }
   });
 
   function randInt(min, max) {
