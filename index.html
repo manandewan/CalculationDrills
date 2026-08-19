@@ -1327,8 +1327,8 @@
         <span class="hud-label">Score</span>
         <span class="hud-value" id="hud-score" style="color: #818cf8;">0</span>
       </div>
-      <div class="hud-center">
-        <span class="hud-label">Time Remaining</span>
+      <div class="hud-center" id="hud-timer-container">
+        <span class="hud-label" id="hud-timer-label">Time Remaining</span>
         <span class="timer-val" id="timer">15:00</span>
       </div>
       <div class="hud-stat" style="align-items: flex-end;">
@@ -2328,6 +2328,12 @@
     navigateTo('rush');
     updateTimerDisplay();
 
+    // Hide timer HUD completely during untimed retry mode
+    const timerContainer = document.getElementById('hud-timer-container');
+    if (timerContainer) {
+      timerContainer.style.visibility = isRetryMode ? 'hidden' : 'visible';
+    }
+
     document.getElementById('arena-tita-wrapper').classList.toggle('hidden', configQType !== 'tita');
     document.getElementById('arena-mcq-wrapper').classList.toggle('hidden', configQType !== 'mcq');
     document.getElementById('arena-meta-tag').textContent = isRetryMode ? `UNTIMED PRACTICE • ${retryQueue.length} MISTAKES` : `${configDifficulty.toUpperCase()} • ${configQType.toUpperCase()}`;
@@ -2340,9 +2346,8 @@
     timerInterval = setInterval(() => {
       if (!isPaused) {
         if (isRetryModeActive) {
-          // Reattempt is untimed: stopwatch elapsed count
+          // Reattempt is untimed: background elapsed count without timer UI
           retryElapsedSeconds++;
-          updateTimerDisplay();
         } else {
           // Standard sprint countdown
           timeRemaining--;
