@@ -2346,6 +2346,11 @@
       box.classList.add('hidden');
       if (btn) btn.textContent = '💡 Hint';
     }
+    // Keep focus in input box on TITA mode so typing is uninterrupted
+    if (configQType === 'tita') {
+      const inp = document.getElementById('rush-input');
+      if (inp) inp.focus();
+    }
   }
 
   function triggerFeedback(isCorrect) {
