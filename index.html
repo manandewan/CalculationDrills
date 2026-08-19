@@ -1977,7 +1977,7 @@
           const ans = isPlus ? product + offset : Math.abs(product - offset);
           const expr = isPlus ? `(${n}! / ${d}! × ${mult}) + ${offset}` : (product >= offset ? `(${n}! / ${d}! × ${mult}) - ${offset}` : `${offset} - (${n}! / ${d}! × ${mult})`);
           const targetSec = computeDynamicIdealTime([{ type: 'fact_ratio', n, d, mult }, { type: 'add_sub', terms: 2 }]);
-          return { signature: `fact_${n}_${d}_${mult}_${isPlus}`, id, category, expr, ans, targetSec, hint: `Use ${n}!/${d}! = ${ratio}`, shortcut: `Ratio (${ratio} × ${mult} = ${product}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+          return { signature: `fact_${n}_${d}_${mult}_${isPlus}`, id, category, expr, ans, targetSec, hint: `Use ${n}! = ${factVals[n]}`, shortcut: `Ratio (${n}!/${d}! = ${ratio} × ${mult} = ${product}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
         } else {
           const n = randInt(4, 6);
           const mult = randInt(3, 8);
