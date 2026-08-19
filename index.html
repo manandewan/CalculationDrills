@@ -2495,17 +2495,18 @@
       revContainer.appendChild(card);
     });
 
-    // Save sprint data to localStorage
+    // Save sprint data to localStorage (both standard timed sprints and untimed reattempts)
     saveSprintHistory({
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-      duration: `${configDuration}m`,
-      difficulty: configDifficulty.toUpperCase(),
+      duration: isRetryModeActive ? `RETRY (${attempted + skipped} Q)` : `${configDuration}m`,
+      difficulty: isRetryModeActive ? 'UNTIMED' : configDifficulty.toUpperCase(),
       qtype: configQType.toUpperCase(),
       netScore,
       correct,
       wrong,
+      skipped,
       accuracy: `${accuracy}%`,
-      avgPace: `${(timeSpentSeconds / attempted).toFixed(1)}s`
+      avgPace: `${avgSecPerQ}s`
     });
   }
 
