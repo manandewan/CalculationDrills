@@ -2361,8 +2361,14 @@
     }, 1000);
   }
 
+  // State for Pause Tracking (ensures paused time is never counted in question solve time / longest solve)
+  let pauseStartTime = null;
+  let totalPausedDurationForCurrentQ = 0;
+
   function spawnNextQuestion() {
     questionCounter++;
+    totalPausedDurationForCurrentQ = 0;
+    pauseStartTime = null;
     
     // Check if in Retry Mistakes mode
     if (retryQueue && retryQueue.length > 0) {
@@ -2457,7 +2463,13 @@
   }
 
   function processAnswer(userNum) {
-    const timeSpent = (Date.now() - questionStartTime) / 1000;
+    let pausedTime = totalPausedDurationForCurrentQ;
+    if (isPaused && pauseStartTime) {
+      pausedTime += (Date.now() - pauseStartTime);
+    }
+    const rawElapsedMs = Date.now() - questionStartTime;
+    const activeElapsedMs = Math.max(0, rawElapsedMs - pausedTime);
+    const timeSpent = activeElapsedMs / 1000;
     const isCorrect = Math.abs(userNum - currentQuestion.ans) < 0.05;
 
     if (isCorrect) {
@@ -2477,8 +2489,14 @@
   }
 
   function skipQuestion() {
-    if (!isRunning || isPaused) return;
-    const timeSpent = (Date.now() - questionStartTime) / 1000;
+    if (!isRunning) return;
+    let pausedTime = totalPausedDurationForCurrentQ;
+    if (isPaused && pauseStartTime) {
+      pausedTime += (Date.now() - pauseStartTime);
+    }
+    const rawElapsedMs = Date.now() - questionStartTime;
+    const activeElapsedMs = Math.max(0, rawElapsedMs - pausedTime);
+    const timeSpent = activeElapsedMs / 1000;
     currentStreak = 0;
     answers.push({
       ...currentQuestion,
@@ -2492,6 +2510,14 @@
   function togglePause() {
     if (!isRunning) return;
     isPaused = !isPaused;
+    if (isPaused) {
+      pauseStartTime = Date.now();
+    } else {
+      if (pauseStartTime) {
+        totalPausedDurationForCurrentQ += (Date.now() - pauseStartTime);
+        pauseStartTime = null;
+      }
+    }
     document.getElementById('pause-modal').classList.toggle('hidden', !isPaused);
     document.getElementById('arena-box').classList.toggle('blur-pause', isPaused);
     document.getElementById('pause-toggle-btn').textContent = isPaused ? 'Resume' : 'Pause';
