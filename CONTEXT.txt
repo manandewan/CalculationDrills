@@ -17,92 +17,74 @@ Local Project Root: /Users/manandewan/Desktop/Daily calculations/index.html
 - Immediate, high-contrast feedback loop: Real exam scoring (+3 for correct, -1 for wrong, 0 for skip).
 
 --------------------------------------------------------------------------------
-2. SINGLE-FILE ARCHITECTURAL MAP (index.html)
+2. CORE QUIZZING & QUESTION GENERATION ENGINE (WHAT WAS INTENDED & DESIGNED)
 --------------------------------------------------------------------------------
-The entire application is self-contained within `index.html` to eliminate build steps, 
-bundler issues, or runtime dependencies:
+A. "Anchors of the Sprint" Protocol:
+   - At the beginning of each sprint (`initSessionAnchors()`), the app silently selects 3 target concept anchors:
+     1. One High-Yield Square (e.g. 19², 23², 28², 29²).
+     2. One High-Yield Multiplication Table (e.g. 17, 19, 23, 26, 28, 29).
+     3. One High-Yield Fraction-to-Percentage Anchor (e.g. 5/12, 7/12, 7/15, 8/15, 3/8, 5/8, 7/8, 2/7, 5/7).
+   - These 3 anchors are woven into diverse arithmetic operations repeatedly throughout the sprint 
+     (e.g., as sq² + offset, sq² - offset, offset - sq², (sq² × mult) + offset, (f.p of base) + table, 
+     dividend ÷ table + offset) so you are forced to retrieve them from memory 3 to 4 times per sprint.
 
-• Lines 1–1230: Embedded CSS Stylesheet
-  - Design Theme: Modern Dark Glassmorphism (palette: #0a0e1a background, #1e293b cards, #6366f1 indigo accents, #22c55e success, #ef4444 danger, #eab308 warning).
-  - Key layout classes: `.rush-hud`, `.arena-card`, `.review-item`, `.family-card`, `.math-cell`, `.topic-chip`.
-  - Fixed-viewport scrolling locks (`.locked-screen`) on Home and Rush screens to prevent viewport bounce on mobile/desktop.
+B. Dual-Layer Anti-Repetition Cache:
+   - Level 1: 35-question signature memory buffer prevents exact duplicate questions from recurring in a sprint.
+   - Level 2: 6-family buffer prevents back-to-back testing of the exact same number while allowing the 
+     sprint anchors to rotate smoothly every 5–7 questions across varied operations.
 
-• Lines 1231–1620: Semantic HTML Views
-  - VIEW 1: Home / Setup Dashboard (`#home-view`)
-    - Config cards for Duration (5m, 10m, 15m), Difficulty (Easy, Normal, Hard), Input Mode (MCQ vs TITA), and Topic Selection.
-  - VIEW 2: Active Sprint Arena (`#rush-view`)
-    - Live HUD (Score, Time Remaining / Stopwatch, Solved Counter, Streak).
-    - Arena box with Expression display, TITA input field, MCQ 4-button layout, Hint box, Skip & Pause controls.
-  - VIEW 3: Results & Analytics (`#results-view`)
-    - Net Score, Accuracy %, Average Pace, Time Sinks (Top 3 longest solves), Topic Accuracy & Weak Area tags, Retry Mistakes launcher, Full Question Review cards.
-  - MODALS:
-    - History Modal (`#history-modal`): Past 25 sprint records with Net Score, Accuracy, Pace, individual deletion, and Clear All.
-    - Reference Formulas Modal (`#ref-modal`): 5 tabs for Base Fractions & Families, Squares/Cubes/Higher Powers, Factorials (0!-10!), Roots & Decimals, and Tables 1-30.
-    - Pause Modal (`#pause-modal`) and Feature Tour Spotlight (`#app-tour`).
+C. High-Yield Real Exam Clustering:
+   - 90% of exam fractions cluster near 50%: 5/12 (41.67%), 7/12 (58.33%), 7/15 (46.67%), 8/15 (53.33%), 
+     3/8 (37.5%), 5/8 (62.5%), 7/8 (87.5%), 2/7 (28.57%), 4/7 (57.14%), 5/7 (71.42%), 5/6 (83.33%), 
+     4/9 (44.44%), 7/9 (77.77%), 3/11 (27.27%), 7/11 (63.63%).
+   - Weighted distribution by difficulty: 90% Tier-1 on Easy, 80% on Normal, 55% on Hard (45% extended).
+   - Multiplication by 18/5 with multiples of 5 and 5/18 with multiples of 18 (km/h ↔ m/s factor drills).
 
-• Lines 1621–3180: JavaScript Application Logic
-  - Lines 1630–1770: High-Yield CAT Data Arrays (`BASE_UNIT_FRACTIONS`, `MULTIPLE_FRACTION_FAMILIES`, `ALL_FRAC_DATA`, `computeDynamicIdealTime`).
-  - Lines 1775–2300: 24 Specialized Question Generators with Dual-Layer Anti-Repetition Cache (`recentSignatures`, `recentFamilies`).
-  - Lines 2300–2590: Game Loop, Pause Tracking, Input Handling, Transition Locks (`isTransitioning`), and HUD updates.
-  - Lines 2595–2870: Sprint Completion Engine, Analytics Breakdown, History Persistence, Untimed Mistakes Reattempt.
-  - Lines 2875–3180: Modal tab controllers, Data renderers, Keyboard Shortcuts (A/B/C/D, 1/2/3/4, H, Spacebar, Escape), and Tour Walkthrough.
+D. Mental Division by Primes:
+   - Heavily weighted towards primes under 10 (3 and 7 at 70%), with remaining 30% for 11, 13, 17, 19.
 
---------------------------------------------------------------------------------
-3. USER PREFERENCES & STRICT DESIGN RULES (WHAT WE LIKE & DISLIKE)
---------------------------------------------------------------------------------
-[LIKED & MANDATED]:
-✓ Real CAT High-Yield Clustering:
-  - 90% of exam fractions cluster near 50%: 5/12 (41.67%), 7/12 (58.33%), 7/15 (46.67%), 8/15 (53.33%), 3/8, 5/8, 7/8, 2/7, 4/7, 5/7.
-  - Difficulty Scaling: 90% Tier-1 on Easy, 80% on Normal, 55% on Hard (with 45% extended).
-✓ Mental Division by Primes:
-  - Heavily weighted towards primes under 10 (3 and 7 at 70%), with remaining 30% for 11, 13, 17, 19.
-✓ Multi-Term Long Addition & Subtraction:
-  - 4 to 5 term mixed arithmetic with 2-digit and 3-digit speed numbers (e.g. 84 - 37 + 65 + 49 - 28, 380 + 265 - 190 + 85).
-✓ Dynamic Pacing Targets (Ideal Time):
-  - Every problem computes realistic target seconds based on operator complexity (e.g. 2.0s for base table, 5.5s for hybrid fraction + product).
-✓ Clean Untimed Mistake Practice:
-  - Reattempting mistakes must be 100% untimed. The "Time Remaining" timer HUD is completely hidden, and reattempts NEVER pollute history records.
-✓ Ergonomic Keyboard Shortcuts:
-  - Enter to submit TITA, A/B/C/D or 1/2/3/4 for MCQ, H for Hint, Spacebar for Pause, Escape to close modals.
+E. Long Multi-Term Addition & Subtraction:
+   - 4 to 5 term mixed arithmetic with 2-digit and 3-digit speed numbers (e.g. 84 - 37 + 65 + 49 - 28, 380 + 265 - 190 + 85).
+   - 4 to 6 term DILR cumulative column totals.
 
-[DISLIKED & FORBIDDEN]:
-✗ NO obscure, non-tested edge cases (e.g. multi-numerators of high primes like 7/19, 8/17, 11/13 are banned).
-✗ NO trivial questions like 50% of 80 or 10% of 60 in speed drills.
-✗ NO hints on basic multiplication tables (19 × 7 needs zero hints; hints reserved for identities/powers/fractions).
-✗ NO over-revealing hints on factorials (show base definition like "Use 7! = 5040", never pre-calculate the quotient).
-✗ NO including paused time in question duration or Longest Solve (Time Sinks).
-✗ NO saving 0-question aborted sprints to History.
+F. Multi-Topic Hybrids (Never in Isolation):
+   - Hybrids across 2–3 topics (Powers + Tables, Fractions + Tables, Factorials + Fractions) with addition/subtraction.
+
+G. Dynamic Ideal Time:
+   - Unique target seconds evaluated dynamically per question based on operator complexity.
+
+H. Hints & Solutions:
+   - Hints only for algebraic identities/powers/roots/factorials/fractions. NEVER for basic tables (19 × 7).
+   - Factorial hints only state the definition (e.g., "Use 7! = 5040"), never pre-calculating the quotient.
+   - Every question displays full step-by-step solution shortcut on results review.
 
 --------------------------------------------------------------------------------
-4. DUAL-LAYER ANTI-REPETITION & PERMUTATION ENGINE
+3. USER PREFERENCES & STRICT UX RULES
 --------------------------------------------------------------------------------
-1. Level 1 (Exact Signature Buffer - 35 items):
-   Prevents identical questions from repeating within any 35-question sprint window.
-2. Level 2 (Family-Level Base Buffer - 10 items):
-   Tracks the underlying base element (e.g. `sq_19`, `cb_14`, `frac_5/12`, `tbl_17`, `divprime_7`).
-   Even if the additive offset changes, the same root number will not appear twice within 10 questions.
-3. Algebraic Permutation Diversity:
-   - Alternates squaring templates: (X² + offset), (X² - offset), and (offset - X²).
-   - Fraction multiples rotate across 15 distinct scaling factors (3, 4, 5, 6, 7, 8, 9, 12, 14, 15, 16, 18, 20, 24, 25).
-   - Division & Products use varied midpoints (25, 30, 35, 40, 50, 60) and twin product spreads.
+[MANDATED]:
+✓ Untimed Reattempts: Mistake practice is 100% untimed, hides countdown HUD, and never saves to History.
+✓ Non-Cheesable MCQs: At least 2 options share the same unit digit; trap distractors (+/- 1, 2, 5, 10, 20).
+✓ Keyboard Ergonomics: Enter for TITA, A/B/C/D or 1/2/3/4 for MCQ, H for Hint, Spacebar for Pause, Escape for Modals.
+✓ Focused Cursor: Tapping Hint keeps focus in input box on TITA mode.
+✓ Clean History: 0-question aborted sprints are discarded from localStorage.
+
+[FORBIDDEN]:
+✗ NO obscure high-prime multiples (7/19, 8/17, 11/13 are excluded).
+✗ NO trivial questions (50% of 80 or 10% of 60).
+✗ NO emojis on Home screen or in Git README.
+✗ NO counting paused time in question durations or Time Sinks.
 
 --------------------------------------------------------------------------------
-5. TOPIC BREAKDOWN & GENERATOR POOLS
+4. SINGLE-FILE ARCHITECTURAL MAP (index.html)
 --------------------------------------------------------------------------------
-1. Powers:
-   - Squares (14² to 32²), Cubes (7³ to 16³), Base-2 (2¹–2¹²), Base-3 (3¹–3⁷), Base-4 (4¹–4⁶), Base-5 (5¹–5⁶), Base-6 (6¹–6⁵), Base-7 (7¹–7⁴).
-2. Fractions & Percentages:
-   - High-yield denominators (3, 4, 5, 6, 7, 8, 9, 11, 12, 14, 15, 16, 18, 20) with fraction-of-integer and percentage-reversals.
-3. Factorials:
-   - High-yield ratios (e.g., 8!/6!, 7!/5!) and factorial arithmetic offsets.
-4. Tables & Products:
-   - CAT tables (17, 19, 23, 24, 26, 29), Twin Products (a-b)(a+b), and Prime Divisions (3, 7, 11, 13, 17, 19).
-5. Addition & Subtraction:
-   - 4-5 term mixed (+ and -), 3-digit speed arithmetic, and DILR column totals.
-6. Roots & Decimals:
-   - Square roots (√2, √3, √5, √6, √7, √8, √10), Cube roots (∛2, ∛3), and CAT Decimal Multipliers (0.375, 0.625, 0.875, 1.25, 1.333, 1.667).
-7. Hybrid Combinations:
-   - High-yield multi-step problems blending fractions, powers, and tables.
+• Lines 1–1230: Embedded Dark Glassmorphism CSS Stylesheet
+• Lines 1231–1620: HTML Views (Home, Arena, Results) and Modals (History, Reference Formulas, Pause, Tour)
+• Lines 1621–1770: High-Yield CAT Data Constants & Dynamic Ideal Time Calculator
+• Lines 1771–1820: Sprint Anchors State (`sessionAnchors`, `initSessionAnchors()`)
+• Lines 1821–2350: 24 Specialized Question Generators + Anchor Drill Generators + Anti-Repetition Loop
+• Lines 2351–2600: Sprint Execution Engine, Pause Tracking, Input Handling, Transition Locks (`isTransitioning`)
+• Lines 2601–2870: Sprint Completion Engine, Analytics Breakdown, History Persistence, Untimed Mistakes Reattempt
+• Lines 2871–3330: Modal Controllers, Reference Data Renderers, Keyboard Shortcuts, Spotlight Walkthrough
 
 ================================================================================
 END OF MASTER CONTEXT

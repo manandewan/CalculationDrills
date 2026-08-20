@@ -1778,7 +1778,41 @@
   let isRetryModeActive = false;
   let retryElapsedSeconds = 0;
   let recentSignatures = []; // Keeps last 35 exact signatures
-  let recentFamilies = [];   // Keeps last 8 underlying base elements (e.g. 'sq_19', 'f_5/12', 't_17', 'p_3') to prevent similar questions
+  let recentFamilies = [];   // Keeps last 10 underlying base elements to prevent back-to-back repeats
+
+  // Session "Anchors of the Sprint" State (Silently selects 3 target concepts per sprint and drills them repeatedly in diverse templates)
+  let sessionAnchors = {
+    square: 19,
+    table: 17,
+    fraction: { label: '5/12', p: '41.67%', denom: 12, mult: 5 }
+  };
+
+  function initSessionAnchors() {
+    const highYieldSquares = [17, 18, 19, 21, 23, 24, 26, 27, 28, 29, 31, 32];
+    const highYieldTables = [14, 16, 17, 18, 19, 23, 24, 26, 28, 29];
+    const highYieldFractions = [
+      { label: '5/12', p: '41.67%', denom: 12, mult: 5 },
+      { label: '7/12', p: '58.33%', denom: 12, mult: 7 },
+      { label: '7/15', p: '46.67%', denom: 15, mult: 7 },
+      { label: '8/15', p: '53.33%', denom: 15, mult: 8 },
+      { label: '3/8',  p: '37.5%',  denom: 8,  mult: 3 },
+      { label: '5/8',  p: '62.5%',  denom: 8,  mult: 5 },
+      { label: '7/8',  p: '87.5%',  denom: 8,  mult: 7 },
+      { label: '2/7',  p: '28.57%', denom: 7,  mult: 2 },
+      { label: '4/7',  p: '57.14%', denom: 7,  mult: 4 },
+      { label: '5/7',  p: '71.42%', denom: 7,  mult: 5 },
+      { label: '5/6',  p: '83.33%', denom: 6,  mult: 5 },
+      { label: '4/9',  p: '44.44%', denom: 9,  mult: 4 },
+      { label: '7/9',  p: '77.77%', denom: 9,  mult: 7 },
+      { label: '7/11', p: '63.63%', denom: 11, mult: 7 }
+    ];
+
+    sessionAnchors = {
+      square: pickRandom(highYieldSquares),
+      table: pickRandom(highYieldTables),
+      fraction: pickRandom(highYieldFractions)
+    };
+  }
 
   // 100% Comprehensive CAT Speed Arithmetic Engine (High-Yield CAT/DILR Clustered Distribution)
   function generateSingleQuestion(id) {
@@ -2179,7 +2213,7 @@
     if (enabledTopics.has('factorials') && enabledTopics.has('fractions')) {
       activeGenerators.push(() => {
         const category = 'Factorials + Fractions';
-        const f = pickRandom(ALL_FRAC_DATA);
+        const f = (Math.random() < 0.5 && sessionAnchors.fraction) ? sessionAnchors.fraction : pickRandom(ALL_FRAC_DATA);
         const n = randInt(4, 6);
         const mult = randInt(2, 6);
         const factTerm = factVals[n] * mult;
@@ -2196,34 +2230,124 @@
     if (enabledTopics.has('powers') && enabledTopics.has('tables')) {
       activeGenerators.push(() => {
         const category = 'Powers + Tables';
-        const sq = randInt(14, 30);
+        const sq = (Math.random() < 0.45 && sessionAnchors.square) ? sessionAnchors.square : randInt(14, 30);
         const sqTerm = sq * sq;
-        const t = randInt(14, 29);
+        const t = (Math.random() < 0.45 && sessionAnchors.table) ? sessionAnchors.table : randInt(14, 29);
         const m = randInt(4, 9);
         const tableTerm = t * m;
         const isPlus = Math.random() > 0.45;
         const ans = isPlus ? sqTerm + tableTerm : sqTerm - tableTerm;
         const expr = `${sq}² ${isPlus ? '+' : '-'} (${t} × ${m})`;
         const targetSec = computeDynamicIdealTime([{ type: 'sq', val: sq }, { type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
-        return { family: `hyb_pt_${sq}`, signature: `hyb_pt_${sq}_${t}_${m}_${expr}`, id, category, expr, ans, targetSec, hint: `Use ${sq}² = ${sqTerm}`, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} (${tableTerm}) = ${ans}` };
+        return { family: `hyb_pt_${sq}_${t}`, signature: `hyb_pt_${sq}_${t}_${m}_${expr}`, id, category, expr, ans, targetSec, hint: `Use ${sq}² = ${sqTerm}`, shortcut: `${sq}² (${sqTerm}) ${isPlus ? '+' : '-'} (${tableTerm}) = ${ans}` };
       });
     }
 
     if (enabledTopics.has('fractions') && enabledTopics.has('tables')) {
       activeGenerators.push(() => {
         const category = 'Fractions + Tables';
-        const f = pickRandom(ALL_FRAC_DATA);
+        const f = (Math.random() < 0.5 && sessionAnchors.fraction) ? sessionAnchors.fraction : pickRandom(ALL_FRAC_DATA);
         const base = f.denom * randInt(3, 12) * 10;
         const fracTerm = Math.round((base / f.denom) * f.mult);
-        const t = randInt(14, 29);
+        const t = (Math.random() < 0.45 && sessionAnchors.table) ? sessionAnchors.table : randInt(14, 29);
         const m = randInt(4, 9);
         const tableTerm = t * m;
         const isPlus = Math.random() > 0.4;
         const ans = isPlus ? fracTerm + tableTerm : Math.abs(fracTerm - tableTerm);
         const expr = isPlus ? `(${f.p} of ${base}) + (${t} × ${m})` : (fracTerm >= tableTerm ? `(${f.p} of ${base}) - (${t} × ${m})` : `(${t} × ${m}) - (${f.p} of ${base})`);
         const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: f.denom, mult: f.mult }, { type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
-        return { family: `hyb_ft_${f.denom}`, signature: `hyb_ft_${f.label}_${t}_${m}_${expr}`, id, category, expr, ans, targetSec, hint: `Use ${f.p} = ${f.label}`, shortcut: `Fraction (${fracTerm}) ${isPlus ? '+' : '-'} Table (${tableTerm}) = ${ans}` };
+        return { family: `hyb_ft_${f.denom}_${t}`, signature: `hyb_ft_${f.label}_${t}_${m}_${expr}`, id, category, expr, ans, targetSec, hint: `Use ${f.p} = ${f.label}`, shortcut: `Fraction (${fracTerm}) ${isPlus ? '+' : '-'} Table (${tableTerm}) = ${ans}` };
       });
+    }
+
+    // 8. Sprint Focus Anchor Drills (Weaves the sprint's focus square, table, and fraction in varied permutations)
+    if (sessionAnchors) {
+      if (enabledTopics.has('powers') && sessionAnchors.square) {
+        activeGenerators.push(() => {
+          const category = 'Powers';
+          const sq = sessionAnchors.square;
+          const sqVal = sq * sq;
+          const template = randInt(1, 4);
+          let expr, ans, offset;
+          if (template === 1) {
+            offset = randInt(35, 250);
+            ans = sqVal + offset;
+            expr = `${sq}² + ${offset}`;
+          } else if (template === 2) {
+            offset = randInt(35, 230);
+            ans = sqVal - offset;
+            expr = `${sq}² - ${offset}`;
+          } else if (template === 3) {
+            offset = sqVal + randInt(40, 260);
+            ans = offset - sqVal;
+            expr = `${offset} - ${sq}²`;
+          } else {
+            const mult = randInt(2, 4);
+            offset = randInt(20, 150);
+            ans = (sqVal * mult) + offset;
+            expr = `(${sq}² × ${mult}) + ${offset}`;
+          }
+          const targetSec = computeDynamicIdealTime([{ type: 'sq', val: sq }, { type: 'add_sub', terms: 2 }]);
+          return { family: `anc_sq_${sq}`, signature: `anc_sq_${sq}_${expr}`, id, category, expr, ans, targetSec, hint: `Use ${sq}² = ${sqVal}`, shortcut: `${sq}² = ${sqVal} ➔ ${expr} = ${ans}` };
+        });
+      }
+
+      if (enabledTopics.has('fractions') && sessionAnchors.fraction) {
+        activeGenerators.push(() => {
+          const category = 'Fractions & %';
+          const f = sessionAnchors.fraction;
+          const multipliers = [3, 4, 5, 6, 7, 8, 9, 12, 15, 16, 18, 20, 24];
+          const multChoice = pickRandom(multipliers);
+          const base = f.denom * multChoice * 10;
+          const fracTerm = Math.round((base / f.denom) * f.mult);
+          const offset = randInt(35, 190);
+          const template = randInt(1, 3);
+          let expr, ans;
+          if (template === 1) {
+            ans = fracTerm + offset;
+            expr = `(${f.p} of ${base}) + ${offset}`;
+          } else if (template === 2) {
+            ans = Math.abs(fracTerm - offset);
+            expr = fracTerm >= offset ? `(${f.p} of ${base}) - ${offset}` : `${offset} - (${f.p} of ${base})`;
+          } else {
+            const t = randInt(14, 25);
+            const m = randInt(3, 7);
+            const tableVal = t * m;
+            ans = fracTerm + tableVal;
+            expr = `(${f.p} of ${base}) + (${t} × ${m})`;
+          }
+          const targetSec = computeDynamicIdealTime([{ type: 'frac', denom: f.denom, mult: f.mult }, { type: 'add_sub', terms: 2 }]);
+          return { family: `anc_frac_${f.label}`, signature: `anc_frac_${f.label}_${base}_${expr}`, id, category, expr, ans, targetSec, hint: `Use ${f.p} = ${f.label}`, shortcut: `(${f.label} × ${base} = ${fracTerm}) ➔ ${ans}` };
+        });
+      }
+
+      if (enabledTopics.has('tables') && sessionAnchors.table) {
+        activeGenerators.push(() => {
+          const category = 'Tables & Products';
+          const t = sessionAnchors.table;
+          const m = randInt(4, 9);
+          const tableTerm = t * m;
+          const template = randInt(1, 3);
+          let expr, ans;
+          if (template === 1) {
+            const offset = randInt(35, 180);
+            ans = tableTerm + offset;
+            expr = `(${t} × ${m}) + ${offset}`;
+          } else if (template === 2) {
+            const offset = randInt(35, 180);
+            ans = tableTerm - offset;
+            expr = `(${t} × ${m}) - ${offset}`;
+          } else {
+            const dividend = t * randInt(12, 45);
+            const quotient = Math.round(dividend / t);
+            const offset = randInt(25, 150);
+            ans = quotient + offset;
+            expr = `(${dividend} ÷ ${t}) + ${offset}`;
+          }
+          const targetSec = computeDynamicIdealTime([{ type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
+          return { family: `anc_tbl_${t}`, signature: `anc_tbl_${t}_${m}_${expr}`, id, category, expr, ans, targetSec, shortcut: `Table of ${t} (${t} × ${m} = ${tableTerm}) ➔ ${ans}` };
+        });
+      }
     }
 
     // Pick with Dual-Layer Anti-Repetition Loop (Checks Exact Signature AND Family-Level Repetition)
@@ -2247,7 +2371,7 @@
         
         if (candidate.family) {
           recentFamilies.push(candidate.family);
-          if (recentFamilies.length > 10) recentFamilies.shift(); // Keep 10 distinct base families apart
+          if (recentFamilies.length > 6) recentFamilies.shift(); // Keep 6 distinct base families apart so anchors rotate periodically without back-to-back repeats
         }
         break;
       }
@@ -2323,6 +2447,7 @@
       retryIndex = 0;
       timeRemaining = configDuration * 60;
       recentSignatures = []; // Reset on new standard sprint
+      initSessionAnchors();  // Silently choose 3 Sprint Focus Anchors (Square, Table, Fraction) to drill across the sprint
     }
 
     navigateTo('rush');
