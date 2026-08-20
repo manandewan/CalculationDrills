@@ -2462,7 +2462,12 @@
     processAnswer(selectedVal);
   }
 
+  let isTransitioning = false;
+
   function processAnswer(userNum) {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
     let pausedTime = totalPausedDurationForCurrentQ;
     if (isPaused && pauseStartTime) {
       pausedTime += (Date.now() - pauseStartTime);
@@ -2489,7 +2494,9 @@
   }
 
   function skipQuestion() {
-    if (!isRunning) return;
+    if (!isRunning || isTransitioning) return;
+    isTransitioning = true;
+
     let pausedTime = totalPausedDurationForCurrentQ;
     if (isPaused && pauseStartTime) {
       pausedTime += (Date.now() - pauseStartTime);
@@ -2504,11 +2511,12 @@
       status: 'unattempted',
       timeSec: timeSpent
     });
+    isTransitioning = false;
     spawnNextQuestion();
   }
 
   function togglePause() {
-    if (!isRunning) return;
+    if (!isRunning || isTransitioning) return;
     isPaused = !isPaused;
     if (isPaused) {
       pauseStartTime = Date.now();
@@ -2527,7 +2535,7 @@
   }
 
   function toggleHint() {
-    if (!isRunning || isPaused || !currentQuestion || !currentQuestion.hint) return;
+    if (!isRunning || isPaused || isTransitioning || !currentQuestion || !currentQuestion.hint) return;
     const box = document.getElementById('arena-hint-box');
     const txt = document.getElementById('arena-hint-text');
     const btn = document.getElementById('hint-btn');
@@ -2584,6 +2592,7 @@
     setTimeout(() => {
       arena.classList.remove('correct-anim', 'wrong-anim');
       fb.classList.remove('show-up');
+      isTransitioning = false;
       if (isRetryModeActive || timeRemaining > 0) {
         spawnNextQuestion();
       } else {
