@@ -3,88 +3,94 @@ CALCULATION RUSH — MASTER PROJECT CONTEXT & ARCHITECTURE GUIDE
 ================================================================================
 Last Updated: 2026-08-20
 Repository: https://github.com/manandewan/calculationrush.git (Branch: main)
-Live URL: https://manandewan.github.io/calculationrush/
+Live Production URL: https://manandewan.github.io/calculationrush/
 Local Project Root: /Users/manandewan/Desktop/Daily calculations/index.html
 
---------------------------------------------------------------------------------
-1. PROJECT PURPOSE & CORE PHILOSOPHY
---------------------------------------------------------------------------------
-- "Knowing concepts is great, but everything in competitive exams (CAT, XAT, DILR, GMAT) 
-  relies on your raw speed and ability to arrive at the final numerical answer."
-- 100% PURE mental calculation drills. Zero word problem baggage, zero theoretical geometry/QA fluff.
-- High-yield, exam-realistic numbers: Prioritize numbers and fractions that actually appear 
-  in 90% of real CAT/DILR questions rather than obscure edge cases.
-- Immediate, high-contrast feedback loop: Real exam scoring (+3 for correct, -1 for wrong, 0 for skip).
+================================================================================
+1. CORE USER IDEOLOGY & PRODUCT PHILOSOPHY (DO NOT ALTER OR FORGET)
+================================================================================
+• "Knowing concepts and all is great, but it all relies on your ability to arrive at the final answer. Write like this."
+• 100% PURE mental speed calculation drills. Zero word problems, zero QA conceptual geometry/algebra fluff.
+• "Focus on those which are commonly tested, not edge cases." (e.g. 7/19 or 8/17 are obscure edge cases that are excluded).
+• "In the real CAT exam, 90% of /12 and /15 questions are clustered right around 50%... So prefer those. Run this logic across all topics."
+• "The primary bottleneck is not working memory overload—it is arriving at the final numerical answer accurately and rapidly under time pressure."
+• Daily cognitive conditioning: A tool built to be used daily (e.g. 100 days) to permanently hardwire number sense and instant recall.
 
---------------------------------------------------------------------------------
-2. CORE QUIZZING & QUESTION GENERATION ENGINE (WHAT WAS INTENDED & DESIGNED)
---------------------------------------------------------------------------------
-A. "Anchors of the Sprint" Protocol:
-   - At the beginning of each sprint (`initSessionAnchors()`), the app silently selects 3 target concept anchors:
-     1. One High-Yield Square (e.g. 19², 23², 28², 29²).
-     2. One High-Yield Multiplication Table (e.g. 17, 19, 23, 26, 28, 29).
-     3. One High-Yield Fraction-to-Percentage Anchor (e.g. 5/12, 7/12, 7/15, 8/15, 3/8, 5/8, 7/8, 2/7, 5/7).
-   - These 3 anchors are woven into diverse arithmetic operations repeatedly throughout the sprint 
-     (e.g., as sq² + offset, sq² - offset, offset - sq², (sq² × mult) + offset, (f.p of base) + table, 
-     dividend ÷ table + offset) so you are forced to retrieve them from memory 3 to 4 times per sprint.
+================================================================================
+2. CHRONOLOGICAL LOG OF KEY USER PROMPTS & ARCHITECTURAL DIRECTIVES
+================================================================================
+[Prompt 1]: Act as an elite CAT cognitive conditioning coach. Daily sprint, no pen/paper/calculator. "Anchors of the Day" protocol (silently select 3 specific targets to drill repeatedly across the session).
+[Prompt 5]: "I should see question by question. Think about how chess.com's puzzle rush works."
+[Prompt 6]: "Dont set a cap at 40 questions. There is no specific target. Goal is to do as many as possible."
+[Prompt 8-9]: Split fraction reference table into 2 parts: basic numerator 1 and common multiples.
+[Prompt 15]: Configuration cards on Home page: Time (5m, 10m, 15m), Difficulty (Easy, Normal, Hard), Question Type (MCQ, TITA).
+[Prompt 20]: All 3 modes feature higher powers/cubes, scaled by difficulty.
+[Prompt 22]: End sprint analytics: Accuracy %, Weak Areas (tagged <75%), Time Sinks (Top 3 longest solves), and Average Pace.
+[Prompt 27-31]: Include Factorials. Never in isolation: make hybrid questions across 2-3 topics (Powers, Tables, Fractions, Factorials) coupled with addition/subtraction. Keep isolation ONLY for pure addition & subtraction.
+[Prompt 32-34]: Evaluate unique dynamic "Ideal Time" for every question based on operations. Label solutions as "Solution:" in the review.
+[Prompt 40]: Topics to Practice selector: "Default (All Topics)" vs "Custom Selection".
+[Prompt 44-45, 90]: No emojis on Home screen or GitHub README. Clean, minimalist dark UI.
+[Prompt 59, 108, 127]: Save sprint history (last 25 attempts) to localStorage with individual deletion. Untimed mistake reattempts must NEVER pollute history.
+[Prompt 63]: Non-cheesable MCQs: at least 2 options share the exact same unit digit; generate trap distractors (+/- 1, 2, 5, 10, 20).
+[Prompt 66]: TITA mode supports both physical Enter key and an on-screen Submit button.
+[Prompt 70]: Spotlight feature tour accessible via question mark icon (?) at top bar.
+[Prompt 80, 129]: Anti-repetition engine: questions must be dynamic with diverse permutations; identical or very similar questions must not repeat in the same quiz.
+[Prompt 83]: km/h <-> m/s factors: 18/5 with multiples of 5 and 5/18 with multiples of 18 coupled with addition/subtraction.
+[Prompt 84]: Difference of Squares (a² - b² = (a-b)(a+b)), Base-50/100 squaring near numbers, and Twin Products ((x-d)(x+d) = x² - d² with midpoints 25, 30, 35, 40, 50, 60).
+[Prompt 95]: Remove percentage-to-fractions with denominators greater than 20.
+[Prompt 102]: Formula quick deck tabbed modal in top bar labeled "Formulas".
+[Prompt 104-106]: Total attempts = Correct + Wrong. Display quiz time spent. Weak area analysis factors in skipped questions. Retry Mistakes drills all missed/skipped questions untimed.
+[Prompt 110-112, 118]: Hints only for identities/formulas/fractions/powers. NEVER drop hints for basic multiplication tables (19 × 7). Tapping Hint keeps focus in input box on TITA mode and blurs on MCQ.
+[Prompt 123]: High-yield clustering around 50% (5/12, 7/12, 7/15, 8/15, 3/8, 5/8, 7/8, 2/7, 4/7, 5/7). 90% Tier-1 on Easy, 80% on Normal, 55% on Hard.
+[Prompt 124]: Mental Division by Primes: heavily weighted towards primes under 10 (3 and 7 at 70%, 11/13/17/19 at 30%).
+[Prompt 128]: Factorial ratio hints only state the base definition (e.g. "Use 7! = 5040"), never pre-calculating the final quotient.
+[Prompt 130]: Multi-term long addition and subtraction: 4 to 5 terms mixed (+ and -), including 3-digit speed numbers.
+[Prompt 131]: Untimed retry mode completely hides the Time Remaining countdown timer.
+[Prompt 132]: Pause duration is strictly excluded from question solve time and Time Sinks.
+[Prompt 136]: Sprint Focus Anchors Protocol: Silently select 3 target concepts per sprint (Square, Table, Fraction) and weave them repeatedly throughout the quiz across varied arithmetic templates.
 
-B. Dual-Layer Anti-Repetition Cache:
-   - Level 1: 35-question signature memory buffer prevents exact duplicate questions from recurring in a sprint.
-   - Level 2: 6-family buffer prevents back-to-back testing of the exact same number while allowing the 
-     sprint anchors to rotate smoothly every 5–7 questions across varied operations.
+================================================================================
+3. QUESTION GENERATION ENGINE RULES & SPECIFICATIONS
+================================================================================
+1. "Anchors of the Sprint" Protocol:
+   - Initialized at sprint start via `initSessionAnchors()`.
+   - Silently picks 1 High-Yield Square (17-32), 1 High-Yield Table (14-29), and 1 High-Yield Fraction (5/12, 7/12, 7/15, 8/15, 3/8, 5/8, 7/8, 2/7, 5/7, etc.).
+   - Weaved into the sprint 3 to 4 times across distinct algebraic templates:
+     • (sq² + offset), (sq² - offset), (offset - sq²), ((sq² × M) + offset).
+     • (T × M + offset), (T × M - offset), (Dividend ÷ T + offset).
+     • (Frac% of Base + offset), (Frac% of Base - offset), (Frac% of Base + Table).
 
-C. High-Yield Real Exam Clustering:
-   - 90% of exam fractions cluster near 50%: 5/12 (41.67%), 7/12 (58.33%), 7/15 (46.67%), 8/15 (53.33%), 
-     3/8 (37.5%), 5/8 (62.5%), 7/8 (87.5%), 2/7 (28.57%), 4/7 (57.14%), 5/7 (71.42%), 5/6 (83.33%), 
-     4/9 (44.44%), 7/9 (77.77%), 3/11 (27.27%), 7/11 (63.63%).
-   - Weighted distribution by difficulty: 90% Tier-1 on Easy, 80% on Normal, 55% on Hard (45% extended).
-   - Multiplication by 18/5 with multiples of 5 and 5/18 with multiples of 18 (km/h ↔ m/s factor drills).
+2. Dual-Layer Anti-Repetition Cache:
+   - Level 1: 35-question signature buffer (`recentSignatures`) prevents identical questions in a sprint.
+   - Level 2: 6-family buffer (`recentFamilies`) prevents back-to-back testing of the same base element while allowing anchor rotation every 5-7 questions.
 
-D. Mental Division by Primes:
-   - Heavily weighted towards primes under 10 (3 and 7 at 70%), with remaining 30% for 11, 13, 17, 19.
+3. High-Yield Topic Pools:
+   - Powers: Squares (14² to 32²), Cubes (7³ to 18³), Base-2 (2¹–2¹²), Base-3 (3¹–3⁷), Base-4 (4¹–4⁶), Base-5 (5¹–5⁶), Base-6 (6¹–6⁵), Base-7 (7¹–7⁴), Difference of Squares (a² - b²), Base 50/100 Near Squaring.
+   - Fractions & %: Denominators 3, 4, 5, 6, 7, 8, 9, 11, 12, 14, 15, 16, 18, 20. Percentage reversals (250, 750, 125, 375, 625), km/h factor drills (5/18 and 18/5).
+   - Factorials: High-yield ratios (8!/6!, 7!/5!, 6!/3!) multiplied by scalars and factored with offsets.
+   - Tables & Products: Tables 14–29, Twin Products (x-d)(x+d) around midpoints (25, 30, 35, 40, 50, 60), Prime Division (3, 7 at 70%; 11, 13, 17, 19 at 30%).
+   - Addition & Subtraction: 4–5 term mixed (+ and -) 2-digit & 3-digit speed arithmetic, 4–6 term DILR column sums.
+   - Roots & Decimals: Square roots (14²-36²), Cube roots (7³-19³), Decimal Multipliers (0.375, 0.625, 0.875, 1.25, 1.5, 1.75, 0.833, 1.333, 1.667).
+   - Hybrids: Multi-step cross-topic questions (Powers + Tables, Fractions + Tables, Factorials + Fractions).
 
-E. Long Multi-Term Addition & Subtraction:
-   - 4 to 5 term mixed arithmetic with 2-digit and 3-digit speed numbers (e.g. 84 - 37 + 65 + 49 - 28, 380 + 265 - 190 + 85).
-   - 4 to 6 term DILR cumulative column totals.
+4. Scoring & Feedback:
+   - +3 for Correct, -1 for Wrong, 0 for Unattempted/Skipped.
+   - Atomic `isTransitioning` lock prevents double-submission or double-skipping during the 280ms feedback animation.
 
-F. Multi-Topic Hybrids (Never in Isolation):
-   - Hybrids across 2–3 topics (Powers + Tables, Fractions + Tables, Factorials + Fractions) with addition/subtraction.
+5. Dynamic Ideal Pacing:
+   - Unique target seconds evaluated per question based on operator composition via `computeDynamicIdealTime()`.
 
-G. Dynamic Ideal Time:
-   - Unique target seconds evaluated dynamically per question based on operator complexity.
-
-H. Hints & Solutions:
-   - Hints only for algebraic identities/powers/roots/factorials/fractions. NEVER for basic tables (19 × 7).
-   - Factorial hints only state the definition (e.g., "Use 7! = 5040"), never pre-calculating the quotient.
-   - Every question displays full step-by-step solution shortcut on results review.
-
---------------------------------------------------------------------------------
-3. USER PREFERENCES & STRICT UX RULES
---------------------------------------------------------------------------------
-[MANDATED]:
-✓ Untimed Reattempts: Mistake practice is 100% untimed, hides countdown HUD, and never saves to History.
-✓ Non-Cheesable MCQs: At least 2 options share the same unit digit; trap distractors (+/- 1, 2, 5, 10, 20).
-✓ Keyboard Ergonomics: Enter for TITA, A/B/C/D or 1/2/3/4 for MCQ, H for Hint, Spacebar for Pause, Escape for Modals.
-✓ Focused Cursor: Tapping Hint keeps focus in input box on TITA mode.
-✓ Clean History: 0-question aborted sprints are discarded from localStorage.
-
-[FORBIDDEN]:
-✗ NO obscure high-prime multiples (7/19, 8/17, 11/13 are excluded).
-✗ NO trivial questions (50% of 80 or 10% of 60).
-✗ NO emojis on Home screen or in Git README.
-✗ NO counting paused time in question durations or Time Sinks.
-
---------------------------------------------------------------------------------
-4. SINGLE-FILE ARCHITECTURAL MAP (index.html)
---------------------------------------------------------------------------------
+================================================================================
+4. SINGLE-FILE CODE ARCHITECTURE MAP (index.html)
+================================================================================
 • Lines 1–1230: Embedded Dark Glassmorphism CSS Stylesheet
-• Lines 1231–1620: HTML Views (Home, Arena, Results) and Modals (History, Reference Formulas, Pause, Tour)
-• Lines 1621–1770: High-Yield CAT Data Constants & Dynamic Ideal Time Calculator
+• Lines 1231–1620: Semantic HTML Views (Home, Rush Arena, Results) and Modals (History, Formulas Reference, Pause, Tour)
+• Lines 1621–1770: High-Yield CAT Data Arrays & Dynamic Ideal Time Calculator
 • Lines 1771–1820: Sprint Anchors State (`sessionAnchors`, `initSessionAnchors()`)
-• Lines 1821–2350: 24 Specialized Question Generators + Anchor Drill Generators + Anti-Repetition Loop
-• Lines 2351–2600: Sprint Execution Engine, Pause Tracking, Input Handling, Transition Locks (`isTransitioning`)
+• Lines 1821–2350: 24 Specialized Question Generators + Anchor Drill Suite + Anti-Repetition Loop
+• Lines 2351–2600: Sprint Execution Engine, Pause Tracking, Input Handling, Transition Locks
 • Lines 2601–2870: Sprint Completion Engine, Analytics Breakdown, History Persistence, Untimed Mistakes Reattempt
-• Lines 2871–3330: Modal Controllers, Reference Data Renderers, Keyboard Shortcuts, Spotlight Walkthrough
+• Lines 2871–3330: Modal Controllers, Reference Data Renderers, Keyboard Shortcuts (A/B/C/D, 1/2/3/4, H, Space, Escape), Feature Tour
 
 ================================================================================
 END OF MASTER CONTEXT
