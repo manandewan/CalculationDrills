@@ -1843,10 +1843,10 @@
         const category = 'Powers';
         const sub = pickWeighted([1, 2, 3, 4, 5], [30, 20, 25, 15, 10]);
 
-        if (sub === 1) { // Clustered High-Yield Squaring (12-30² capped at 30)
+        if (sub === 1) { // Clustered High-Yield Squaring (12-30² plus 31, 32, 33 with (a+b)² expansion hints)
           const primarySquares = [14, 16, 17, 18, 19, 21, 23, 24, 26, 27, 28, 29];
-          const extendedSquares = [12, 13, 15, 22, 25, 30];
-          const sqPool = configDifficulty === 'hard' ? [...primarySquares, ...extendedSquares] : (configDifficulty === 'easy' ? [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 25] : primarySquares);
+          const extendedSquares = [12, 13, 15, 22, 25, 30, 31, 32, 33];
+          const sqPool = configDifficulty === 'hard' ? [...primarySquares, ...extendedSquares] : (configDifficulty === 'easy' ? [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 25] : [...primarySquares, 30, 31, 32, 33]);
           const sq = pickRandom(sqPool);
           const sqVal = sq * sq;
           const template = randInt(1, 3);
@@ -1866,8 +1866,16 @@
             expr = `${offset} - ${sq}²`;
           }
 
+          let hintText;
+          if (sq > 30) {
+            const d = sq - 30;
+            hintText = `Use (a+b)²: (30+${d})² = 30² + 2(30)(${d}) + ${d}² = 900 + ${60 * d} + ${d * d} = ${sqVal}`;
+          } else {
+            hintText = `Use ${sq}² = ${sqVal}`;
+          }
+
           const targetSec = computeDynamicIdealTime([{ type: 'sq', val: sq }, { type: 'add_sub', terms: 2 }]);
-          return { family: `sq_${sq}`, signature: `sq_${sq}_${expr}`, id, category, expr, ans, targetSec, hint: `Use ${sq}² = ${sqVal}`, shortcut: `${sq}² = ${sqVal} ➔ ${expr} = ${ans}` };
+          return { family: `sq_${sq}`, signature: `sq_${sq}_${expr}`, id, category, expr, ans, targetSec, hint: hintText, shortcut: `${sq}² = ${sqVal} ➔ ${expr} = ${ans}` };
         } else if (sub === 2) { // Clustered High-Yield Cubes (7-16³)
           const coreCubes = [7, 8, 9, 11, 12, 13, 14, 15, 16];
           const hardCubes = [17, 18, 19];
