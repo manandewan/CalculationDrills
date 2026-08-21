@@ -2040,24 +2040,45 @@
       });
     }
 
-    // 4. Tables, Products & Division by Primes
+    // 4. Tables, Products, Division by Primes & Special Numbers
     if (enabledTopics.has('tables')) {
-      activeGenerators.push(() => {
+      const tableAndPrimeGen = () => {
         const category = 'Tables & Products';
-        const sub = pickWeighted([1, 2, 3], [35, 35, 30]);
+        const sub = pickWeighted([1, 2, 3, 4], [42, 28, 22, 8]); // 42% Prime Division, 28% Tables, 22% Twin Products, 8% CAT Special Numbers
 
-        if (sub === 1) { // High-Yield Mental Division by Primes
-          const isPrimeUnder10 = Math.random() < 0.70;
-          const primeDivisor = isPrimeUnder10 ? pickRandom([3, 7]) : pickRandom([11, 13, 17, 19]);
-          const quotient = primeDivisor <= 7 ? randInt(35, 185) : randInt(14, 65);
+        if (sub === 1) { // High-Yield Mental Division by Primes (3, 5, 7, 11, 13, 17, 19)
+          // Heavy emphasis on core CAT low primes (3, 5, 7, 11, 13, 17)
+          const primeDivisor = pickWeighted([3, 5, 7, 11, 13, 17, 19], [25, 15, 25, 15, 10, 6, 4]);
+          let quotient;
+          if (primeDivisor === 3) quotient = randInt(45, 290);
+          else if (primeDivisor === 5) quotient = randInt(35, 260);
+          else if (primeDivisor === 7) quotient = randInt(25, 190);
+          else if (primeDivisor === 11) quotient = randInt(18, 110);
+          else if (primeDivisor === 13) quotient = randInt(14, 85);
+          else if (primeDivisor === 17) quotient = randInt(12, 65);
+          else quotient = randInt(12, 55);
+
           const dividend = primeDivisor * quotient;
-          const offset = randInt(25, 160);
+          const offset = randInt(25, 180);
           const isPlus = Math.random() > 0.45;
           const ans = isPlus ? quotient + offset : Math.abs(quotient - offset);
           const expr = isPlus ? `(${dividend} ÷ ${primeDivisor}) + ${offset}` : (quotient >= offset ? `(${dividend} ÷ ${primeDivisor}) - ${offset}` : `${offset} - (${dividend} ÷ ${primeDivisor})`);
           const targetSec = computeDynamicIdealTime([{ type: 'table', t: primeDivisor, m: 8 }, { type: 'add_sub', terms: 2 }]);
           return { family: `divprime_${primeDivisor}`, signature: `divprime_${dividend}_${expr}`, id, category, expr, ans, targetSec, shortcut: `${dividend} ÷ ${primeDivisor} = ${quotient} ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
-        } else if (sub === 2) { // Twin Products (x-d)(x+d)
+        } else if (sub === 2) { // High-Yield Tables (14-29)
+          const primaryTables = [17, 19, 23, 24, 26, 28, 29, 14, 16, 18];
+          const extendedTables = [13, 21, 22, 27];
+          const tPool = configDifficulty === 'hard' ? [...primaryTables, ...extendedTables] : primaryTables;
+          const t = pickRandom(tPool);
+          const m = randInt(4, 9);
+          const tableTerm = t * m;
+          const offset = randInt(35, 180);
+          const isPlus = Math.random() > 0.5;
+          const ans = isPlus ? tableTerm + offset : tableTerm - offset;
+          const expr = `(${t} × ${m}) ${isPlus ? '+' : '-'} ${offset}`;
+          const targetSec = computeDynamicIdealTime([{ type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
+          return { family: `tbl_${t}`, signature: `tbl_${t}_${m}_${expr}`, id, category, expr, ans, targetSec, shortcut: `(${t} × ${m} = ${tableTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else if (sub === 3) { // Twin Products (x-d)(x+d)
           const highYieldMids = [25, 30, 35, 40, 50, 60];
           const extendedMids = [24, 45, 75];
           const midPool = configDifficulty === 'hard' ? [...highYieldMids, ...extendedMids] : highYieldMids;
@@ -2072,21 +2093,46 @@
           const expr = `(${p1} × ${p2}) ${isPlus ? '+' : '-'} ${offset}`;
           const targetSec = computeDynamicIdealTime([{ type: 'prod', a: p1, b: p2 }, { type: 'add_sub', terms: 2 }]);
           return { family: `twprod_${mid}`, signature: `twprod_${p1}_${p2}_${expr}`, id, category, expr, ans, targetSec, hint: `Use (${mid}-${d})(${mid}+${d}) = ${mid}² - ${d}² = ${mid*mid} - ${d*d} = ${prodVal}`, shortcut: `(${mid}² - ${d}² = ${mid*mid}-${d*d} = ${prodVal}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
-        } else { // High-Yield Tables
-          const primaryTables = [17, 19, 23, 24, 26, 29, 14, 16, 18];
-          const extendedTables = [13, 21, 22, 27, 28];
-          const tPool = configDifficulty === 'hard' ? [...primaryTables, ...extendedTables] : primaryTables;
-          const t = pickRandom(tPool);
-          const m = randInt(4, 9);
-          const tableTerm = t * m;
-          const offset = randInt(35, 180);
-          const isPlus = Math.random() > 0.5;
-          const ans = isPlus ? tableTerm + offset : tableTerm - offset;
-          const expr = `(${t} × ${m}) ${isPlus ? '+' : '-'} ${offset}`;
-          const targetSec = computeDynamicIdealTime([{ type: 'table', t, m }, { type: 'add_sub', terms: 2 }]);
-          return { family: `tbl_${t}`, signature: `tbl_${t}_${m}_${expr}`, id, category, expr, ans, targetSec, shortcut: `(${t} × ${m} = ${tableTerm}) ${isPlus ? '+' : '-'} ${offset} = ${ans}` };
+        } else { // 4: CAT Special Numbers (1001, 111, 10001, 10101, 999) with Prime Factorization Hints
+          const specialNumList = [
+            { num: 1001, factors: '7 × 11 × 13', divisor: 77, quotient: 13, note: '1001 = 7 × 11 × 13' },
+            { num: 1001, factors: '7 × 11 × 13', divisor: 91, quotient: 11, note: '1001 = 7 × 11 × 13' },
+            { num: 1001, factors: '7 × 11 × 13', divisor: 143, quotient: 7, note: '1001 = 7 × 11 × 13' },
+            { num: 1001, factors: '7 × 11 × 13', divisor: 13, quotient: 77, note: '1001 = 7 × 11 × 13' },
+            { num: 1001, factors: '7 × 11 × 13', divisor: 7, quotient: 143, note: '1001 = 7 × 11 × 13' },
+            { num: 1001, factors: '7 × 11 × 13', divisor: 11, quotient: 91, note: '1001 = 7 × 11 × 13' },
+            { num: 111,  factors: '3 × 37', divisor: 37, quotient: 3, note: '111 = 3 × 37' },
+            { num: 222,  factors: '2 × 3 × 37', divisor: 37, quotient: 6, note: '222 = 6 × 37' },
+            { num: 333,  factors: '9 × 37', divisor: 37, quotient: 9, note: '333 = 9 × 37' },
+            { num: 10001, factors: '73 × 137', divisor: 73, quotient: 137, note: '10001 = 73 × 137' },
+            { num: 10001, factors: '73 × 137', divisor: 137, quotient: 73, note: '10001 = 73 × 137' },
+            { num: 10101, factors: '3 × 7 × 13 × 37 = 3 × 37 × 91', divisor: 111, quotient: 91, note: '10101 = 111 × 91' },
+            { num: 999,   factors: '27 × 37', divisor: 27, quotient: 37, note: '999 = 27 × 37' },
+            { num: 999,   factors: '27 × 37', divisor: 37, quotient: 27, note: '999 = 27 × 37' }
+          ];
+
+          const item = pickRandom(specialNumList);
+          const offset = randInt(20, 140);
+          const isPlus = Math.random() > 0.45;
+          const ans = isPlus ? item.quotient + offset : Math.abs(item.quotient - offset);
+          const expr = isPlus ? `(${item.num} ÷ ${item.divisor}) + ${offset}` : (item.quotient >= offset ? `(${item.num} ÷ ${item.divisor}) - ${offset}` : `${offset} - (${item.num} ÷ ${item.divisor})`);
+          const targetSec = computeDynamicIdealTime([{ type: 'table', t: 19, m: 8 }, { type: 'add_sub', terms: 2 }]);
+          return { 
+            family: `spec_${item.num}`, 
+            signature: `spec_${item.num}_${item.divisor}_${expr}`, 
+            id, 
+            category: 'Tables & Special Numbers', 
+            expr, 
+            ans, 
+            targetSec, 
+            hint: `Prime factorization: ${item.note}`, 
+            shortcut: `${item.note} ➔ ${item.num} ÷ ${item.divisor} = ${item.quotient} ${isPlus ? '+' : '-'} ${offset} = ${ans}` 
+          };
         }
-      });
+      };
+
+      activeGenerators.push(tableAndPrimeGen);
+      activeGenerators.push(tableAndPrimeGen); // Pushed twice to ensure strong frequency throughout the sprint
     }
 
     // 5. Long Multi-Term Addition & Subtraction (4 to 5 terms, Mixed + and -, 2-digit & 3-digit combinations)
