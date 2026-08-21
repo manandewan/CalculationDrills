@@ -1788,7 +1788,7 @@
   };
 
   function initSessionAnchors() {
-    const highYieldSquares = [17, 18, 19, 21, 23, 24, 26, 27, 28, 29, 31, 32];
+    const highYieldSquares = [14, 16, 17, 18, 19, 21, 23, 24, 26, 27, 28, 29];
     const highYieldTables = [14, 16, 17, 18, 19, 23, 24, 26, 28, 29];
     const highYieldFractions = [
       { label: '5/12', p: '41.67%', denom: 12, mult: 5 },
@@ -1837,16 +1837,16 @@
       return items[items.length - 1];
     };
 
-    // 1. Powers Generator (Squares 14-32, Cubes 7-18, Base 50/100 Hybrids, Difference of Squares)
+    // 1. Powers Generator (Squares 12-30, Cubes 7-18, Base 50/100 Hybrids, Difference of Squares)
     if (enabledTopics.has('powers')) {
       activeGenerators.push(() => {
         const category = 'Powers';
         const sub = pickWeighted([1, 2, 3, 4, 5], [30, 20, 25, 15, 10]);
 
-        if (sub === 1) { // Clustered High-Yield Squaring (14-32²) with diverse templates
-          const primarySquares = [14, 16, 17, 18, 19, 21, 23, 24, 26, 27, 28, 29, 31, 32];
-          const extendedSquares = [12, 13, 15, 22, 25, 33, 34, 35];
-          const sqPool = configDifficulty === 'hard' ? [...primarySquares, ...extendedSquares] : (configDifficulty === 'easy' ? [12, 13, 14, 15, 16, 17, 18, 19, 21, 25] : primarySquares);
+        if (sub === 1) { // Clustered High-Yield Squaring (12-30² capped at 30)
+          const primarySquares = [14, 16, 17, 18, 19, 21, 23, 24, 26, 27, 28, 29];
+          const extendedSquares = [12, 13, 15, 22, 25, 30];
+          const sqPool = configDifficulty === 'hard' ? [...primarySquares, ...extendedSquares] : (configDifficulty === 'easy' ? [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 25] : primarySquares);
           const sq = pickRandom(sqPool);
           const sqVal = sq * sq;
           const template = randInt(1, 3);

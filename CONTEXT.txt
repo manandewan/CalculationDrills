@@ -65,7 +65,7 @@ Local Project Root: /Users/manandewan/Desktop/Daily calculations/index.html
    - Level 2: 6-family buffer (`recentFamilies`) prevents back-to-back testing of the same base element while allowing anchor rotation every 5-7 questions.
 
 3. High-Yield Topic Pools:
-   - Powers: Squares (14² to 32²), Cubes (7³ to 18³), Base-2 (2¹–2¹²), Base-3 (3¹–3⁷), Base-4 (4¹–4⁶), Base-5 (5¹–5⁶), Base-6 (6¹–6⁵), Base-7 (7¹–7⁴), Difference of Squares (a² - b²), Base 50/100 Near Squaring.
+   - Powers: Squares (12² to 30² strictly capped at 30), Cubes (7³ to 18³), Base-2 (2¹–2¹²), Base-3 (3¹–3⁷), Base-4 (4¹–4⁶), Base-5 (5¹–5⁶), Base-6 (6¹–6⁵), Base-7 (7¹–7⁴), Difference of Squares (a² - b²), Base 50/100 Near Squaring.
    - Fractions & %: Denominators 3, 4, 5, 6, 7, 8, 9, 11, 12, 14, 15, 16, 18, 20. Percentage reversals (250, 750, 125, 375, 625), km/h factor drills (5/18 and 18/5).
    - Factorials: High-yield ratios (8!/6!, 7!/5!, 6!/3!) multiplied by scalars and factored with offsets.
    - Tables & Products: Tables 14–29, Twin Products (x-d)(x+d) around midpoints (25, 30, 35, 40, 50, 60), Prime Division (3, 7 at 70%; 11, 13, 17, 19 at 30%).
